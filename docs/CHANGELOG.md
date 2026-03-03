@@ -6,6 +6,27 @@ All notable changes to the UnyKorn monorepo are documented here.
 
 ## [Unreleased] — 2026-03-03
 
+### LP V1 Rewrite (CRITICAL)
+
+**Discovery:** Smoke test revealed both UNY pools (UNY/USDC, UNY/WAVAX) are TraderJoe V1 classic AMM (x\*y=k), NOT Liquidity Book V2.1. Zero LB pairs exist for UNY. Confirmed via `diagnosePair.ts` and `diagnoseLB.ts` querying live contracts.
+
+**Registry corrections:**
+- `avalanche-lfj-uny-usdc.json` — Fixed pair_type to V1, corrected token order (on-chain: token0=USDC, token1=UNY), removed all lb_* fields, added v1_router/pair_factory
+- `avalanche-lfj-uny-wavax.json` — Same corrections (on-chain: token0=WAVAX, token1=UNY)
+- `lp-config.json` — Protocol changed to "TraderJoe V1 Classic AMM", bin-based strategies removed, full_range strategy added
+
+**Script rewrites (LB V2.1 → V1 Classic AMM):**
+- `checkLP.ts` — V1 ABIs (getReserves, token0/1), LP ERC-20 balance, reserve-based pricing. **Live-tested on Avalanche ✓**
+- `addLiquidity.ts` — V1 Router addLiquidity/addLiquidityAVAX (standard params, no bins/distributions)
+- `removeLiquidity.ts` — V1 LP token approve + removeLiquidity/removeLiquidityAVAX (percentage-based, no bin scanning)
+- `collectFees.ts` — Converted to snapshot-based fee estimation tool (V1 fees auto-compound into LP value)
+- `lp-monitor.mjs` — V1 reserves + ERC-20 LP balanceOf (no ERC-1155 bin scanning). **Live-tested ✓**
+- `lp-safety.ts` — Added `printPositionDiffV1()` for V1 position diff preview (LP token / reserve-based)
+
+**New diagnostic tools:**
+- `diagnosePair.ts` — Tests function selectors to determine pair type (V1 vs LB)
+- `diagnoseLB.ts` — Queries LB Factory for pair existence, counts total LB pairs
+
 ### Registry expansion
 
 - **contracts.json**: Expanded from 22 → 30 contracts

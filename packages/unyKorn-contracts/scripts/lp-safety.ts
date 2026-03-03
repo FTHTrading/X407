@@ -239,6 +239,95 @@ export function printPositionDiff(params: {
   console.log("  └─────────────────────────────────────────────────────┘");
 }
 
+// ── Position Diff Preview — V1 Classic AMM ────────────────────────────────────
+export function printPositionDiffV1(params: {
+  action:      "add" | "remove";
+  symUNY:      string;
+  symQuote:    string;
+  decUNY:      number;
+  decQuote:    number;
+  balUNY:      bigint;
+  balQuote:    bigint;
+  amtUNY:      bigint;
+  amtQuote:    bigint;
+  avaxBal:     bigint;
+  isNative:    boolean;
+  lpBefore:    bigint;
+  lpSupply:    bigint;
+  reserve0:    bigint;
+  reserve1:    bigint;
+  dec0:        number;
+  dec1:        number;
+  priceY_usd?: number;
+}): void {
+
+  const beforeUNY = Number(ethers.formatUnits(params.balUNY, params.decUNY));
+  const beforeQ   = Number(ethers.formatUnits(params.balQuote, params.decQuote));
+  const deplUNY   = Number(ethers.formatUnits(params.amtUNY, params.decUNY));
+  const deplQ     = Number(ethers.formatUnits(params.amtQuote, params.decQuote));
+
+  const afterUNY = params.action === "add" ? beforeUNY - deplUNY : beforeUNY + deplUNY;
+  const afterQ   = params.action === "add" ? beforeQ - deplQ : beforeQ + deplQ;
+
+  const pctUNY = beforeUNY > 0 ? (deplUNY / beforeUNY * 100) : 0;
+  const pctQ   = beforeQ > 0   ? (deplQ / beforeQ * 100) : 0;
+
+  // Pool share from LP token
+  const lpBef = Number(ethers.formatUnits(params.lpBefore, 18));
+  const lpSup = Number(ethers.formatUnits(params.lpSupply, 18));
+  const sharePercent = lpSup > 0 ? (lpBef / lpSup * 100) : 0;
+
+  // Reserve values
+  const r0 = Number(ethers.formatUnits(params.reserve0, params.dec0));
+  const r1 = Number(ethers.formatUnits(params.reserve1, params.dec1));
+  const k  = r0 * r1;
+
+  console.log("\n  ┌─────────────────────────────────────────────────────┐");
+  console.log(`  │  POSITION DIFF — V1 CLASSIC AMM — ${params.action.toUpperCase()}`.padEnd(54) + "│");
+  console.log("  ├─────────────────────────────────────────────────────┤");
+
+  // UNY
+  console.log(`  │  ${params.symUNY.padEnd(6)} Before : ${beforeUNY.toFixed(4).padStart(16)}`.padEnd(54) + "│");
+  console.log(`  │  ${" ".repeat(6)} ${params.action === "add" ? "Deploy" : "Recvd"} : ${(params.action === "add" ? "-" : "+") + deplUNY.toFixed(4).padStart(15)}`.padEnd(54) + "│");
+  console.log(`  │  ${" ".repeat(6)} After  : ${afterUNY.toFixed(4).padStart(16)}  (${pctUNY.toFixed(1)}%)`.padEnd(54) + "│");
+  console.log("  │" + " ".repeat(53) + "│");
+
+  // Quote token
+  console.log(`  │  ${params.symQuote.padEnd(6)} Before : ${beforeQ.toFixed(4).padStart(16)}`.padEnd(54) + "│");
+  console.log(`  │  ${" ".repeat(6)} ${params.action === "add" ? "Deploy" : "Recvd"} : ${(params.action === "add" ? "-" : "+") + deplQ.toFixed(4).padStart(15)}`.padEnd(54) + "│");
+  console.log(`  │  ${" ".repeat(6)} After  : ${afterQ.toFixed(4).padStart(16)}  (${pctQ.toFixed(1)}%)`.padEnd(54) + "│");
+  console.log("  │" + " ".repeat(53) + "│");
+
+  // LP token info
+  console.log(`  │  LP Token Balance : ${lpBef.toFixed(6).padStart(16)}`.padEnd(54) + "│");
+  console.log(`  │  LP Total Supply  : ${lpSup.toFixed(6).padStart(16)}`.padEnd(54) + "│");
+  console.log(`  │  Pool Share       : ${sharePercent.toFixed(4).padStart(16)}%`.padEnd(54) + "│");
+  console.log("  │" + " ".repeat(53) + "│");
+
+  // Pool state
+  console.log(`  │  Pool k (x*y) : ${k.toFixed(2)}`.padEnd(54) + "│");
+  console.log("  │" + " ".repeat(53) + "│");
+
+  // AVAX gas reserve
+  const avaxBefore = Number(ethers.formatEther(params.avaxBal));
+  const avaxAfterEst = params.isNative ? avaxBefore - deplQ - 0.01 : avaxBefore - 0.01;
+  console.log(`  │  AVAX   Remaining: ~${avaxAfterEst.toFixed(4)} (gas reserve)`.padEnd(54) + "│");
+  console.log("  │" + " ".repeat(53) + "│");
+
+  // USD estimates
+  if (params.priceY_usd !== undefined) {
+    // For V1 classic AMM, UNY price derived from reserves
+    const unyPrice = r0 > 0 && r1 > 0 ? r0 / r1 * (params.priceY_usd || 1) : 0;
+    const usdUNY = deplUNY * unyPrice;
+    const usdQ   = deplQ * (params.priceY_usd || 1);
+    const totalUsd = usdUNY + usdQ;
+    console.log(`  │  USD Value: ~$${totalUsd.toFixed(2)} ($${usdUNY.toFixed(2)} + $${usdQ.toFixed(2)})`.padEnd(54) + "│");
+    console.log(`  │  ⚠ V1 AMM: 0.3% swap fee, fees auto-compound`.padEnd(54) + "│");
+  }
+
+  console.log("  └─────────────────────────────────────────────────────┘");
+}
+
 // ── Shared: check if this is a "first run" (require dry-run before live) ──────
 const DRY_RUN_MARKER_DIR = resolve(__dirname, "../.lp-runs");
 

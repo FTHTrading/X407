@@ -1,34 +1,40 @@
 /**
- * collectFees.ts
- * Collect accrued trading fees from UNY LP positions on TraderJoe LFJ V2.1.
+ * collectFees.ts → Fee Estimation Tool (V1 Classic AMM)
  *
- * Safety layers:
- *   - LP_GLOBAL_DISABLE=true → hard kill switch
+ * TraderJoe V1 (x*y=k) Difference from LB V2.1:
+ *   V1 fees auto-compound into LP token value — there is NO separate collectFees().
+ *   The 0.3% swap fee increases reserves, which increases each LP token's share.
+ *
+ * This script estimates accrued fee value by:
+ *   1. Reading current reserves & LP share
+ *   2. Calculating your proportional share of reserves
+ *   3. Comparing to initial deposit (if snapshot exists)
  *
  * Usage:
  *   npx hardhat run scripts/collectFees.ts --network avalanche
  *
  * Environment:
  *   POOL=usdc|wavax   (default: both)
- *   DRY_RUN=true|false (default: true)
- *   LP_GLOBAL_DISABLE=true   (emergency kill switch)
+ *   INITIAL_UNY=0     (your initial UNY deposit — for fee estimation)
+ *   INITIAL_QUOTE=0   (your initial USDC/AVAX deposit)
  */
 
 import hre, { ethers } from "hardhat";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync, writeFileSync } from "fs";
 import { resolve, join } from "path";
 import { checkKillSwitch } from "./lp-safety";
 
 const ROOT = resolve(__dirname, "../../..");
-const DRY_RUN = process.env.DRY_RUN !== "false";
 const POOL_FILTER = process.env.POOL?.toLowerCase();
+const SNAPSHOT_DIR = resolve(__dirname, "../.lp-runs");
 
 const PAIR_ABI = [
-  "function getActiveId() view returns (uint24)",
-  "function getBinStep() view returns (uint16)",
-  "function balanceOf(address, uint256) view returns (uint256)",
-  "function pendingFees(address, uint256[]) view returns (uint256, uint256)",
-  "function collectFees(address, uint256[]) returns (uint256, uint256)",
+  "function token0() view returns (address)",
+  "function token1() view returns (address)",
+  "function getReserves() view returns (uint112, uint112, uint32)",
+  "function totalSupply() view returns (uint256)",
+  "function balanceOf(address) view returns (uint256)",
+  "function kLast() view returns (uint256)",
 ];
 
 const ERC20_ABI = [
@@ -38,58 +44,107 @@ const ERC20_ABI = [
 ];
 
 interface PoolConfig {
-  name: string;
   pair_address: string;
   token0: { address: string; decimals: number; symbol: string };
   token1: { address: string; decimals: number; symbol: string };
+  dex: string;
+  pair_type: string;
 }
 
-async function collectForPool(signer: any, pool: PoolConfig) {
-  console.log(`\n──── ${pool.name} ────`);
+interface FeeSnapshot {
+  timestamp: string;
+  lpBalance: string;
+  reserve0: string;
+  reserve1: string;
+  totalSupply: string;
+  shareValue0: string;
+  shareValue1: string;
+}
+
+async function estimateForPool(signer: any, pool: PoolConfig, poolName: string) {
+  const sym0 = pool.token0.symbol;
+  const sym1 = pool.token1.symbol;
+  const dec0 = pool.token0.decimals;
+  const dec1 = pool.token1.decimals;
+
+  console.log(`\n──── ${poolName} (${pool.pair_type} AMM) ────`);
   console.log(`    Pair: ${pool.pair_address}`);
 
   const pair = new ethers.Contract(pool.pair_address, PAIR_ABI, signer);
-  const activeId = Number(await pair.getActiveId());
+  const [reserve0, reserve1, lastTs] = await pair.getReserves();
+  const lpTotalSupply = await pair.totalSupply();
+  const lpBalance = await pair.balanceOf(signer.address);
 
-  // Scan for bins with LP positions
-  const scanRange = 50;
-  const binIds: number[] = [];
+  console.log(`    Reserve0 : ${ethers.formatUnits(reserve0, dec0)} ${sym0}`);
+  console.log(`    Reserve1 : ${ethers.formatUnits(reserve1, dec1)} ${sym1}`);
+  console.log(`    LP Supply: ${ethers.formatEther(lpTotalSupply)}`);
+  console.log(`    Your LP  : ${ethers.formatEther(lpBalance)}`);
 
-  for (let id = activeId - scanRange; id <= activeId + scanRange; id++) {
-    const bal = await pair.balanceOf(signer.address, id);
-    if (bal > 0n) binIds.push(id);
-  }
-
-  if (binIds.length === 0) {
-    console.log("    No LP positions found.");
+  if (lpBalance === 0n) {
+    console.log("    No LP position — no fees to estimate.");
     return;
   }
 
-  console.log(`    Positions in ${binIds.length} bins: ${binIds.join(", ")}`);
+  const sharePercent = Number((lpBalance * 10000n) / lpTotalSupply) / 100;
+  const myReserve0 = (reserve0 * lpBalance) / lpTotalSupply;
+  const myReserve1 = (reserve1 * lpBalance) / lpTotalSupply;
 
-  // Check pending fees
-  const [pendingX, pendingY] = await pair.pendingFees(signer.address, binIds);
-  const decX = pool.token0.decimals;
-  const decY = pool.token1.decimals;
+  console.log(`    Share    : ${sharePercent.toFixed(4)}%`);
+  console.log(`    My ${sym0.padEnd(5)}: ${ethers.formatUnits(myReserve0, dec0)}`);
+  console.log(`    My ${sym1.padEnd(5)}: ${ethers.formatUnits(myReserve1, dec1)}`);
 
-  console.log(`    Pending fees:`);
-  console.log(`      ${pool.token0.symbol}: ${ethers.formatUnits(pendingX, decX)}`);
-  console.log(`      ${pool.token1.symbol}: ${ethers.formatUnits(pendingY, decY)}`);
+  // Try to read previous snapshot
+  const snapshotFile = join(SNAPSHOT_DIR, `fee-snapshot-${poolName.replace("/", "-").toLowerCase()}.json`);
 
-  if (pendingX === 0n && pendingY === 0n) {
-    console.log("    No fees to collect.");
-    return;
+  if (existsSync(snapshotFile)) {
+    try {
+      const prev: FeeSnapshot = JSON.parse(readFileSync(snapshotFile, "utf8"));
+      const prevValue0 = BigInt(prev.shareValue0);
+      const prevValue1 = BigInt(prev.shareValue1);
+
+      const gain0 = myReserve0 - prevValue0;
+      const gain1 = myReserve1 - prevValue1;
+
+      console.log(`\n    📈  Fee accrual since ${prev.timestamp.slice(0, 19)}:`);
+      console.log(`      ${sym0}: ${gain0 >= 0n ? "+" : ""}${ethers.formatUnits(gain0, dec0)}`);
+      console.log(`      ${sym1}: ${gain1 >= 0n ? "+" : ""}${ethers.formatUnits(gain1, dec1)}`);
+
+      if (gain0 < 0n || gain1 < 0n) {
+        console.log(`      ⚠ Negative change — likely impermanent loss exceeding fee accrual`);
+      }
+
+      // Rough APR estimate
+      const prevTs = new Date(prev.timestamp).getTime();
+      const nowTs  = Date.now();
+      const daysSince = (nowTs - prevTs) / (1000 * 60 * 60 * 24);
+      if (daysSince > 0.01 && prevValue0 > 0n) {
+        const growthPct = Number((myReserve0 * 10000n) / prevValue0) / 100 - 100;
+        const annualized = growthPct * (365 / daysSince);
+        console.log(`      Est. APR (${sym0} basis): ~${annualized.toFixed(2)}% (${daysSince.toFixed(1)} days)`);
+      }
+    } catch {
+      console.log(`    ⚠ Could not parse previous snapshot`);
+    }
+  } else {
+    console.log(`\n    ℹ No previous snapshot — saving baseline now.`);
+    console.log(`    Run again later to see fee accrual.`);
   }
 
-  if (DRY_RUN) {
-    console.log(`    🔍 DRY RUN — would collect fees.`);
-    return;
-  }
+  // Save current snapshot
+  const { mkdirSync } = require("fs");
+  if (!existsSync(SNAPSHOT_DIR)) mkdirSync(SNAPSHOT_DIR, { recursive: true });
 
-  console.log("    Collecting fees...");
-  const tx = await pair.collectFees(signer.address, binIds);
-  const receipt = await tx.wait();
-  console.log(`    ✅ Collected! TX: ${tx.hash} (gas: ${receipt.gasUsed})`);
+  const snapshot: FeeSnapshot = {
+    timestamp:   new Date().toISOString(),
+    lpBalance:   lpBalance.toString(),
+    reserve0:    reserve0.toString(),
+    reserve1:    reserve1.toString(),
+    totalSupply: lpTotalSupply.toString(),
+    shareValue0: myReserve0.toString(),
+    shareValue1: myReserve1.toString(),
+  };
+  writeFileSync(snapshotFile, JSON.stringify(snapshot, null, 2));
+  console.log(`    💾 Snapshot saved: ${snapshotFile}`);
 }
 
 async function main() {
@@ -98,44 +153,25 @@ async function main() {
 
   const [signer] = await ethers.getSigners();
 
-  console.log("\n💰  Collect LP Trading Fees");
+  console.log("\n💰  LP Fee Estimation (V1 Classic AMM)");
   console.log(`    Signer: ${signer.address}`);
-  console.log(`    Mode  : ${DRY_RUN ? "DRY RUN" : "⚡ LIVE"}`);
+  console.log(`    Note  : V1 fees auto-compound into LP token — no separate collection needed.`);
+  console.log(`            This tool tracks your share value over time to estimate fee accrual.\n`);
 
-  const pools: PoolConfig[] = [];
+  const pools: { name: string; config: PoolConfig }[] = [];
 
   if (!POOL_FILTER || POOL_FILTER === "usdc") {
     const cfg = JSON.parse(readFileSync(join(ROOT, "registry/pools/avalanche-lfj-uny-usdc.json"), "utf8"));
-    pools.push({
-      name: "UNY/USDC",
-      pair_address: cfg.pair_address,
-      token0: cfg.token0,
-      token1: cfg.token1,
-    });
+    pools.push({ name: "UNY/USDC", config: cfg });
   }
 
   if (!POOL_FILTER || POOL_FILTER === "wavax") {
     const cfg = JSON.parse(readFileSync(join(ROOT, "registry/pools/avalanche-lfj-uny-wavax.json"), "utf8"));
-    pools.push({
-      name: "UNY/WAVAX",
-      pair_address: cfg.pair_address,
-      token0: cfg.token0,
-      token1: cfg.token1,
-    });
+    pools.push({ name: "UNY/WAVAX", config: cfg });
   }
-
-  // Collect balances before
-  const unyToken = new ethers.Contract(pools[0].token0.address, ERC20_ABI, signer);
-  const unyBefore = await unyToken.balanceOf(signer.address);
 
   for (const pool of pools) {
-    await collectForPool(signer, pool);
-  }
-
-  // Show balance change
-  const unyAfter = await unyToken.balanceOf(signer.address);
-  if (unyAfter > unyBefore) {
-    console.log(`\n    UNY balance change: +${ethers.formatUnits(unyAfter - unyBefore, 18)}`);
+    await estimateForPool(signer, pool.config, pool.name);
   }
 
   console.log();

@@ -1,18 +1,19 @@
 {
-  "version":   "1.0.0",
-  "protocol":  "TraderJoe Liquidity Book V2.1",
+  "version":   "2.0.0",
+  "protocol":  "TraderJoe V1 Classic AMM",
   "chain":     "avalanche-cchain",
   "chain_id":  43114,
-  "router":    "0xb4315e873dBcf96Ffd0acd8EA43f689D8c20fB30",
-  "factory":   "0x8e42f2F4101563bF679975178e880FD87d3eFd4e",
+  "v1_router": "0x60aE616a2155Ee3d9A68541Ba4544862310933d4",
+  "v1_factory":"0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10",
   "operator":  "primary_operator",
   "pools": [
     {
       "name":       "UNY/USDC",
       "file":       "pools/avalanche-lfj-uny-usdc.json",
-      "pair":       "0x9ff923a83b3d12db280ff65d69ae37819a743f83",
-      "tokenX":     "UNY",
-      "tokenY":     "USDC",
+      "pair":       "0x9ff923a83B3d12DB280Ff65D69AE37819a743f83",
+      "pair_type":  "V1",
+      "token0":     "USDC",
+      "token1":     "UNY",
       "priority":   1,
       "auto_compound": false,
       "monitor":    true
@@ -21,39 +22,30 @@
       "name":       "UNY/WAVAX",
       "file":       "pools/avalanche-lfj-uny-wavax.json",
       "pair":       "0xC6F5273D74571d91CBcBA0A2900ed5F7C800F5d0",
-      "tokenX":     "UNY",
-      "tokenY":     "WAVAX",
+      "pair_type":  "V1",
+      "token0":     "WAVAX",
+      "token1":     "UNY",
       "priority":   2,
       "auto_compound": false,
       "monitor":    true
     }
   ],
   "defaults": {
-    "bins":               5,
-    "slippage_bps":       100,
-    "rebalance_bins":     10,
-    "strategy":           "uniform",
-    "deadline_seconds":   300,
-    "scan_range":         50,
-    "fee_collect_cadence": "daily"
+    "slippage_bps":        100,
+    "deadline_seconds":    300,
+    "strategy":            "full_range",
+    "fee_estimate_cadence":"daily"
   },
   "strategies": {
-    "uniform": {
-      "description": "Equal spread of tokens across N bins around active price",
-      "best_for":    "low-volatility, stable accumulation"
-    },
-    "concentrated": {
-      "description": "Tight spread (1-3 bins) for high capital efficiency",
-      "best_for":    "tight range, high fee capture, requires active monitoring"
-    },
-    "bid_only": {
-      "description": "Token Y in bins below active price — buy wall strategy",
-      "best_for":    "accumulating UNY on dips"
-    },
-    "ask_only": {
-      "description": "Token X in bins above active price — sell wall strategy",
-      "best_for":    "distributing UNY above market price"
+    "full_range": {
+      "description": "Standard V1 AMM — full-range liquidity across the entire price curve",
+      "best_for":    "set-and-forget, fees auto-compound into LP token value"
     }
+  },
+  "lb_v2_future": {
+    "note":    "No LB V2.1 pairs exist for UNY yet. LB interfaces kept in contracts/interfaces/ for future use.",
+    "lb_router":  "0xb4315e873dBcf96Ffd0acd8EA43f689D8c20fB30",
+    "lb_factory": "0x8e42f2F4101563bF679975178e880FD87d3eFd4e"
   },
   "safety_limits": {
     "max_wallet_percent":    25,
@@ -63,11 +55,12 @@
     "require_dry_run_first": true
   },
   "notes": [
+    "V1 AMM: fees auto-compound into LP token — no separate collectFees needed.",
+    "Both UNY pairs confirmed V1 classic via diagnosePair.ts + diagnoseLB.ts (2026-06-20).",
+    "LB V2.1 factory has 2072 total pairs but ZERO for UNY.",
     "All operations default to DRY_RUN=true for safety.",
     "LP_GLOBAL_DISABLE=true blocks ALL tx execution (kill switch).",
     "Safety thresholds enforced: max wallet %, max USD, slippage ceiling.",
-    "require_dry_run_first: must DRY_RUN=true within 1hr before live execution.",
-    "Auto-compound not yet implemented — manual fee collection via collectFees.ts.",
-    "Rebalance trigger: when active bin drifts N bins from position center."
+    "require_dry_run_first: must DRY_RUN=true within 1hr before live execution."
   ]
 }
