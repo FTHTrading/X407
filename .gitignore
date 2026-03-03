@@ -42,3 +42,6 @@ desktop.ini
 # ── Coverage / test artefacts ────────────────────────────────────────────────
 coverage/
 lcov.info
+
+# ── LP safety markers ───────────────────────────────────────────────────────
+.lp-runs/

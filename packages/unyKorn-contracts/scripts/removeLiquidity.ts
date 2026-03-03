@@ -2,6 +2,12 @@
  * removeLiquidity.ts
  * Script to remove liquidity from UNY LP pools on TraderJoe LFJ V2.1.
  *
+ * Safety layers:
+ *   - LP_GLOBAL_DISABLE=true → hard kill switch
+ *   - Safety thresholds: slippage ceiling
+ *   - Position diff preview on every run
+ *   - require_dry_run_first enforcement
+ *
  * Usage:
  *   npx hardhat run scripts/removeLiquidity.ts --network avalanche
  *
@@ -11,11 +17,19 @@
  *   BIN_IDS=8388608,8388609  (comma-separated specific bins, or empty for all)
  *   SLIPPAGE=100             (basis points, default: 100 = 1%)
  *   DRY_RUN=true|false       (default: true)
+ *   LP_GLOBAL_DISABLE=true   (emergency kill switch)
  */
 
 import hre, { ethers } from "hardhat";
 import { readFileSync } from "fs";
 import { resolve, join } from "path";
+import {
+  checkKillSwitch,
+  enforceSafetyThresholds,
+  printPositionDiff,
+  markDryRunComplete,
+  checkDryRunRequired,
+} from "./lp-safety";
 
 const ROOT = resolve(__dirname, "../../..");
 
@@ -51,6 +65,9 @@ const ERC20_ABI = [
 ];
 
 async function main() {
+  // ── Kill switch ──
+  checkKillSwitch();
+
   const [signer] = await ethers.getSigners();
 
   const poolFile = POOL === "wavax"
@@ -164,12 +181,63 @@ async function main() {
   console.log(`    Expected: ~${ethers.formatUnits(estX, decX)} UNY + ~${ethers.formatUnits(estY, decY)} ${POOL.toUpperCase()}`);
   console.log(`    Min out : ~${ethers.formatUnits(minX, decX)} UNY + ~${ethers.formatUnits(minY, decY)} ${POOL.toUpperCase()}`);
 
+  // ── Safety thresholds (slippage check) ──
+  const safetyResult = await enforceSafetyThresholds({
+    slippageBps: SLIPPAGE,
+    amtX: estX,
+    amtY: estY,
+    balX: totalShareX,
+    balY: totalShareY,
+    decX,
+    decY,
+    symX: "UNY",
+    symY: POOL.toUpperCase(),
+    isDryRun: DRY_RUN,
+  });
+
+  // ── Position diff preview ──
+  const avaxBal = await ethers.provider.getBalance(signer.address);
+  const unyToken = new ethers.Contract(unyAddr, ["function balanceOf(address) view returns (uint256)"], signer);
+  const unyWalletBal = await unyToken.balanceOf(signer.address);
+  const yWalletBal = POOL === "wavax"
+    ? avaxBal
+    : await (new ethers.Contract(tokenYAddr, ["function balanceOf(address) view returns (uint256)"], signer)).balanceOf(signer.address);
+
+  printPositionDiff({
+    action:    "remove",
+    symX:      "UNY",
+    symY:      POOL.toUpperCase(),
+    decX,
+    decY,
+    balX:      unyWalletBal,
+    balY:      yWalletBal,
+    amtX:      estX,
+    amtY:      estY,
+    avaxBal,
+    isNative:  POOL === "wavax",
+    numBins:   targetBins.length,
+    binStep,
+    priceY_usd: POOL === "usdc" ? 1.0 : undefined,
+  });
+
   if (DRY_RUN) {
+    markDryRunComplete("removeLiquidity", POOL);
     console.log("\n🔍  DRY RUN — no transactions sent");
     console.log("    Would approveForAll on pair for LB Router");
     console.log(`    Would call removeLiquidity${POOL === "wavax" ? "NATIVE" : ""}`);
     console.log("\n    Re-run with DRY_RUN=false to execute.\n");
     return;
+  }
+
+  // ── Live execution guards ──
+  if (!safetyResult.pass) {
+    console.error("\n✗ Safety thresholds violated — transaction blocked.");
+    console.error("  Adjust amounts or update safety_limits in registry/lp-config.json\n");
+    process.exit(1);
+  }
+
+  if (checkDryRunRequired("removeLiquidity", POOL)) {
+    process.exit(1);
   }
 
   // Approve pair for router

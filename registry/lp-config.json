@@ -55,8 +55,18 @@
       "best_for":    "distributing UNY above market price"
     }
   },
+  "safety_limits": {
+    "max_wallet_percent":    25,
+    "max_usd_exposure":      500,
+    "max_slippage_bps":      300,
+    "min_remaining_avax":    0.1,
+    "require_dry_run_first": true
+  },
   "notes": [
     "All operations default to DRY_RUN=true for safety.",
+    "LP_GLOBAL_DISABLE=true blocks ALL tx execution (kill switch).",
+    "Safety thresholds enforced: max wallet %, max USD, slippage ceiling.",
+    "require_dry_run_first: must DRY_RUN=true within 1hr before live execution.",
     "Auto-compound not yet implemented — manual fee collection via collectFees.ts.",
     "Rebalance trigger: when active bin drifts N bins from position center."
   ]

@@ -2,17 +2,22 @@
  * collectFees.ts
  * Collect accrued trading fees from UNY LP positions on TraderJoe LFJ V2.1.
  *
+ * Safety layers:
+ *   - LP_GLOBAL_DISABLE=true → hard kill switch
+ *
  * Usage:
  *   npx hardhat run scripts/collectFees.ts --network avalanche
  *
  * Environment:
  *   POOL=usdc|wavax   (default: both)
  *   DRY_RUN=true|false (default: true)
+ *   LP_GLOBAL_DISABLE=true   (emergency kill switch)
  */
 
 import hre, { ethers } from "hardhat";
 import { readFileSync } from "fs";
 import { resolve, join } from "path";
+import { checkKillSwitch } from "./lp-safety";
 
 const ROOT = resolve(__dirname, "../../..");
 const DRY_RUN = process.env.DRY_RUN !== "false";
@@ -88,6 +93,9 @@ async function collectForPool(signer: any, pool: PoolConfig) {
 }
 
 async function main() {
+  // ── Kill switch ──
+  checkKillSwitch();
+
   const [signer] = await ethers.getSigners();
 
   console.log("\n💰  Collect LP Trading Fees");

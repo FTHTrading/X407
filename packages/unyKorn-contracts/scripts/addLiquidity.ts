@@ -3,6 +3,12 @@
  * Interactive script to add liquidity to a UNY LP pool via the LB Router directly.
  * For use BEFORE deploying UnyKornLPManager, or for direct operator deposits.
  *
+ * Safety layers:
+ *   - LP_GLOBAL_DISABLE=true → hard kill switch
+ *   - Safety thresholds from lp-config.json (max wallet %, max USD, slippage cap)
+ *   - Position diff preview on every run
+ *   - require_dry_run_first: must DRY_RUN=true before live execution
+ *
  * Usage:
  *   npx hardhat run scripts/addLiquidity.ts --network avalanche
  *
@@ -13,11 +19,19 @@
  *   BINS=5                   (number of bins to spread across, default: 5)
  *   SLIPPAGE=100             (basis points, default: 100 = 1%)
  *   DRY_RUN=true|false       (default: true)
+ *   LP_GLOBAL_DISABLE=true   (emergency kill switch)
  */
 
 import hre, { ethers } from "hardhat";
 import { readFileSync } from "fs";
 import { resolve, join } from "path";
+import {
+  checkKillSwitch,
+  enforceSafetyThresholds,
+  printPositionDiff,
+  markDryRunComplete,
+  checkDryRunRequired,
+} from "./lp-safety";
 
 const ROOT = resolve(__dirname, "../../..");
 
@@ -52,6 +66,9 @@ const ERC20_ABI = [
 ];
 
 async function main() {
+  // ── Kill switch ──
+  checkKillSwitch();
+
   const [signer] = await ethers.getSigners();
 
   // Load pool config
@@ -132,7 +149,48 @@ async function main() {
   console.log(`\n    Bins    : ${deltaIds.map(d => `${d >= 0 ? "+" : ""}${d}`).join(", ")}`);
   console.log(`    Bin IDs : ${deltaIds.map(d => activeId + d).join(", ")}`);
 
+  // ── Safety thresholds ──
+  const yBal = POOL === "wavax"
+    ? await ethers.provider.getBalance(signer.address)
+    : await (new ethers.Contract(tokenYAddr, ERC20_ABI, signer)).balanceOf(signer.address);
+
+  const safetyResult = await enforceSafetyThresholds({
+    slippageBps: SLIPPAGE,
+    amtX: amtX,
+    amtY: amtY,
+    balX: unyBal,
+    balY: yBal,
+    decX,
+    decY,
+    symX: "UNY",
+    symY: POOL.toUpperCase(),
+    priceX_usd: undefined,  // set if you have a price feed
+    priceY_usd: POOL === "usdc" ? 1.0 : undefined,
+    isDryRun: DRY_RUN,
+  });
+
+  // ── Position diff preview ──
+  const avaxBal = await ethers.provider.getBalance(signer.address);
+  printPositionDiff({
+    action:      "add",
+    symX:        "UNY",
+    symY:        POOL.toUpperCase(),
+    decX,
+    decY,
+    balX:        unyBal,
+    balY:        yBal,
+    amtX,
+    amtY,
+    avaxBal,
+    isNative:    POOL === "wavax",
+    numBins:     NUM_BINS,
+    binStep,
+    priceX_usd:  undefined,
+    priceY_usd:  POOL === "usdc" ? 1.0 : undefined,
+  });
+
   if (DRY_RUN) {
+    markDryRunComplete("addLiquidity", POOL);
     console.log("\n🔍  DRY RUN — no transactions sent");
     console.log("    Would approve UNY for LB Router");
     if (POOL !== "wavax") console.log(`    Would approve ${POOL.toUpperCase()} for LB Router`);
@@ -140,6 +198,17 @@ async function main() {
     console.log(`    Depositing ${AMOUNT_UNY} UNY + ${AMOUNT_Y} ${POOL.toUpperCase()} across ${NUM_BINS} bins`);
     console.log("\n    Re-run with DRY_RUN=false to execute.\n");
     return;
+  }
+
+  // ── Live execution guards ──
+  if (!safetyResult.pass) {
+    console.error("\n✗ Safety thresholds violated — transaction blocked.");
+    console.error("  Adjust amounts or update safety_limits in registry/lp-config.json\n");
+    process.exit(1);
+  }
+
+  if (checkDryRunRequired("addLiquidity", POOL)) {
+    process.exit(1);
   }
 
   // Approve tokens
