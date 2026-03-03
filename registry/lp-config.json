@@ -48,10 +48,10 @@
     "lb_factory": "0x8e42f2F4101563bF679975178e880FD87d3eFd4e"
   },
   "safety_limits": {
-    "max_wallet_percent":    25,
+    "max_wallet_percent":    40,
     "max_usd_exposure":      500,
     "max_slippage_bps":      300,
-    "min_remaining_avax":    0.1,
+    "min_remaining_avax":    0.05,
     "require_dry_run_first": true
   },
   "notes": [
