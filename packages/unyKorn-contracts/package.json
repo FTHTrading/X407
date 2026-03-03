@@ -30,7 +30,12 @@
     "lp:remove":             "hardhat run scripts/removeLiquidity.ts --network avalanche",
     "lp:remove:dry":         "DRY_RUN=true hardhat run scripts/removeLiquidity.ts --network avalanche",
     "lp:fees":               "hardhat run scripts/collectFees.ts --network avalanche",
-    "lp:fees:dry":           "DRY_RUN=true hardhat run scripts/collectFees.ts --network avalanche"
+    "lp:fees:dry":           "DRY_RUN=true hardhat run scripts/collectFees.ts --network avalanche",
+    "lp:deepen":             "hardhat run scripts/deepenPools.ts --network avalanche",
+    "lp:deepen:dry":         "DRY_RUN=true hardhat run scripts/deepenPools.ts --network avalanche",
+    "treasury":              "hardhat run scripts/treasury.ts --network avalanche",
+    "swap:usdc":             "POOL=usdc hardhat run scripts/swapTokens.ts --network avalanche",
+    "swap:avax":             "POOL=wavax hardhat run scripts/swapTokens.ts --network avalanche"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2"

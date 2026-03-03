@@ -28,12 +28,19 @@ const ROUTESCAN: Record<string, string | null> = {
 // ── Token contracts ───────────────────────────────────────────────────────────
 const TOKENS: Record<string, { address: string; decimals: number; symbol: string }[]> = {
   avalanche: [
-    { address: "0xc09003213b34c7bec8d2eddfad4b43e51d007d66", decimals: 18, symbol: "UNY"   },
-    { address: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7", decimals: 18, symbol: "WAVAX" },
-    { address: "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e", decimals: 6,  symbol: "USDC"  },
+    { address: "0xc09003213b34c7bec8d2eddfad4b43e51d007d66", decimals: 18, symbol: "UNY"    },
+    { address: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7", decimals: 18, symbol: "WAVAX"  },
+    { address: "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e", decimals: 6,  symbol: "USDC"   },
+    { address: "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664", decimals: 6,  symbol: "USDC.e" },
+    { address: "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7", decimals: 6,  symbol: "USDt"   },
+    { address: "0xd586e7f844cea2f87f50152665bcbc2c279d8d70", decimals: 18, symbol: "DAI.e"  },
+    { address: "0x152b9d0fdc40c096de345c4ea95c83a3d837e38e", decimals: 8,  symbol: "BTC.b"  },
   ],
   polygon: [
-    { address: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174", decimals: 6,  symbol: "USDC"  },
+    { address: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174", decimals: 6,  symbol: "USDC"   },
+    { address: "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359", decimals: 6,  symbol: "USDC-N" },
+    { address: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f", decimals: 6,  symbol: "USDT"   },
+    { address: "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063", decimals: 18, symbol: "DAI"    },
   ],
 };
 
