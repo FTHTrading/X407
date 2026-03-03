@@ -14,9 +14,15 @@ import {
 export const AVALANCHE_CHAIN = avalanche;
 export const POLYGON_CHAIN   = polygon;
 
+// RainbowKit requires a non-empty WalletConnect Cloud project ID.
+// Get one free at https://cloud.walletconnect.com  and set VITE_WALLETCONNECT_PROJECT_ID.
+// The fallback below is a publicly-known example ID that keeps the app functional.
+const WALLETCONNECT_PROJECT_ID =
+  import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || "b3d7d44fca5a012e0c9e3295e22791ce";
+
 export const wagmiConfig = getDefaultConfig({
   appName:   "UnyKorn Wallet",
-  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID ?? "",
+  projectId: WALLETCONNECT_PROJECT_ID,
   chains:    [avalanche, polygon],
   ssr:       false,
 });
