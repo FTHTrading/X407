@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64">
+  <defs>
+    <linearGradient id="horn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e84142"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="mane" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e84142"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <!-- Horn -->
+  <polygon points="32,4 28,22 36,22" fill="url(#horn)"/>
+  <!-- Head -->
+  <ellipse cx="32" cy="30" rx="14" ry="12" fill="url(#body)"/>
+  <!-- Mane -->
+  <path d="M18,28 Q14,20 20,16 Q16,24 22,26" fill="url(#mane)" opacity="0.8"/>
+  <path d="M16,32 Q10,26 16,20 Q14,28 18,30" fill="url(#mane)" opacity="0.6"/>
+  <!-- Eye -->
+  <circle cx="28" cy="28" r="2.5" fill="white"/>
+  <circle cx="28.5" cy="27.5" r="1.2" fill="#0f0f14"/>
+  <!-- Nostril -->
+  <ellipse cx="37" cy="33" rx="1" ry="0.8" fill="rgba(0,0,0,0.3)"/>
+  <!-- Ear -->
+  <polygon points="24,18 20,12 26,16" fill="url(#body)"/>
+  <!-- Sparkles -->
+  <circle cx="46" cy="14" r="1.5" fill="#fbbf24" opacity="0.9"/>
+  <circle cx="50" cy="22" r="1" fill="#fbbf24" opacity="0.7"/>
+  <!-- Text: UnyKorn -->
+  <text x="70" y="38" fill="url(#textGrad)" font-family="'Inter',system-ui,sans-serif" font-size="28" font-weight="800" letter-spacing="-0.02em">UnyKorn</text>
+  <text x="70" y="52" fill="#888" font-family="'Inter',system-ui,sans-serif" font-size="11" letter-spacing="0.12em">AVALANCHE · DeFi</text>
+</svg>

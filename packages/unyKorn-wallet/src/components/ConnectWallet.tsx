@@ -64,26 +64,4 @@ export function ConnectWallet() {
   );
 }
 
-// ── Scoped styles ─────────────────────────────────────────────────────────────
-const style = document.createElement("style");
-style.textContent = `
-  .btn-connect, .btn-wrong-network, .btn-chain, .btn-account {
-    background: var(--color-primary);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    transition: opacity 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .btn-connect:hover, .btn-wrong-network:hover, .btn-chain:hover, .btn-account:hover {
-    opacity: 0.85;
-  }
-  .btn-wrong-network { background: #d9534f; }
-  .btn-chain, .btn-account { background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-text); }
-`;
-document.head.appendChild(style);
+// Styles are now managed in index.css (btn-connect, btn-chain, btn-account classes)

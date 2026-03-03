@@ -3,26 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="UnyKorn Wallet — connect, check balances, and swap UNY" />
+
+    <!-- SEO -->
+    <title>UnyKorn — The Unicorn of Avalanche DeFi</title>
+    <meta name="description" content="UnyKorn (UNY) is an ERC-20 token on Avalanche C-Chain powering decentralized pools, vaults, and cross-chain DeFi infrastructure. Trade on TraderJoe." />
+    <meta name="keywords" content="UnyKorn, UNY, Avalanche, DeFi, ERC-20, TraderJoe, liquidity, token, crypto" />
+    <meta name="author" content="UnyKorn" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="UnyKorn — The Unicorn of Avalanche DeFi" />
+    <meta property="og:description" content="ERC-20 token powering decentralized pools, vaults, and cross-chain infrastructure on Avalanche." />
+    <meta property="og:image" content="/og-image.svg" />
+    <meta property="og:url" content="https://unykorn.org" />
+    <meta property="og:site_name" content="UnyKorn" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="UnyKorn — The Unicorn of Avalanche DeFi" />
+    <meta name="twitter:description" content="ERC-20 token powering decentralized DeFi on Avalanche C-Chain." />
+    <meta name="twitter:image" content="/og-image.svg" />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>UnyKorn Wallet</title>
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Theme color -->
+    <meta name="theme-color" content="#0a0a0f" />
+
     <style>
+      /* Critical render: prevent FOUC */
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-      :root {
-        --color-bg:       #0d0d0d;
-        --color-surface:  #161616;
-        --color-border:   #2a2a2a;
-        --color-primary:  #e84142;   /* Avalanche red */
-        --color-accent:   #f5a623;
-        --color-text:     #f0f0f0;
-        --color-muted:    #888;
-        --radius:         12px;
-        font-family: "Inter", system-ui, sans-serif;
-        color-scheme: dark;
-      }
       body {
-        background: var(--color-bg);
-        color: var(--color-text);
+        background: #0a0a0f;
+        color: #f0f0f5;
+        font-family: "Inter", system-ui, sans-serif;
         min-height: 100vh;
       }
     </style>

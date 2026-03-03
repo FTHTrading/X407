@@ -49,5 +49,8 @@ export const LFJ_ROUTER_URL_AVAX =
 // Keep backward-compat alias
 export const LFJ_ROUTER_URL = LFJ_ROUTER_URL_USDC;
 
-// Operator / deployer address (Avalanche)
-export const OPERATOR_ADDRESS: `0x${string}` = "0x8aced25DC8530FDaf0f86D53a0A1E02AAfA7Ac7A";
+// Operator / deployer address (Avalanche) — rotated 2026-03-03
+export const OPERATOR_ADDRESS: `0x${string}` = "0x95989eB2AD1bF8036d23B53db4d587455a322022";
+
+// WAVAX/UNY pool
+export const UNY_WAVAX_POOL_ADDRESS: `0x${string}` = "0xC6F5273D74571d91CBcBA0A2900ed5F7C800F5d0";

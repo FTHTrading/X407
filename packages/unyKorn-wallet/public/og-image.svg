@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0a0f"/>
+      <stop offset="50%" stop-color="#1a0a1f"/>
+      <stop offset="100%" stop-color="#0a0a0f"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e84142"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="600" cy="315" r="250" fill="url(#glow)"/>
+  <text x="600" y="260" text-anchor="middle" fill="url(#textGrad)" font-family="'Inter',system-ui,sans-serif" font-size="96" font-weight="800">🦄 UnyKorn</text>
+  <text x="600" y="340" text-anchor="middle" fill="#f0f0f0" font-family="'Inter',system-ui,sans-serif" font-size="36" font-weight="400">The Unicorn of Avalanche DeFi</text>
+  <text x="600" y="410" text-anchor="middle" fill="#888" font-family="'Inter',system-ui,sans-serif" font-size="24">UNY Token · TraderJoe · Avalanche C-Chain</text>
+  <rect x="0" y="580" width="1200" height="50" fill="#e84142" opacity="0.8"/>
+  <text x="600" y="612" text-anchor="middle" fill="white" font-family="'Inter',system-ui,sans-serif" font-size="20" font-weight="600">unykorn.org</text>
+</svg>
