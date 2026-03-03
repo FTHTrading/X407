@@ -36,9 +36,29 @@ export function SiteFooter() {
             <FooterLink href="https://dexscreener.com/avalanche/0xC6F5273D74571d91CBcBA0A2900ed5F7C800F5d0" label="DexScreener" />
             <FooterLink href="https://traderjoexyz.com/avalanche" label="TraderJoe" />
             <FooterLink href="https://ram.unykorn.org" label="RAMM Protocol" />
+            <FooterLink href="#faq" label="FAQ" />
+            <FooterLink href="#roadmap" label="Roadmap" />
           </div>
 
-          {/* Contract info */}
+          {/* Location */}
+          <div>
+            <h4 style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--color-muted)", marginBottom: 12 }}>
+              Location
+            </h4>
+            <p style={{ fontSize: 13, lineHeight: 1.7, color: "var(--color-text)" }}>
+              5655 Peachtree Pkwy<br />
+              Norcross, GA 30092<br />
+              United States
+            </p>
+            <a
+              href="https://maps.google.com/?q=5655+Peachtree+Pkwy+Norcross+GA+30092"
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontSize: 12, marginTop: 8, display: "inline-block" }}
+            >
+              View on Map →
+            </a>
+          </div>
           <div>
             <h4 style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--color-muted)", marginBottom: 12 }}>
               Contract

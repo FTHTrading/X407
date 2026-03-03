@@ -20,8 +20,11 @@ export function SiteHeader() {
         {/* Nav links - desktop */}
         <nav className="hide-mobile" style={{ display: "flex", gap: 28, alignItems: "center" }}>
           <NavLink href="#stats">Token</NavLink>
+          <NavLink href="#why">Why UNY</NavLink>
           <NavLink href="#pools">Pools</NavLink>
           <NavLink href="#ecosystem">Ecosystem</NavLink>
+          <NavLink href="#roadmap">Roadmap</NavLink>
+          <NavLink href="#community">Community</NavLink>
           <NavLink href="#wallet">Wallet</NavLink>
         </nav>
 

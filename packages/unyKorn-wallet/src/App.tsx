@@ -1,17 +1,21 @@
 /**
  * src/App.tsx — UnyKorn main application
- * Full landing page + DApp with hero, stats, pools, ecosystem, and wallet.
+ * Full landing page + DApp with hero, stats, pools, ecosystem, community, and wallet.
  */
 
-import { SiteHeader }   from "./components/SiteHeader";
-import { Hero }          from "./components/Hero";
-import { TokenStats }    from "./components/TokenStats";
-import { PoolInfo }      from "./components/PoolInfo";
-import { Ecosystem }     from "./components/Ecosystem";
-import { TokenBalance }  from "./components/TokenBalance";
-import { SwapWidget }    from "./components/SwapWidget";
-import { RegistryView }  from "./components/RegistryView";
-import { SiteFooter }    from "./components/SiteFooter";
+import { SiteHeader }       from "./components/SiteHeader";
+import { Hero }              from "./components/Hero";
+import { TokenStats }        from "./components/TokenStats";
+import { WhyUnyKorn }        from "./components/WhyUnyKorn";
+import { PoolInfo }          from "./components/PoolInfo";
+import { Ecosystem }         from "./components/Ecosystem";
+import { Roadmap }           from "./components/Roadmap";
+import { CommunityBanner }   from "./components/CommunityBanner";
+import { FAQ }               from "./components/FAQ";
+import { TokenBalance }      from "./components/TokenBalance";
+import { SwapWidget }        from "./components/SwapWidget";
+import { RegistryView }      from "./components/RegistryView";
+import { SiteFooter }        from "./components/SiteFooter";
 
 export default function App() {
   return (
@@ -31,6 +35,12 @@ export default function App() {
       {/* ── Divider ───────────────────────────────────────────────────────── */}
       <hr className="divider" />
 
+      {/* ── Why UnyKorn ───────────────────────────────────────────────────── */}
+      <WhyUnyKorn />
+
+      {/* ── Divider ───────────────────────────────────────────────────────── */}
+      <hr className="divider" />
+
       {/* ── Pool info ─────────────────────────────────────────────────────── */}
       <PoolInfo />
 
@@ -39,6 +49,24 @@ export default function App() {
 
       {/* ── Ecosystem ─────────────────────────────────────────────────────── */}
       <Ecosystem />
+
+      {/* ── Divider ───────────────────────────────────────────────────────── */}
+      <hr className="divider" />
+
+      {/* ── Roadmap ───────────────────────────────────────────────────────── */}
+      <Roadmap />
+
+      {/* ── Divider ───────────────────────────────────────────────────────── */}
+      <hr className="divider" />
+
+      {/* ── Community ─────────────────────────────────────────────────────── */}
+      <CommunityBanner />
+
+      {/* ── Divider ───────────────────────────────────────────────────────── */}
+      <hr className="divider" />
+
+      {/* ── FAQ ───────────────────────────────────────────────────────────── */}
+      <FAQ />
 
       {/* ── Divider ───────────────────────────────────────────────────────── */}
       <hr className="divider" />
