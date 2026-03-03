@@ -1,0 +1,87 @@
+# ============================================================
+# registry/wallets/wallets.yaml
+# Public wallet registry — addresses only, no keys, no seeds.
+# ============================================================
+
+# ── Admin / operator wallets ─────────────────────────────────────────────────
+admins:
+  avalanche_operator: "0x8aced25DC8530FDaf0f86D53a0A1E02AAfA7Ac7A"  # UNY deployer / UNY/USDC LP
+  polygon_admin:      "0x8aced25DC8530FDaf0f86D53a0A1E02AAfA7Ac7A"
+  solana_admin:       "GFHJQ7JgcRGYToPf2KXdGWDABRVnqzMU7ePDu4b3BqZg"
+
+# ── Primary operator hot wallet ───────────────────────────────────────────────
+primary_operator:
+  label:          "uni.eth"
+  ens:            "uni.eth"
+  address:        "0xffBC1353a3e8cc75643382e7Ab745a5b08C762b5"
+  chains:
+    - arbitrum-one
+    - polygon-mainnet
+    - ethereum-mainnet
+  opensea_profile: "https://opensea.io/0xffBC1353a3e8cc75643382e7Ab745a5b08C762b5"
+  # OpenSea API key stored in .env.registry (gitignored) as OPENSEA_API_KEY
+  notes: "Primary brand asset wallet. TLD NFT holder. Brand signal address."
+  token_snapshot_2026_03_03:
+    # ── Confirmed balances (MetaMask export) ──────────────────────────────
+    ARB:     "35.00"         # Arbitrum (native gas on Arbitrum One)
+    POL:     "0.002"         # Polygon (native gas)
+    USDC:    "0.150"         # USD Coin
+    GOATX:   "2,000,000"     # TurboGoat
+    COUNT:   "100,000"       # COUNT token
+    UNY:     "52,368.83"     # Unykorn Token (core protocol)
+    SLOVE:   "10,000"        # Sergio Love Token
+    KONNOR:  "10,000"        # KonnorCoin
+    XPRM:    "50,000"        # XRPrime
+    PANDA:   "10,000"        # Panda Token
+    LSVPT:   "121.25"        # Life Savers Vault Token
+    LSEQ:    "200,000"       # Life Savers Equity Token
+    ULT:     "168.09"        # Ultimate Token
+    "7VN":   "1,000,000"     # 7EVEN
+    DTT:     "176,594.76"    # Domain Treasury Token (0xA10172...58)
+    PIZZA:   "1,000,000"     # Pizza Token
+    YODA:    "50,000"        # Yoda Token
+    DONK:    "14,644.55"     # Donk
+    "CVM$":  "7,000,000"     # CAOVINOMIC$
+    TRUST:   "39,949.04"     # Vault Trust Share
+    IZZY:    "20"            # Izzy Token
+    UTRX:    "80,000"        # Unykorn Trading Token
+    TRST:    "99,950,000"    # Trustiva Token
+    VTKN:    "20,000"        # Vault Token
+    # ── Airdrop / voucher noise (hidden by MetaMask) ──────────────────────
+    _hidden_tokens: 27       # TRUMP, SHIBA_VOUCHER, ETHERS_VOUCHER, PAWS + 23 others
+  total_value_usd:  "$3.51"  # MetaMask reported 2026-03-03 (UNY liquidity thin)
+
+# ── EVM wallets ───────────────────────────────────────────────────────────────
+evm_wallets:
+  - label: "evm_01"
+    address: "0xff62D16436Bf9b76AEBb308b1C1c8e00FeA60987"
+  - label: "evm_02"
+    address: "0x37AF63E1D4AF676DB699dC1F4Bcd255B7038e4CA"
+  - label: "evm_03"
+    address: "0x774AD46c3f34E0fc46551EdC4eAf3e880082EbA8"
+  - label: "evm_04"
+    address: "0xb9a20f8B7a089083adB598029859F894e4bCE7B6"
+  - label: "evm_05"
+    address: "0xb02A43a92C89a8c9735C5c40d2371e308338AD74"
+  - label: "evm_06"
+    address: "0x4164253d331cB787bDa6bC6b40d973A48d483a6c"
+  - label: "evm_07"
+    address: "0x288f6bEc41A34D094C5d0Aa3F5c76F8A32A5B6A0"
+  - label: "evm_08"
+    address: "0x2Cd92C2203977e484C0C46169d89a6FFB17b05d2"
+  - label: "evm_09"
+    address: "0x1733aaB8B9ce43137d0332F37A73f0D18DA5ea0b"
+  - label: "evm_10"
+    address: "0x5F638bAA039AD2C753960520876039e340d2D167"
+
+# ── Custodial / vault wallets ─────────────────────────────────────────────────
+custodial:
+  unstoppable_vault: "0x27bC10fda796E98f16abD6559fF858f7889edc88"
+
+# ── Non-EVM wallets ───────────────────────────────────────────────────────────
+non_evm:
+  base58_1: "2DMyGfHKGV27aFUfW6cCob1MYJCXi272W9BKpKKV3SpQVFFL"
+
+# ── REMINDER ─────────────────────────────────────────────────────────────────
+# Private keys and seed phrases are NEVER stored here.
+# Store them in a hardware wallet or encrypted offline vault only.

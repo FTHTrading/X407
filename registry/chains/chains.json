@@ -1,0 +1,30 @@
+[
+  {
+    "id":          "avalanche-cchain",
+    "chain_id":    43114,
+    "name":        "Avalanche C-Chain",
+    "currency":    "AVAX",
+    "rpc":         "https://api.avax.network/ext/bc/C/rpc",
+    "explorer":    "https://snowtrace.io",
+    "routescan":   "https://routescan.io",
+    "status":      "active"
+  },
+  {
+    "id":          "polygon-mainnet",
+    "chain_id":    137,
+    "name":        "Polygon PoS",
+    "currency":    "MATIC",
+    "rpc":         "https://polygon-rpc.com",
+    "explorer":    "https://polygonscan.com",
+    "status":      "active"
+  },
+  {
+    "id":          "solana-mainnet",
+    "chain_id":    null,
+    "name":        "Solana Mainnet-Beta",
+    "currency":    "SOL",
+    "rpc":         "https://api.mainnet-beta.solana.com",
+    "explorer":    "https://explorer.solana.com",
+    "status":      "active"
+  }
+]

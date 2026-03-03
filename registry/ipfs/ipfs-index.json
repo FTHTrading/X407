@@ -1,0 +1,357 @@
+{
+  "_notes": "Canonical IPFS CID index for all UnyKorn-pinned assets. Each entry is linkable, provable, and searchable.",
+  "_schema": ["cid","type","name","chain","contract_address","token_id","created_at","verification","notes"],
+  "_chain_key": { "poly": "polygon-mainnet (137)", "avax": "avalanche-mainnet (43114)", "xrpl": "XRP Ledger", "multi": "multi-chain / off-chain" },
+  "last_updated": "2026-03-03",
+
+  "assets": [
+
+    {
+      "cid":              "bafkreibae3zfa4mgvez7l7mfn37p3y7shas52krse4ccnlqrxnul32shya",
+      "type":             "tld_cert",
+      "name":             ".optima TLD NFT metadata",
+      "chain":            "poly",
+      "contract_address": "0xBe59bc98e48B20454C12c9376A3B2F25a2f13f4e",
+      "token_id":         0,
+      "created_at":       "2025-04-22",
+      "verification":     "verified",
+      "gateway":          "https://ipfs.io/ipfs/bafkreibae3zfa4mgvez7l7mfn37p3y7shas52krse4ccnlqrxnul32shya",
+      "notes":            "On-chain metadata for .optima TLD NFT. Minter: 0x8aced25...Ac7A. Txn: 0x381919d6...b7c7111"
+    },
+
+    {
+      "cid":              "QmVHcBxsnH4bNWhQKVkqKDtCcPaeBnrxnbeUEcCEm9skJ1",
+      "type":             "tld_cert",
+      "name":             ".optima genesis certificate (PDF)",
+      "chain":            "poly",
+      "contract_address": "0xBe59bc98e48B20454C12c9376A3B2F25a2f13f4e",
+      "token_id":         0,
+      "created_at":       "2025-04-22",
+      "verification":     "verified",
+      "gateway":          "https://ipfs.io/ipfs/QmVHcBxsnH4bNWhQKVkqKDtCcPaeBnrxnbeUEcCEm9skJ1",
+      "notes":            "PDF genesis certificate anchored to .optima TLD mint"
+    },
+
+    {
+      "cid":              "QmYuJTmCs9BVfcCSumt3dnySqvnj31eQ78e3MBprLzeg6f",
+      "type":             "tld_cert",
+      "name":             ".usd TLD genesis certificate",
+      "chain":            "poly",
+      "contract_address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmYuJTmCs9BVfcCSumt3dnySqvnj31eQ78e3MBprLzeg6f",
+      "notes":            "Root .usd TLD genesis certificate"
+    },
+
+    {
+      "cid":              "QmUzWzxCXeFNuD4yvYwGMzZA2mN9VUGxQKdfZKQk7bezRs",
+      "type":             "tld_cert",
+      "name":             ".oil TLD genesis certificate",
+      "chain":            "poly",
+      "contract_address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmUzWzxCXeFNuD4yvYwGMzZA2mN9VUGxQKdfZKQk7bezRs",
+      "notes":            "Root .oil TLD genesis certificate"
+    },
+
+    {
+      "cid":              "bafkreig5bh266nu7wkp2zk4b6cswmowagfcds3v2hkw7s4k2rmh3fgkc6e",
+      "type":             "tld_cert",
+      "name":             "UnyKorn global TLD authority certificate",
+      "chain":            "poly",
+      "contract_address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "token_id":         null,
+      "created_at":       "2025-04-22",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/bafkreig5bh266nu7wkp2zk4b6cswmowagfcds3v2hkw7s4k2rmh3fgkc6e",
+      "notes":            "Global .$ / .$$ / .$$$ / .yoda TLD authority cert. Integration certificate."
+    },
+
+    {
+      "cid":              "bafkreidh3j5eksi76bgwwweqizgvqspyrjgsq2bn2uq3cuv3vjwd5xalie",
+      "type":             "metadata_json",
+      "name":             "kevan.$ domain NFT image / metadata",
+      "chain":            "poly",
+      "contract_address": null,
+      "token_id":         null,
+      "created_at":       "2025-04-22",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/bafkreidh3j5eksi76bgwwweqizgvqspyrjgsq2bn2uq3cuv3vjwd5xalie",
+      "notes":            "Image/metadata for kevan.$ premium .dollar domain NFT example"
+    },
+
+    {
+      "cid":              "QmRVA6L21FpfKcCxvVDP1LqMUmmmBic8b1jK9qi1KhFhVy",
+      "type":             "tld_cert",
+      "name":             ".optima ipfs_uri (alt mint record)",
+      "chain":            "poly",
+      "contract_address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "token_id":         8,
+      "created_at":       "2025-04-22",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmRVA6L21FpfKcCxvVDP1LqMUmmmBic8b1jK9qi1KhFhVy",
+      "notes":            "Alt .optima mint record (token_id 8 on GlacierMint 0xCf7...0Fc9). May be local-test artefact — verify against mainnet."
+    },
+
+    // ── GlacierMint-1 TLD Certificates (0x455e53...) ─────────────────
+    {
+      "cid":              "QmS9kkJG3EnexfHYqnW4qQ97BYfiQzaYFaCXnLgu5ZRfU4",
+      "type":             "tld_cert",
+      "name":             "ai.$ genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6",
+      "token_id":         1,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmS9kkJG3EnexfHYqnW4qQ97BYfiQzaYFaCXnLgu5ZRfU4",
+      "notes":            "ai.$ TLD NFT metadata — GlacierMint-1 token_id 1"
+    },
+    {
+      "cid":              "QmdaMRk6eTNHsae5Ltjr9JMXoiCjLPpahA1CtezPhp5dLY",
+      "type":             "tld_cert",
+      "name":             "ai.$$ genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6",
+      "token_id":         2,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmdaMRk6eTNHsae5Ltjr9JMXoiCjLPpahA1CtezPhp5dLY",
+      "notes":            "ai.$$ TLD NFT metadata — GlacierMint-1 token_id 2"
+    },
+    {
+      "cid":              "QmVzST7nkmNHRLY3bfZtsA1f5C1Sco27MrsEPqPFuBh5cJ",
+      "type":             "tld_cert",
+      "name":             "ai.$$$ genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6",
+      "token_id":         3,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmVzST7nkmNHRLY3bfZtsA1f5C1Sco27MrsEPqPFuBh5cJ",
+      "notes":            "ai.$$$ TLD NFT metadata — GlacierMint-1 token_id 3"
+    },
+    {
+      "cid":              "QmPjdz2VH9oku18APeHPJkxn5ByYb5NSSP8fZsYq9Jqkt8",
+      "type":             "tld_cert",
+      "name":             ".grid TLD genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmPjdz2VH9oku18APeHPJkxn5ByYb5NSSP8fZsYq9Jqkt8",
+      "notes":            ".grid TLD NFT metadata — GlacierMint-1"
+    },
+    {
+      "cid":              "Qmcc2h4onPWwpXr3kSaUD2R8ZXEhxehGD3VxCr6HVpK36y",
+      "type":             "tld_cert",
+      "name":             ".meta TLD genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/Qmcc2h4onPWwpXr3kSaUD2R8ZXEhxehGD3VxCr6HVpK36y",
+      "notes":            ".meta TLD NFT metadata — GlacierMint-1"
+    },
+    {
+      "cid":              "QmcYdagtxuem3TjTFefS9GqDtDrf7pUzBPjq3Bq9y8xwLb",
+      "type":             "tld_cert",
+      "name":             ".sun TLD genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmcYdagtxuem3TjTFefS9GqDtDrf7pUzBPjq3Bq9y8xwLb",
+      "notes":            ".sun TLD NFT metadata — GlacierMint-1"
+    },
+    {
+      "cid":              "QmXEWDC1by2XuCnUD8UfuhYypGZFgQpp71oJ5SE1TstntS",
+      "type":             "tld_cert",
+      "name":             ".vr TLD genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmXEWDC1by2XuCnUD8UfuhYypGZFgQpp71oJ5SE1TstntS",
+      "notes":            ".vr TLD NFT metadata — GlacierMint-1"
+    },
+    {
+      "cid":              "QmbcvqvLaBSib4kzW91Amqg1f5gDoLwbhZVMFAik92d1EK",
+      "type":             "tld_cert",
+      "name":             ".ar TLD genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmbcvqvLaBSib4kzW91Amqg1f5gDoLwbhZVMFAik92d1EK",
+      "notes":            ".ar TLD NFT metadata — GlacierMint-1"
+    },
+    {
+      "cid":              "QmSWr4mY9oGs6kZfG3TJRiG8B6WGVZgXyesg2Z3ZWmKmC8",
+      "type":             "tld_cert",
+      "name":             ".panda TLD genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmSWr4mY9oGs6kZfG3TJRiG8B6WGVZgXyesg2Z3ZWmKmC8",
+      "notes":            ".panda TLD NFT metadata — GlacierMint-1"
+    },
+    {
+      "cid":              "QmVzFGPgU41ENH2r36fPN4RoD6i3QznzABMbvdmmf3U19y",
+      "type":             "tld_cert",
+      "name":             ".chain TLD genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmVzFGPgU41ENH2r36fPN4RoD6i3QznzABMbvdmmf3U19y",
+      "notes":            ".chain TLD NFT metadata — GlacierMint-1"
+    },
+    {
+      "cid":              "QmVhmGf2kfTrEnmS4x6gPwN8bavKSfugbQxrToV7NtYTSW",
+      "type":             "tld_cert",
+      "name":             ".dna TLD genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmVhmGf2kfTrEnmS4x6gPwN8bavKSfugbQxrToV7NtYTSW",
+      "notes":            ".dna TLD genesis metadata — GlacierMint-1"
+    },
+
+    // ── GlacierMint-2 TLD Certificates (0xf569734B...) ───────────────
+    {
+      "cid":              "QmSjRNohQ2n9YX4UsG8rdpEjH8GtJvbzpsk86JLVPd55ZG",
+      "type":             "tld_cert",
+      "name":             ".law TLD genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0xf569734BCDc2908f99F48952B1dDA884d05a52C4",
+      "token_id":         7,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmSjRNohQ2n9YX4UsG8rdpEjH8GtJvbzpsk86JLVPd55ZG",
+      "notes":            ".law TLD genesis metadata — GlacierMint-2 token_id 7"
+    },
+    {
+      "cid":              "QmRh7MDcdV4Y8GidSkVRDd77c9u2QczFYiP8HX11Gf7ZAR",
+      "type":             "tld_cert",
+      "name":             ".legal TLD genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0xf569734BCDc2908f99F48952B1dDA884d05a52C4",
+      "token_id":         8,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmRh7MDcdV4Y8GidSkVRDd77c9u2QczFYiP8HX11Gf7ZAR",
+      "notes":            ".legal TLD genesis metadata — GlacierMint-2 token_id 8"
+    },
+    {
+      "cid":              "Qmds1zqmT3eUx5PWb9qG9hkFUxmRyirgMHovvB6bjGu8CV",
+      "type":             "tld_cert",
+      "name":             ".nil TLD genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0xf569734BCDc2908f99F48952B1dDA884d05a52C4",
+      "token_id":         9,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/Qmds1zqmT3eUx5PWb9qG9hkFUxmRyirgMHovvB6bjGu8CV",
+      "notes":            ".nil TLD genesis metadata — GlacierMint-2 token_id 9"
+    },
+    {
+      "cid":              "QmXj6fh23VB2tw2dc2X9HYvES363rzRRUzyAUmo19yAiyK",
+      "type":             "tld_cert",
+      "name":             "sho.vault genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0xf569734BCDc2908f99F48952B1dDA884d05a52C4",
+      "token_id":         10,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmXj6fh23VB2tw2dc2X9HYvES363rzRRUzyAUmo19yAiyK",
+      "notes":            "sho.vault subdomain NFT metadata — GlacierMint-2 token_id 10"
+    },
+    {
+      "cid":              "QmWAwsey8sAAHQdEpBZVkjCppAMJZ2EEFS4RXyxt2ePZot",
+      "type":             "tld_cert",
+      "name":             "usd.vault genesis metadata",
+      "chain":            "poly",
+      "contract_address": "0xf569734BCDc2908f99F48952B1dDA884d05a52C4",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmWAwsey8sAAHQdEpBZVkjCppAMJZ2EEFS4RXyxt2ePZot",
+      "notes":            "usd.vault ERC-6551 subdomain NFT metadata"
+    },
+
+    // ── Creator + Personal Domain Certificates ────────────────────────
+    {
+      "cid":              "Qmci8TY9sh8D6oBpGrJdwP3FAMTbjCoZnEmhWCU5KBdG1Z",
+      "type":             "tld_cert",
+      "name":             ".onlyfans TLD genesis metadata",
+      "chain":            "poly",
+      "contract_address": null,
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/Qmci8TY9sh8D6oBpGrJdwP3FAMTbjCoZnEmhWCU5KBdG1Z",
+      "notes":            ".onlyfans TLD genesis IPFS pin"
+    },
+    {
+      "cid":              "QmWfzWwGPJKpRbvCbzAucmEmssxLTAdRriQzfkL6uHF4dU",
+      "type":             "domain_cert",
+      "name":             "konnor.$ domain NFT metadata",
+      "chain":            "poly",
+      "contract_address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmWfzWwGPJKpRbvCbzAucmEmssxLTAdRriQzfkL6uHF4dU",
+      "notes":            "konnor.$ — premium .$ domain NFT metadata"
+    },
+    {
+      "cid":              "QmRRR6SwQrLGMLngyGmJfAn5pV4CWcTVWMWgiQdSiph3Cw",
+      "type":             "domain_cert",
+      "name":             "kaci.$ domain NFT metadata",
+      "chain":            "poly",
+      "contract_address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmRRR6SwQrLGMLngyGmJfAn5pV4CWcTVWMWgiQdSiph3Cw",
+      "notes":            "kaci.$ — premium .$ domain NFT metadata"
+    },
+    {
+      "cid":              "QmSyCvroC6rpJVrJLjmKPnSr3ZLqSQBFvNPhhWiEQZNZTt",
+      "type":             "domain_cert",
+      "name":             "yoda.$ domain NFT metadata",
+      "chain":            "poly",
+      "contract_address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "token_id":         null,
+      "created_at":       "2025-07-01",
+      "verification":     "claimed",
+      "gateway":          "https://ipfs.io/ipfs/QmSyCvroC6rpJVrJLjmKPnSr3ZLqSQBFvNPhhWiEQZNZTt",
+      "notes":            "yoda.$ — personal .$ domain NFT metadata"
+    }
+
+  ],
+
+  "_pending": [
+    "Pin genesis certificates for: .usd(refresh) .bot .yoda .edu .course .metaversity .oil .gas .energy .hydro .power .bank .gold .goat .unykorn .pay .vault",
+    "Add RWA certificate CIDs: mountain_estate, btc_mining, carbon, oil001, bond_rwa",
+    "Add token metadata CIDs: $UNY $DTT $OGB $OIB $SHO $GOLDC $OILX $NILX $NRG $TRUST $UTRX",
+    "Confirm partial CIDs from ledger: .bot(QmaBVfWTLh...mxXup), .yoda(QmUYu...qRvKH), .bank(QmYCT...Ja51Z)",
+    "Confirm QmRVA6... vs bafkrei... .optima discrepancy (token_id 0 vs 8)"
+  ],
+
+  "last_updated": "2026-03-20"
+}

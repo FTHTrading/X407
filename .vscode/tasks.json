@@ -1,0 +1,66 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Inventory: Scan repo",
+      "type": "shell",
+      "command": "node scripts/inventory.mjs",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Hardhat: Compile",
+      "type": "shell",
+      "command": "npm run compile",
+      "options": { "cwd": "${workspaceFolder}/packages/unyKorn-contracts" },
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Hardhat: Test",
+      "type": "shell",
+      "command": "npm test",
+      "options": { "cwd": "${workspaceFolder}/packages/unyKorn-contracts" },
+      "group": "test",
+      "presentation": { "reveal": "always" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Hardhat: Deploy (local)",
+      "type": "shell",
+      "command": "npx hardhat run scripts/deploy.ts --network localhost",
+      "options": { "cwd": "${workspaceFolder}/packages/unyKorn-contracts" },
+      "presentation": { "reveal": "always" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Hardhat: Node (local fork)",
+      "type": "shell",
+      "command": "npx hardhat node",
+      "options": { "cwd": "${workspaceFolder}/packages/unyKorn-contracts" },
+      "isBackground": true,
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Wallet UI: Dev",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}/packages/unyKorn-wallet" },
+      "isBackground": true,
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Wallet UI: Build",
+      "type": "shell",
+      "command": "npm run build",
+      "options": { "cwd": "${workspaceFolder}/packages/unyKorn-wallet" },
+      "presentation": { "reveal": "always" },
+      "problemMatcher": []
+    }
+  ]
+}

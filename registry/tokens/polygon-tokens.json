@@ -1,0 +1,57 @@
+{
+  "_chain": "polygon-mainnet",
+  "_chain_id": 137,
+  "_notes": "Polygon ERC-20 tokens in the UnyKorn / Optima / Diversegy ecosystem. Addresses with placeholders (truncated) are marked status: unverified.",
+  "tokens": [
+
+    {
+      "symbol":   "WUF",
+      "name":     "WUF Token",
+      "address":  "0xa78f40f73ea565f61a1db90e654bf0ea37c529d1",
+      "decimals": 18,
+      "standard": "ERC-20",
+      "status":   "deployed",
+      "system":   "diversegy-genie",
+      "explorer": "https://polygonscan.com/address/0xa78f40f73ea565f61a1db90e654bf0ea37c529d1"
+    },
+    {
+      "symbol":   "GSWITCH",
+      "name":     "GSwitchToken",
+      "address":  "0x33b4656465f4968b701194c7061d74b36c2611bd",
+      "decimals": 18,
+      "standard": "ERC-20",
+      "status":   "deployed",
+      "system":   "diversegy-genie",
+      "explorer": "https://polygonscan.com/address/0x33b4656465f4968b701194c7061d74b36c2611bd"
+    },
+
+    { "symbol": "UNY",     "name": "UnyKorn Token",          "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified", "notes": "Primary UNY on Avalanche; Polygon address TBD." },
+    { "symbol": "DTT",     "name": "Domain Treasury Token",  "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "NILX",    "name": "NIL Rights Token",       "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "GOATX",   "name": "GOAT Economy Token",     "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "SHO",     "name": "SHO Commerce Token",     "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "NRG",     "name": "Energy Token",           "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "GOLDC",   "name": "Gold-Backed Coin",       "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "OILX",    "name": "Oil RWA Token",          "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "VAULTUSD","name": "Vault USD Stable",       "address": "",  "decimals": 6,  "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "LIFEPT",  "name": "Life Fractional Token",  "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "LSEQ",    "name": "Equity Token",           "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "LSVPT",   "name": "Vault Pass Token",       "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "SEXTOKEN","name": "Adult Economy Token",    "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "HAVANA",  "name": "Havana Geo Token",       "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "INGLD",   "name": "Ingot Token",            "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "ORIX",    "name": "Protocol Utility",       "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "OGB",     "name": "Bond Token (OGB)",       "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "OIB",     "name": "Bond Token (OIB)",       "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "UTRX",    "name": "Transaction Utility",    "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "TRUST",   "name": "Trust Governance Token", "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "AIPWR",   "name": "AI Power Token",         "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "GLMRK",   "name": "Platform Utility",       "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "DUKEX",   "name": "Duke NIL Token",         "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "LSUX",    "name": "LSU NIL Token",          "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "USCX",    "name": "USC NIL Token",          "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" },
+    { "symbol": "LUNAA",   "name": "Luna Project Token",     "address": "",  "decimals": 18, "standard": "ERC-20", "status": "unverified" }
+
+  ],
+  "last_updated": "2026-03-03"
+}

@@ -1,0 +1,13 @@
+{
+  "chain":        "avalanche-cchain",
+  "chain_id":     43114,
+  "symbol":       "WAVAX",
+  "name":         "Wrapped AVAX",
+  "address":      "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
+  "decimals":     18,
+  "standard":     "ERC-20",
+  "status":       "deployed",
+  "explorer":     "https://snowtrace.io/token/0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
+  "notes":        "Canonical Wrapped AVAX on Avalanche C-Chain. Used as the quote token in the UNY/WAVAX LFJ pool.",
+  "last_verified": "2026-03-03"
+}

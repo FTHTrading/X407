@@ -1,0 +1,59 @@
+{
+  "cids": [
+
+    {
+      "label":      "tld-usd-genesis",
+      "asset":      ".usd TLD genesis certificate",
+      "cid":        "QmYuJTmCs9BVfcCSumt3dnySqvnj31eQ78e3MBprLzeg6f",
+      "gateway":    "https://ipfs.io/ipfs/QmYuJTmCs9BVfcCSumt3dnySqvnj31eQ78e3MBprLzeg6f",
+      "pinned_at":  "2025-07-01",
+      "notes":      "Root .usd TLD genesis certificate (PDF/JSON)."
+    },
+    {
+      "label":      "tld-oil-genesis",
+      "asset":      ".oil TLD genesis certificate",
+      "cid":        "QmUzWzxCXeFNuD4yvYwGMzZA2mN9VUGxQKdfZKQk7bezRs",
+      "gateway":    "https://ipfs.io/ipfs/QmUzWzxCXeFNuD4yvYwGMzZA2mN9VUGxQKdfZKQk7bezRs",
+      "pinned_at":  "2025-07-01",
+      "notes":      "Root .oil TLD genesis certificate (PDF/JSON)."
+    },
+    {
+      "label":      "optima-nft-metadata",
+      "asset":      ".optima TLD NFT metadata (token_id 0)",
+      "cid":        "bafkreibae3zfa4mgvez7l7mfn37p3y7shas52krse4ccnlqrxnul32shya",
+      "gateway":    "https://ipfs.io/ipfs/bafkreibae3zfa4mgvez7l7mfn37p3y7shas52krse4ccnlqrxnul32shya",
+      "pinned_at":  "2025-07-01",
+      "notes":      "Minted on GlacierMint 0xCf7Ed3...0Fc9, txn 0x381919d6...b7c7111. Owner: 0x8aced25...Ac7A."
+    },
+    {
+      "label":      "optima-genesis-cert",
+      "asset":      ".optima genesis certificate (PDF)",
+      "cid":        "QmVHcBxsnH4bNWhQKVkqKDtCcPaeBnrxnbeUEcCEm9skJ1",
+      "gateway":    "https://ipfs.io/ipfs/QmVHcBxsnH4bNWhQKVkqKDtCcPaeBnrxnbeUEcCEm9skJ1",
+      "pinned_at":  "2025-04-22",
+      "notes":      "PDF genesis certificate for .optima TLD, anchored to token_id 0 mainnet mint."
+    },
+    {
+      "label":      "unykorn-tld-authority-cert",
+      "asset":      "UnyKorn global TLD authority certificate (.$/.$$/.$$$/​.yoda)",
+      "cid":        "bafkreig5bh266nu7wkp2zk4b6cswmowagfcds3v2hkw7s4k2rmh3fgkc6e",
+      "gateway":    "https://ipfs.io/ipfs/bafkreig5bh266nu7wkp2zk4b6cswmowagfcds3v2hkw7s4k2rmh3fgkc6e",
+      "pinned_at":  "2025-04-22",
+      "notes":      "Root authority cert for .$ .$$ .$$$ .yoda TLD suite. Integration reference cert."
+    },
+    {
+      "label":      "kevan-dollar-image",
+      "asset":      "kevan.$ premium domain NFT image",
+      "cid":        "bafkreidh3j5eksi76bgwwweqizgvqspyrjgsq2bn2uq3cuv3vjwd5xalie",
+      "gateway":    "https://ipfs.io/ipfs/bafkreidh3j5eksi76bgwwweqizgvqspyrjgsq2bn2uq3cuv3vjwd5xalie",
+      "pinned_at":  "2025-04-22",
+      "notes":      "Image/metadata for kevan.$ .dollar domain NFT example."
+    }
+
+  ],
+  "_instructions": [
+    "Add IPFS CID entries here as you pin artefacts.",
+    "Format: { 'label': 'short-name', 'cid': 'Qm...', 'gateway': 'https://ipfs.io/ipfs/...', 'pinned_at': 'YYYY-MM-DD', 'notes': '...' }"
+  ],
+  "last_updated": "2026-03-03"
+}

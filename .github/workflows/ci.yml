@@ -1,0 +1,54 @@
+name: CI — Compile & Inventory
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: packages/unyKorn-contracts/package-lock.json
+
+      - name: Install contract dependencies
+        working-directory: packages/unyKorn-contracts
+        run: npm ci
+
+      - name: Compile contracts
+        working-directory: packages/unyKorn-contracts
+        run: npx hardhat compile
+
+      - name: Run contract tests
+        working-directory: packages/unyKorn-contracts
+        run: npx hardhat test
+
+      - name: Run inventory scan
+        run: node scripts/inventory.mjs
+
+      - name: Build registry exports
+        run: node scripts/build-registry.mjs
+
+      - name: Verify no secrets detected
+        run: |
+          node scripts/inventory.mjs 2>&1 | tee /tmp/inv.txt
+          if grep -q "flagged as possible secret" /tmp/inv.txt; then
+            echo "::error::Secret patterns detected in repo files"
+            exit 1
+          fi
+
+      - name: Upload registry exports
+        uses: actions/upload-artifact@v4
+        with:
+          name: registry-exports
+          path: exports/
+          retention-days: 30

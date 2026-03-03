@@ -1,0 +1,14 @@
+{
+  "chain":      "avalanche-cchain",
+  "chain_id":   43114,
+  "symbol":     "UNY",
+  "name":       "UnyKorn Token",
+  "address":    "0xc09003213b34c7bec8d2eddfad4b43e51d007d66",
+  "decimals":   18,
+  "standard":   "ERC-20",
+  "status":     "deployed",
+  "explorer":   "https://snowtrace.io/token/0xc09003213b34c7bec8d2eddfad4b43e51d007d66",
+  "dexscreener": "https://dexscreener.com/avalanche/0x9ff923a83b3d12db280ff65d69ae37819a743f83",
+  "source_repo": "packages/unyKorn-contracts",
+  "last_verified": "2026-03-03"
+}

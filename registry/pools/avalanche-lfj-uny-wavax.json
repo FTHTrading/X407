@@ -1,0 +1,26 @@
+{
+  "chain":        "avalanche-cchain",
+  "chain_id":     43114,
+  "dex":          "LFJ",
+  "pair_address": "0xC6F5273D74571d91CBcBA0A2900ed5F7C800F5d0",
+  "token0": {
+    "symbol":   "UNY",
+    "address":  "0xc09003213b34c7bec8d2eddfad4b43e51d007d66",
+    "decimals": 18
+  },
+  "token1": {
+    "symbol":   "WAVAX",
+    "address":  "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
+    "decimals": 18
+  },
+  "source":     "dexscreener",
+  "source_url": "https://dexscreener.com/avalanche/0xC6F5273D74571d91CBcBA0A2900ed5F7C800F5d0",
+  "status":     "live",
+  "notes": [
+    "Pair address confirmed live via Dexscreener API 2026-03-20.",
+    "TraderJoe (LFJ) V2 liquidity book on Avalanche C-Chain.",
+    "WAVAX wrap/unwrap handled natively by LFJ router — users swap native AVAX directly.",
+    "Monitor liquidity depth before significant operations."
+  ],
+  "last_verified": "2026-03-20"
+}

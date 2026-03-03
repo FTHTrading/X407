@@ -1,0 +1,37 @@
+{
+  "name": "unykorn-contracts",
+  "version": "0.1.0",
+  "description": "UnyKorn EVM smart contracts — Hardhat project",
+  "private": true,
+  "scripts": {
+    "compile":          "hardhat compile",
+    "test":             "hardhat test",
+    "deploy:local":              "hardhat run scripts/deploy.ts --network localhost",
+    "deploy:avalanche":          "hardhat run scripts/deploy.ts --network avalanche",
+    "deploy:polygon":            "hardhat run scripts/deploy.ts --network polygon",
+    "deploy:all:local":          "hardhat run scripts/deployAll.ts --network localhost",
+    "deploy:all:avalanche":      "hardhat run scripts/deployAll.ts --network avalanche",
+    "deploy:registry:local":     "hardhat run scripts/deployRegistry.ts --network localhost",
+    "deploy:registry:avalanche": "hardhat run scripts/deployRegistry.ts --network avalanche",
+    "verify:avalanche":     "hardhat run scripts/verify.ts --network avalanche",
+    "verify:polygon":       "hardhat run scripts/verify.ts --network polygon",
+    "balance":              "hardhat run scripts/checkBalance.ts --network avalanche",
+    "balances":             "hardhat run scripts/checkBalances.ts --network avalanche",
+    "balance:polygon":      "hardhat run scripts/checkBalance.ts --network polygon",
+    "balances:polygon":     "hardhat run scripts/checkBalances.ts --network polygon",
+    "node":                 "hardhat node",
+    "typechain":            "hardhat typechain",
+    "lint":                 "solhint 'contracts/**/*.sol'"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.3",
+    "dotenv": "^16.4.5",
+    "solhint": "^5.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

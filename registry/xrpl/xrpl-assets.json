@@ -1,0 +1,171 @@
+{
+  "_notes": "UnyKorn XRPL Layer — IOU assets, wallets, trustlines, and flow architecture.",
+  "_ledger": "XRP Ledger (XRPL) — mainnet",
+  "last_updated": "2026-03-03",
+
+  "wallets": [
+    {
+      "label":       "master-issuer",
+      "address":     "rE85pdv...Z1Dqm",
+      "type":        "issuer",
+      "role":        "Issues all XRPL IOUs. Controls trustline authorization. Balance sheet anchor.",
+      "status":      "active",
+      "issues":      ["USDT","UNY","DTT","VAULTUSD","GOLDC","OILX","NILX","TRUST","NRG","SGE"]
+    },
+    {
+      "label":       "reserve-signal",
+      "address":     "rKNvud9D8WYmTDpCT6ZaoNALNzb2LnZi9V",
+      "type":        "holding",
+      "role":        "Holds large IOU balances for audit, screenshots, and counterparty proof.",
+      "status":      "active",
+      "balances":    [{ "currency": "USDT", "amount": 39700000 }]
+    },
+    {
+      "label":       "operations",
+      "address":     "rfmR6WrZj6PJTFqZUZTW4f4ro2oiosaZBU",
+      "type":        "ops",
+      "role":        "TrustSet operations, AMM prep, fee payments, test issuance/burns.",
+      "status":      "active"
+    }
+  ],
+
+  "ious": [
+    {
+      "currency":     "USDT",
+      "issuer":       "rE85pdv...Z1Dqm",
+      "supply_obs":   39700000,
+      "peg":          "USD",
+      "function":     "Liquidity proof, settlement, institutional signaling.",
+      "implied_value": 39700000,
+      "verification": "observed"
+    },
+    {
+      "currency":     "UNY",
+      "issuer":       "rE85pdv...Z1Dqm",
+      "supply_logical": 1000000000,
+      "function":     "Governance mirror of L1 $UNY. Trustline-based voting/signaling. Bridge mirror.",
+      "implied_value_low":  750000000,
+      "implied_value_high": 1200000000,
+      "l1_mirror":    "0xc09003213b34c7bec8d2eddfad4b43e51d007d66",
+      "verification": "claimed"
+    },
+    {
+      "currency":     "DTT",
+      "issuer":       "rE85pdv...Z1Dqm",
+      "supply_logical": 500000000,
+      "function":     "Domain treasury settlement. Registry valuation units. Escrow-based releases.",
+      "implied_value_low":  350000000,
+      "implied_value_high": 600000000,
+      "verification": "claimed"
+    },
+    {
+      "currency":     "VAULTUSD",
+      "issuer":       "rE85pdv...Z1Dqm",
+      "supply_logical": 500000000,
+      "peg":          "USD (vault-backed)",
+      "function":     "XRPL escrow, instant settlement rail, vault-backed claims.",
+      "implied_value": 500000000,
+      "verification": "claimed"
+    },
+    {
+      "currency":     "GOLDC",
+      "issuer":       "rE85pdv...Z1Dqm",
+      "supply_logical": 1000000000,
+      "backing":      "Tokenized gold (LBMA logic)",
+      "function":     "Gold settlement on XRPL. RWA mirror asset. Institutional trustline asset.",
+      "implied_value": 1100000000,
+      "verification": "claimed"
+    },
+    {
+      "currency":     "OILX",
+      "issuer":       "rE85pdv...Z1Dqm",
+      "supply_logical": 800000000,
+      "backing":      "Energy / oil reserves",
+      "function":     "Commodity settlement, energy-backed IOU trading, cross-chain collateral.",
+      "implied_value_low":  800000000,
+      "implied_value_high": 950000000,
+      "verification": "claimed"
+    },
+    {
+      "currency":     "NILX",
+      "issuer":       "rE85pdv...Z1Dqm",
+      "supply_logical": 500000000,
+      "function":     "Athlete / NIL rights mirror on XRPL.",
+      "implied_value_low":  400000000,
+      "implied_value_high": 700000000,
+      "verification": "claimed"
+    },
+    {
+      "currency":     "TRUST",
+      "issuer":       "rE85pdv...Z1Dqm",
+      "supply_logical": 300000000,
+      "function":     "Reputation-weighted settlement. DAO credibility signal. Compliance-weighted escrow.",
+      "implied_value": 600000000,
+      "verification": "claimed"
+    },
+    {
+      "currency":     "NRG",
+      "issuer":       "rE85pdv...Z1Dqm",
+      "supply_logical": 800000000,
+      "function":     "Energy settlement and AI-managed routing.",
+      "verification": "claimed"
+    },
+    {
+      "currency":     "SGE",
+      "issuer":       "rE85pdv...Z1Dqm",
+      "supply_logical": 600000000,
+      "function":     "Green energy and carbon settlement.",
+      "verification": "claimed"
+    }
+  ],
+
+  "trustlines": {
+    "strategy": {
+      "USDT":     { "limit_range": [50000000, 250000000] },
+      "UNY":      { "limit_range": [100000000, 1000000000] },
+      "DTT":      { "limit_range": [50000000, 500000000] },
+      "VAULTUSD": { "limit_range": [100000000, 500000000] },
+      "GOLDC":    { "limit_range": [100000000, 1000000000] },
+      "OILX":     { "limit_range": [100000000, 800000000] }
+    },
+    "estimated_institutional": 200,
+    "estimated_retail":        500,
+    "signal_value_per_line_low":  250000,
+    "signal_value_per_line_high": 2000000
+  },
+
+  "amm_pairs_planned": [
+    "USDT/XRP", "UNY/XRP", "DTT/XRP", "GOLDC/XRP", "VAULTUSD/XRP",
+    "OILX/XRP", "NRG/XRP", "NILX/XRP"
+  ],
+
+  "liquidity_tvl_potential_low":  250000000,
+  "liquidity_tvl_potential_high": 750000000,
+
+  "flow_architecture": {
+    "proof_of_funds":  "Issuer → Reserve Wallet (USDT/GOLDC/VAULTUSD) — counterparty review + audit",
+    "settlement":      "Issuer → Counterparty Wallet — direct payment or XRPL Escrow",
+    "amm_dex":         "Issuer → AMM Pool — liquidity discovery, on-ledger pricing",
+    "bridge_mirror":   "XRPL IOU ↔ L1 token — UNY/DTT/GOLDC mirrored across chains"
+  },
+
+  "escrow_capabilities": [
+    "time-based", "conditional-release", "multi-party settlement",
+    "partial-payments", "memo-based compliance tagging"
+  ],
+
+  "risk_profile": {
+    "no":  ["validator dependence", "MEV exposure", "reorg risk", "smart contract exploits"],
+    "yes": ["deterministic ledger", "native escrows", "native AMM", "low fees", "institutional grade"]
+  },
+
+  "value_rollup": {
+    "iou_market_value_low":       4500000000,
+    "iou_market_value_high":      6800000000,
+    "trustline_signal_low":        250000000,
+    "trustline_signal_high":      1500000000,
+    "amm_liquidity_potential":     750000000,
+    "total_xrpl_contribution_low": 5500000000,
+    "total_xrpl_contribution_high":9000000000
+  }
+}

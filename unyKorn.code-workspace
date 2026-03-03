@@ -1,0 +1,36 @@
+{
+  "folders": [
+    { "name": "unyKorn-master", "path": "." },
+    { "name": "contracts",      "path": "packages/unyKorn-contracts" },
+    { "name": "wallet-ui",      "path": "packages/unyKorn-wallet" },
+    { "name": "registry",       "path": "registry" }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.env":   true,
+      "**/.env.*": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist":         true,
+      "**/out":          true,
+      "**/build":        true,
+      "**/.next":        true,
+      "**/artifacts":    true,
+      "**/cache":        true
+    },
+    "editor.formatOnSave": true,
+    "files.eol": "\n",
+    "powershell.cwd": "unyKorn-master"
+  },
+  "extensions": {
+    "recommendations": [
+      "NomicFoundation.hardhat-solidity",
+      "tintinweb.solidity-visual-auditor",
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "redhat.vscode-yaml",
+      "mikestead.dotenv"
+    ]
+  }
+}
