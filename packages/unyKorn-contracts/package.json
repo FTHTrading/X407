@@ -21,7 +21,16 @@
     "balances:polygon":     "hardhat run scripts/checkBalances.ts --network polygon",
     "node":                 "hardhat node",
     "typechain":            "hardhat typechain",
-    "lint":                 "solhint 'contracts/**/*.sol'"
+    "lint":                 "solhint 'contracts/**/*.sol'",
+    "lp:deploy:avalanche":   "hardhat run scripts/deployLPManager.ts --network avalanche",
+    "lp:deploy:local":       "hardhat run scripts/deployLPManager.ts --network localhost",
+    "lp:check":              "hardhat run scripts/checkLP.ts --network avalanche",
+    "lp:add":                "hardhat run scripts/addLiquidity.ts --network avalanche",
+    "lp:add:dry":            "DRY_RUN=true hardhat run scripts/addLiquidity.ts --network avalanche",
+    "lp:remove":             "hardhat run scripts/removeLiquidity.ts --network avalanche",
+    "lp:remove:dry":         "DRY_RUN=true hardhat run scripts/removeLiquidity.ts --network avalanche",
+    "lp:fees":               "hardhat run scripts/collectFees.ts --network avalanche",
+    "lp:fees:dry":           "DRY_RUN=true hardhat run scripts/collectFees.ts --network avalanche"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2"

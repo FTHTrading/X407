@@ -12,7 +12,12 @@
     "export:all":   "node scripts/inventory.mjs && node scripts/build-registry.mjs",
     "proof-pack":   "node scripts/build-proof-pack.mjs",
     "opensea:sync": "node scripts/opensea-sync.mjs",
-    "full-build":   "node scripts/inventory.mjs && node scripts/build-registry.mjs && node scripts/build-proof-pack.mjs"
+    "full-build":   "node scripts/inventory.mjs && node scripts/build-registry.mjs && node scripts/build-proof-pack.mjs",
+    "lp:monitor":   "node scripts/lp-monitor.mjs",
+    "lp:monitor:json": "node scripts/lp-monitor.mjs --json",
+    "lp:check":     "npm run lp:check:usdc && npm run lp:check:wavax",
+    "lp:check:usdc":"cd packages/unyKorn-contracts && npx hardhat run scripts/checkLP.ts --network avalanche",
+    "lp:check:wavax":"cd packages/unyKorn-contracts && npx hardhat run scripts/checkLP.ts --network avalanche"
   },
   "engines": {
     "node": ">=18.0.0"

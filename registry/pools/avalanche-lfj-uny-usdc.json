@@ -13,6 +13,16 @@
     "address":  "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
     "decimals": 6
   },
+  "lb_version":  "V2.1",
+  "lb_router":   "0xb4315e873dBcf96Ffd0acd8EA43f689D8c20fB30",
+  "lb_factory":  "0x8e42f2F4101563bF679975178e880FD87d3eFd4e",
+  "lp_strategy": {
+    "type":              "uniform",
+    "default_bins":      5,
+    "default_slippage":  100,
+    "rebalance_trigger": 10,
+    "notes":             "Uniform spread around active bin. Rebalance when price drifts >10 bins from center."
+  },
   "source":     "dexscreener",
   "source_url": "https://dexscreener.com/avalanche/0x9ff923a83b3d12db280ff65d69ae37819a743f83",
   "status":     "live",
