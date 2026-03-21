@@ -55,5 +55,19 @@
       <pubDate>Sat, 21 Mar 2026 00:00:00 GMT</pubDate>
       <description>How X407 combines AWS-hosted application infrastructure, built-in control systems, and Layer 1 settlement orchestration for machine commerce.</description>
     </item>
+    <item>
+      <title>X407 vs Legacy Billing vs Chain-Only Rails</title>
+      <link>https://407.unykorn.org/compare/</link>
+      <guid>https://407.unykorn.org/compare/</guid>
+      <pubDate>Sat, 21 Mar 2026 00:00:00 GMT</pubDate>
+      <description>A commercial comparison page across monetization, enterprise trust, AWS application infrastructure, and Layer 1 settlement orchestration.</description>
+    </item>
+    <item>
+      <title>X407 Pilot Program</title>
+      <link>https://407.unykorn.org/pilot/</link>
+      <guid>https://407.unykorn.org/pilot/</guid>
+      <pubDate>Sat, 21 Mar 2026 00:00:00 GMT</pubDate>
+      <description>A pilot launch path for enterprise agent payment infrastructure, monetized APIs, and machine commerce systems.</description>
+    </item>
   </channel>
 </rss>
