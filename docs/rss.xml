@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>X407 Insights</title>
+    <link>https://407.unykorn.org/insights/</link>
+    <description>Insights on AI-to-AI payments, machine commerce, API monetization, receipts, and enterprise trust.</description>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 21 Mar 2026 00:00:00 GMT</lastBuildDate>
+    <item>
+      <title>AI-to-AI Payments vs. API Keys: What Actually Changes</title>
+      <link>https://407.unykorn.org/insights/ai-to-ai-payments-vs-api-keys.html</link>
+      <guid>https://407.unykorn.org/insights/ai-to-ai-payments-vs-api-keys.html</guid>
+      <pubDate>Sat, 21 Mar 2026 00:00:00 GMT</pubDate>
+      <description>Why payment challenges, proofs, and receipts outperform static credentials for agent-native monetization.</description>
+    </item>
+    <item>
+      <title>Enterprise Trust Starts with Receipts, Auditability, and Evidence</title>
+      <link>https://407.unykorn.org/insights/enterprise-trust-receipts-compliance.html</link>
+      <guid>https://407.unykorn.org/insights/enterprise-trust-receipts-compliance.html</guid>
+      <pubDate>Sat, 21 Mar 2026 00:00:00 GMT</pubDate>
+      <description>Why receipts and evidence bundles change enterprise procurement and adoption velocity.</description>
+    </item>
+    <item>
+      <title>Why Agent Commerce Infrastructure Becomes the Next Platform Layer</title>
+      <link>https://407.unykorn.org/insights/agent-commerce-infrastructure.html</link>
+      <guid>https://407.unykorn.org/insights/agent-commerce-infrastructure.html</guid>
+      <pubDate>Sat, 21 Mar 2026 00:00:00 GMT</pubDate>
+      <description>Why monetization, trust, receipts, routing, and packaging converge into the next platform layer.</description>
+    </item>
+  </channel>
+</rss>

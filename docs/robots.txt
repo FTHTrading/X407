@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://407.unykorn.org/sitemap.xml
