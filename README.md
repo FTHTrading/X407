@@ -35,13 +35,16 @@ Instead of competing only as a chain, X407 competes as the **revenue, trust, and
 - [Why X407 Wins](#why-x407-wins)
 - [System Thesis](#system-thesis)
 - [Strategic Differentiation Matrix](#strategic-differentiation-matrix)
+- [Competitive Positioning](#competitive-positioning)
 - [Platform Architecture](#platform-architecture)
 - [Adoption Flywheel](#adoption-flywheel)
 - [IP Protection Strategy](#ip-protection-strategy)
 - [SaaS Disclosure Model](#saas-disclosure-model)
 - [Implementation Priorities](#implementation-priorities)
+- [90-Day Execution](#90-day-execution)
 - [Testing Program](#testing-program)
 - [Growth, Content, and Promotion](#growth-content-and-promotion)
+- [Pilot and Partner Program](#pilot-and-partner-program)
 - [Repository Structure](#repository-structure)
 - [Commercial Notes](#commercial-notes)
 
@@ -79,6 +82,16 @@ X407 is intended to own that layer.
 | Pay-per-call economics | 🔴 Poor | 🟡 Variable | 🟢 Strong |
 | White-label provider model | 🟡 Some | 🟡 Some | 🟢 Strategic |
 | Commercial moat beyond chain speed | 🔴 Low | 🟡 Medium | 🟢 High |
+
+---
+
+## Competitive Positioning
+
+X407 should be positioned as the **monetization and trust operating layer** for machine commerce.
+
+- comparison and market framing: [docs/COMPETITIVE-POSITIONING.md](docs/COMPETITIVE-POSITIONING.md)
+- 90-day rollout plan: [docs/EXECUTION-90-DAYS.md](docs/EXECUTION-90-DAYS.md)
+- pilot structure: [docs/PILOT-PARTNER-PROGRAM.md](docs/PILOT-PARTNER-PROGRAM.md)
 
 ---
 
@@ -214,6 +227,18 @@ See [docs/IMPLEMENTATION-ROADMAP.md](docs/IMPLEMENTATION-ROADMAP.md).
 
 ---
 
+## 90-Day Execution
+
+The operating plan now includes:
+
+- internal dogfooding and benchmark setup
+- partner pilot activation
+- public proof, case studies, and enterprise enablement
+
+See [docs/EXECUTION-90-DAYS.md](docs/EXECUTION-90-DAYS.md).
+
+---
+
 ## Testing Program
 
 A serious system wins through proof, not claims.
@@ -272,6 +297,20 @@ A serious system wins through proof, not claims.
 
 See [docs/GTM-AND-CONTENT.md](docs/GTM-AND-CONTENT.md).
 
+Campaign assets and ad concepts live in [docs/BLOGS-ADS-AND-CAMPAIGNS.md](docs/BLOGS-ADS-AND-CAMPAIGNS.md).
+
+---
+
+## Pilot and Partner Program
+
+The pilot motion should target:
+
+- premium API providers
+- AI platform builders
+- regulated workflow operators
+
+See [docs/PILOT-PARTNER-PROGRAM.md](docs/PILOT-PARTNER-PROGRAM.md).
+
 ---
 
 ## Repository Structure
@@ -282,9 +321,13 @@ X407/
 │  ├─ ISSUE_TEMPLATE/
 │  └─ pull_request_template.md
 ├─ docs/
+│  ├─ BLOGS-ADS-AND-CAMPAIGNS.md
+│  ├─ COMPETITIVE-POSITIONING.md
+│  ├─ EXECUTION-90-DAYS.md
 │  ├─ GTM-AND-CONTENT.md
 │  ├─ IMPLEMENTATION-ROADMAP.md
 │  ├─ IP-PROTECTION.md
+│  ├─ PILOT-PARTNER-PROGRAM.md
 │  └─ SAAS-DISCLOSURE-MODEL.md
 ├─ .gitignore
 ├─ CONTRIBUTING.md
@@ -310,6 +353,7 @@ X407/
 3. Add benchmark and testing results as they become available
 4. Add partner pilot intake and certification pathways
 5. Keep proprietary execution logic in restricted repos or internal systems
+6. Use the competitive matrix and 90-day execution plan as the operating blueprint
 
 ---
 
