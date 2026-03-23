@@ -110,6 +110,47 @@
   line-height: 1;
 }
 
+/* Engine toggle (Browser / ElevenLabs) */
+.x407-engine-toggle {
+  display: flex;
+  gap: 0;
+  padding: .5rem .75rem;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.x407-engine-opt {
+  flex: 1;
+  padding: .4rem .5rem;
+  border: 1px solid rgba(148,163,184,.12);
+  background: rgba(255,255,255,.03);
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.x407-engine-opt:first-child {
+  border-radius: 8px 0 0 8px;
+  border-right: none;
+}
+
+.x407-engine-opt:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.x407-engine-opt.active {
+  background: rgba(89,168,255,.15);
+  border-color: rgba(89,168,255,.35);
+  color: #fff;
+}
+
+.x407-engine-opt:hover:not(.active) {
+  background: rgba(89,168,255,.08);
+}
+
 /* Now-reading indicator */
 .x407-now-reading {
   padding: .55rem 1rem;
@@ -566,4 +607,32 @@
     right: .75rem;
     bottom: 1rem;
   }
+}
+
+/* ─── Message Meta (source badge + speak) ─── */
+.x407-msg-meta {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: .4rem;
+}
+
+.x407-source-badge {
+  font-size: .62rem;
+  font-weight: 700;
+  padding: .15rem .45rem;
+  border-radius: 999px;
+  background: rgba(89,168,255,.1);
+  color: rgba(89,168,255,.8);
+  border: 1px solid rgba(89,168,255,.15);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+/* Speed hint label */
+.x407-speed-hint {
+  font-size: .66rem;
+  color: rgba(89,168,255,.5);
+  font-weight: 400;
 }
