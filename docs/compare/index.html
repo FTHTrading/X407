@@ -21,6 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/site.css">
+  <link rel="stylesheet" href="../assets/x407-audio-ai.css">
 </head>
 <body>
   <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div><div class="ambient ambient-c"></div>
@@ -28,5 +29,37 @@
   <main class="article-main"><div class="container"><div class="crumbs"><a href="../">Home</a><span>/</span><span>Compare</span></div><section class="article-hero glass"><div class="eyebrow">Competitive Positioning</div><h1>X407 vs legacy billing vs chain-only rails</h1><p class="hero-copy">X407 is positioned as the operating layer that combines AWS-hosted application infrastructure, built-in commercial controls, receipts, evidence, and Layer 1 settlement orchestration in one system.</p><div class="tag-row"><span class="tag">Comparison</span><span class="tag">Enterprise Trust</span><span class="tag">Infrastructure</span></div></section><section class="section"><div class="grid cols-3 insights-grid"><article class="insight-card glass reveal"><div class="meta-line">Legacy billing</div><h3>Strength</h3><p>Familiar invoicing and account-based workflows for human-run software businesses.</p><div class="tag-row"><span class="tag">Billing</span></div></article><article class="insight-card glass reveal"><div class="meta-line">Chain-only rails</div><h3>Strength</h3><p>Open settlement and network portability where transfer mechanics are the core requirement.</p><div class="tag-row"><span class="tag">Settlement</span></div></article><article class="insight-card glass reveal"><div class="meta-line">X407</div><h3>Advantage</h3><p>Combines application control, programmable payment flows, enterprise evidence, AWS services, and Layer 1 connectivity.</p><div class="tag-row"><span class="tag">Operating Layer</span></div></article></div></section><section class="section alt"><div class="comparison-shell glass"><div class="comparison-header"><h3>Decision matrix</h3></div><div class="grid cols-3"><article class="card glass"><h3>Monetized API control</h3><p><strong>X407:</strong> built-in challenge, proof, receipt, and policy flow.<br><strong>Legacy:</strong> external billing reconstruction.<br><strong>Chain-only:</strong> transfer capability without full provider workflow.</p></article><article class="card glass"><h3>Enterprise trust</h3><p><strong>X407:</strong> receipts, evidence bundles, auditability.<br><strong>Legacy:</strong> invoices but weaker runtime proof.<br><strong>Chain-only:</strong> settlement visibility but thinner enterprise packaging.</p></article><article class="card glass"><h3>Infrastructure model</h3><p><strong>X407:</strong> AWS application layer plus Layer 1 settlement orchestration.<br><strong>Legacy:</strong> app stack without native machine-commerce control.<br><strong>Chain-only:</strong> rail-first architecture without full cloud control plane.</p></article></div></div></section><section class="section"><div class="section-actions"><a class="btn btn-primary" href="../pilot/">Start pilot path</a><a class="btn btn-outline" href="../infrastructure/">Review infrastructure solutions</a></div></section></div></main>
   <footer class="site-footer"><div class="container footer-shell"><div><strong>X407</strong><p>Commercial-grade infrastructure for agent-native monetization, trust, and scale.</p></div><div class="footer-links"><a href="../">Home</a><a href="../infrastructure/">Infrastructure</a><a href="../pilot/">Pilot</a></div></div></footer>
   <script src="../assets/site.js"></script>
+  <script src="../assets/x407-voice.js"></script>
+  <script src="../assets/x407-assistant.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var fabGroup = document.createElement('div');
+      fabGroup.className = 'x407-fab-group';
+      fabGroup.appendChild(window.X407Assistant.buildChatFab());
+      fabGroup.appendChild(window.X407Voice.buildAudioFab());
+      document.body.appendChild(fabGroup);
+      window.X407Voice.injectSectionListenButtons();
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fabGroup = document.createElement('div');
+      fabGroup.className = 'x407-fab-group';
+      fabGroup.appendChild(window.X407Assistant.buildChatFab());
+      fabGroup.appendChild(window.X407Voice.buildAudioFab());
+      document.body.appendChild(fabGroup);
+      window.X407Voice.injectSectionListenButtons();
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fabGroup = document.createElement('div');
+      fabGroup.className = 'x407-fab-group';
+      fabGroup.appendChild(window.X407Assistant.buildChatFab());
+      fabGroup.appendChild(window.X407Voice.buildAudioFab());
+      document.body.appendChild(fabGroup);
+      window.X407Voice.injectSectionListenButtons();
+    });
+  </script>
 </body>
 </html>

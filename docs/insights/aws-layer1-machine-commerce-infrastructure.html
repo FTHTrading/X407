@@ -35,6 +35,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/site.css">
+  <link rel="stylesheet" href="../assets/x407-audio-ai.css">
 </head>
 <body>
   <div class="ambient ambient-a"></div>
@@ -91,5 +92,37 @@
   </main>
   <footer class="site-footer"><div class="container footer-shell"><div><strong>X407</strong><p>Commercial-grade infrastructure for agent-native monetization, trust, and scale.</p></div><div class="footer-links"><a href="./">Insights</a><a href="../rss.xml">RSS</a><a href="../">Home</a></div></div></footer>
   <script src="../assets/site.js"></script>
+  <script src="../assets/x407-voice.js"></script>
+  <script src="../assets/x407-assistant.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var fabGroup = document.createElement('div');
+      fabGroup.className = 'x407-fab-group';
+      fabGroup.appendChild(window.X407Assistant.buildChatFab());
+      fabGroup.appendChild(window.X407Voice.buildAudioFab());
+      document.body.appendChild(fabGroup);
+      window.X407Voice.injectSectionListenButtons();
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fabGroup = document.createElement('div');
+      fabGroup.className = 'x407-fab-group';
+      fabGroup.appendChild(window.X407Assistant.buildChatFab());
+      fabGroup.appendChild(window.X407Voice.buildAudioFab());
+      document.body.appendChild(fabGroup);
+      window.X407Voice.injectSectionListenButtons();
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fabGroup = document.createElement('div');
+      fabGroup.className = 'x407-fab-group';
+      fabGroup.appendChild(window.X407Assistant.buildChatFab());
+      fabGroup.appendChild(window.X407Voice.buildAudioFab());
+      document.body.appendChild(fabGroup);
+      window.X407Voice.injectSectionListenButtons();
+    });
+  </script>
 </body>
 </html>
