@@ -319,18 +319,53 @@ See [docs/PILOT-PARTNER-PROGRAM.md](docs/PILOT-PARTNER-PROGRAM.md).
 X407/
 ├─ .github/
 │  ├─ ISSUE_TEMPLATE/
-│  └─ pull_request_template.md
+│  ├─ pull_request_template.md
+│  └─ workflows/
+│     └─ pages.yml
+├─ assets/
+│  ├─ site.css
+│  └─ site.js
 ├─ docs/
+│  ├─ assets/
+│  │  ├─ site.css
+│  │  └─ site.js
+│  ├─ compare/
+│  │  └─ index.html
+│  ├─ infrastructure/
+│  │  ├─ index.html
+│  │  ├─ agentic-funding-transaction-explorer.html
+│  │  ├─ aws-machine-commerce-infrastructure.html
+│  │  ├─ enterprise-agent-payment-infrastructure.html
+│  │  └─ layer1-settlement-orchestration.html
+│  ├─ insights/
+│  │  ├─ index.html
+│  │  ├─ agent-commerce-infrastructure.html
+│  │  ├─ ai-to-ai-payments-vs-api-keys.html
+│  │  ├─ aws-layer1-machine-commerce-infrastructure.html
+│  │  ├─ enterprise-trust-receipts-compliance.html
+│  │  ├─ how-to-monetize-apis-for-ai-agents-without-api-keys.html
+│  │  ├─ keyword-clusters.html
+│  │  ├─ what-is-ai-to-ai-payment-infrastructure.html
+│  │  └─ why-http-402-becomes-strategic-for-paid-apis.html
+│  ├─ pilot/
+│  │  └─ index.html
 │  ├─ BLOGS-ADS-AND-CAMPAIGNS.md
+│  ├─ CNAME
 │  ├─ COMPETITIVE-POSITIONING.md
 │  ├─ EXECUTION-90-DAYS.md
 │  ├─ GTM-AND-CONTENT.md
 │  ├─ IMPLEMENTATION-ROADMAP.md
+│  ├─ index.html
 │  ├─ IP-PROTECTION.md
 │  ├─ PILOT-PARTNER-PROGRAM.md
-│  └─ SAAS-DISCLOSURE-MODEL.md
+│  ├─ robots.txt
+│  ├─ rss.xml
+│  ├─ SAAS-DISCLOSURE-MODEL.md
+│  └─ sitemap.xml
 ├─ .gitignore
+├─ .nojekyll
 ├─ CONTRIBUTING.md
+├─ index.html
 ├─ LICENSE.md
 ├─ README.md
 └─ SECURITY.md
