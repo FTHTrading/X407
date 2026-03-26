@@ -1,0 +1,35 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07101D"/>
+      <stop offset="0.5" stop-color="#10203A"/>
+      <stop offset="1" stop-color="#08111F"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="182" y1="136" x2="878" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#59A8FF"/>
+      <stop offset="0.55" stop-color="#9B7BFF"/>
+      <stop offset="1" stop-color="#43D3A4"/>
+    </linearGradient>
+    <filter id="blur" x="-100" y="-100" width="1400" height="830" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="60"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <g filter="url(#blur)" opacity="0.45">
+    <circle cx="180" cy="120" r="120" fill="#245DFF"/>
+    <circle cx="920" cy="140" r="140" fill="#7B4DFF"/>
+    <circle cx="700" cy="540" r="140" fill="#00A88A"/>
+  </g>
+  <rect x="70" y="72" width="1060" height="486" rx="30" fill="#0B1628" fill-opacity="0.68" stroke="rgba(255,255,255,0.12)"/>
+  <rect x="104" y="104" width="56" height="56" rx="16" fill="url(#accent)"/>
+  <text x="122" y="142" fill="white" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">X</text>
+  <text x="182" y="142" fill="#E5EEFC" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">X407</text>
+  <text x="182" y="175" fill="#97A9C4" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="600">Agent Commerce Infrastructure</text>
+  <text x="104" y="268" fill="white" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="800">AI-to-AI payments,</text>
+  <text x="104" y="340" fill="white" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="800">receipts, trust,</text>
+  <text x="104" y="412" fill="url(#accent)" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="800">and machine commerce.</text>
+  <text x="104" y="484" fill="#BDD6FB" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="600">Programmable payment challenges • API monetization • Enterprise evidence</text>
+  <rect x="836" y="410" width="210" height="84" rx="20" fill="#0F1D35" stroke="rgba(89,168,255,0.30)"/>
+  <text x="864" y="448" fill="#E5EEFC" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800">407.unykorn.org</text>
+  <text x="864" y="478" fill="#97A9C4" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600">Insights • Strategy • SEO</text>
+</svg>

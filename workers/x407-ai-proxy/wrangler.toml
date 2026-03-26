@@ -1,0 +1,22 @@
+name = "x407-ai-proxy"
+main = "src/worker.js"
+compatibility_date = "2026-03-01"
+
+# API keys are stored as encrypted secrets, NOT in this file.
+# Set them with:
+#   npx wrangler secret put OPENAI_API_KEY
+#   npx wrangler secret put ELEVENLABS_API_KEY
+#
+# Deploy with:
+#   npx wrangler deploy
+
+[vars]
+ALLOWED_ORIGIN = "https://407.unykorn.org"
+ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"
+ELEVENLABS_MODEL_ID = "eleven_multilingual_v2"
+OPENAI_MODEL = "gpt-4o-mini"
+
+# Uncomment and set your custom domain route:
+# [[routes]]
+# pattern = "ai.407.unykorn.org/*"
+# custom_domain = true

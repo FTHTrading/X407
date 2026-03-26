@@ -1,4 +1,4 @@
-# ── Secrets (never commit) ──────────────────────────────────────────────────
+﻿# -- Secrets (never commit) --
 .env
 .env.*
 !.env.example
@@ -11,7 +11,7 @@
 **/*.p12
 **/*.pfx
 
-# ── Node ────────────────────────────────────────────────────────────────────
+# -- Node --
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -19,53 +19,62 @@ yarn-error.log*
 pnpm-debug.log*
 .pnpm-store/
 
-# ── Build artefacts ─────────────────────────────────────────────────────────
+# -- Build artefacts --
 dist/
 build/
 out/
 .next/
 artifacts/
 cache/
+.cache/
 typechain-types/
 exports/
 
-# ── OS noise ────────────────────────────────────────────────────────────────
+# -- OS noise --
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# ── Editor ──────────────────────────────────────────────────────────────────
+# -- Editor --
 .idea/
 *.swp
 *.swo
 
-# ── Coverage / test artefacts ────────────────────────────────────────────────
+# -- Coverage / test artefacts --
 coverage/
 lcov.info
 
-# ── LP safety markers ───────────────────────────────────────────────────────
+# -- LP safety markers --
 .lp-runs/
 
-# ── Rust ────────────────────────────────────────────────────────────────────
+# -- Rust --
 target/
 **/*.rs.bk
 Cargo.lock
 cargo_*.txt
 
-# ── Docker / CI temp ────────────────────────────────────────────────────────
+# -- Docker / CI temp --
 docker_build.txt
 *.log
 !docs/**/*.log
+logs/
 
-# ── SSM / temp output ───────────────────────────────────────────────────────
+# -- SSM / temp output --
 *.tmp
+*.bak
 ssm_*.txt
 .tmp-ssm-*
 
-# ── Wrangler temp / Terraform cache ─────────────────────────────────────────
+# -- Wrangler temp / Terraform cache --
 .wrangler/
 **/.terraform/
 **/.terraform-provider-cache/
 *.tfstate
 *.tfstate.*
 .terraform.lock.hcl
+
+# -- Python --
+__pycache__/
+*.pyc
+.venv/
+venv/
