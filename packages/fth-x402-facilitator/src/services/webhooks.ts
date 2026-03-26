@@ -32,7 +32,9 @@ export type WebhookEvent =
   | "anchor.confirmed"
   | "treasury.refill.completed"
   | "treasury.refill.blocked"
-  | "treasury.refill.failed";
+  | "treasury.refill.failed"
+  | "trade_finance.escrow_locked"
+  | "trade_finance.escrow_released";
 
 export const ALL_EVENTS: WebhookEvent[] = [
   "payment.received",
@@ -44,6 +46,8 @@ export const ALL_EVENTS: WebhookEvent[] = [
   "treasury.refill.completed",
   "treasury.refill.blocked",
   "treasury.refill.failed",
+  "trade_finance.escrow_locked",
+  "trade_finance.escrow_released",
 ];
 
 export interface WebhookSubscription {

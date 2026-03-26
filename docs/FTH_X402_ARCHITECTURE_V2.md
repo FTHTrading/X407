@@ -825,17 +825,17 @@ unyKorn-master/
 ### Phase 1 — UnyKorn-first x402 core (Week 1–2)
 
 **Deliverables:**
-- [ ] Cloudflare Worker x402 gate (route match, 402 response, proof forwarding)
-- [ ] Namespace resolver (PostgreSQL + REST API)
-- [ ] Seed `fth.*` namespace records
-- [ ] Invoice service (create, lookup, expire)
-- [ ] Facilitator skeleton (verify endpoint, replay guard)
-- [ ] UnyKorn payment channel model (open, spend, close)
-- [ ] Prepaid credit primary flow (deposit, charge, refund)
-- [ ] Credit ledger (PostgreSQL)
-- [ ] One paid route live: `/api/genesis/repro-pack/:suite`
-- [ ] Minimal SDK: intercept 402, retry with proof
-- [ ] Receipt generation (offchain)
+- [x] Cloudflare Worker x402 gate (route match, 402 response, proof forwarding)
+- [x] Namespace resolver (PostgreSQL + REST API)
+- [x] Seed `fth.*` namespace records
+- [x] Invoice service (create, lookup, expire)
+- [x] Facilitator skeleton (verify endpoint, replay guard)
+- [x] UnyKorn payment channel model (open, spend, close)
+- [x] Prepaid credit primary flow (deposit, charge, refund)
+- [x] Credit ledger (PostgreSQL)
+- [x] One paid route live: `/api/genesis/repro-pack/:suite`
+- [x] Minimal SDK: intercept 402, retry with proof
+- [x] Receipt generation (offchain)
 
 **Tech:**
 - Gateway: Cloudflare Worker (TypeScript)
@@ -847,13 +847,13 @@ unyKorn-master/
 ### Phase 2 — Stellar bridge support (Week 3–4)
 
 **Deliverables:**
-- [ ] Stellar `signed_auth` verification in facilitator
-- [ ] Stellar `sUSDF` bridge issuer account (testnet first)
-- [ ] `stellar.toml` hosted
-- [ ] SDK retry logic (multi-rail fallback)
-- [ ] Route pricing console
-- [ ] Receipt root batch anchoring to L1
-- [ ] Operator dashboard v1 (balances, invoices, receipts)
+- [x] Stellar `signed_auth` verification in facilitator
+- [x] Stellar `sUSDF` bridge issuer account (testnet first)
+- [x] `stellar.toml` hosted
+- [x] SDK retry logic (multi-rail fallback)
+- [x] Route pricing console
+- [x] Receipt root batch anchoring to L1
+- [x] Operator dashboard v1 (balances, invoices, receipts)
 
 **Tech:**
 - Stellar SDK: `@stellar/stellar-sdk`
@@ -862,13 +862,13 @@ unyKorn-master/
 ### Phase 3 — XRPL mirror + operator controls (Week 5–6)
 
 **Deliverables:**
-- [ ] XRPL `xUSDF` mirror via existing master-issuer
-- [ ] XRPL payment verification in facilitator
-- [ ] Reserve / supply reconciliation (L1 ↔ Stellar ↔ XRPL)
-- [ ] PASS issuance (basic, pro, institutional, kyc-enhanced)
-- [ ] RCPT receipt root explorer
-- [ ] Full operator dashboard (namespaces, channels, policies)
-- [ ] Rate limiting per wallet/namespace
+- [x] XRPL `xUSDF` mirror via existing master-issuer
+- [x] XRPL payment verification in facilitator
+- [x] Reserve / supply reconciliation (L1 ↔ Stellar ↔ XRPL)
+- [x] PASS issuance (basic, pro, institutional, kyc-enhanced)
+- [x] RCPT receipt root explorer
+- [x] Full operator dashboard (namespaces, channels, policies)
+- [x] Rate limiting per wallet/namespace
 
 **Tech:**
 - XRPL: `xrpl` npm package
@@ -877,12 +877,12 @@ unyKorn-master/
 ### Phase 4 — Wrapped assets + trade-finance (Week 7–8)
 
 **Deliverables:**
-- [ ] wXAU, wUSTB asset definitions on L1
-- [ ] Oracle price feed integration
-- [ ] UnyKorn trade-finance settlement hooks
-- [ ] Policy-bound routes (institutional entitlements)
-- [ ] Bridge service: L1 ↔ Stellar
-- [ ] Audit export (CSV/JSON)
+- [x] wXAU, wUSTB asset definitions on L1
+- [x] Oracle price feed integration
+- [x] UnyKorn trade-finance settlement hooks
+- [x] Policy-bound routes (institutional entitlements)
+- [x] Bridge service: L1 ↔ Stellar
+- [x] Audit export (CSV/JSON)
 
 ---
 

@@ -1,0 +1,74 @@
+# FTH x402 — Stellar TOML (SEP-0001)
+# https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md
+#
+# This file should be hosted at:
+#   https://l1.unykorn.org/.well-known/stellar.toml
+#
+# It describes the sUSDF bridge asset and the FTH organization.
+
+# ══════════════════════════════════════════════════════════════════════
+# General Information
+# ══════════════════════════════════════════════════════════════════════
+
+FEDERATION_SERVER = "https://api.l1.unykorn.org/federation"
+TRANSFER_SERVER = "https://api.l1.unykorn.org/sep6"
+WEB_AUTH_ENDPOINT = "https://api.l1.unykorn.org/auth"
+SIGNING_KEY = ""
+NETWORK_PASSPHRASE = "Test SDF Network ; September 2015"
+
+# ══════════════════════════════════════════════════════════════════════
+# Organization
+# ══════════════════════════════════════════════════════════════════════
+
+[DOCUMENTATION]
+ORG_NAME = "FTH Trading Limited"
+ORG_DBA = "FTH"
+ORG_URL = "https://fthtrading.com"
+ORG_LOGO = "https://fthtrading.com/logo.png"
+ORG_DESCRIPTION = "Financial infrastructure and trade-finance protocol operator. Issuer of USDF stablecoin and operator of the UnyKorn L1 settlement network."
+ORG_OFFICIAL_EMAIL = "compliance@fthtrading.com"
+
+# ══════════════════════════════════════════════════════════════════════
+# Principals
+# ══════════════════════════════════════════════════════════════════════
+
+[[PRINCIPALS]]
+name = "FTH Operations"
+email = "ops@fthtrading.com"
+
+# ══════════════════════════════════════════════════════════════════════
+# Currencies — sUSDF Bridge Representation
+# ══════════════════════════════════════════════════════════════════════
+
+[[CURRENCIES]]
+code = "sUSDF"
+issuer = ""
+display_decimals = 2
+name = "Stellar USDF Bridge"
+desc = "Bridge representation of USDF on Stellar. Backed 1:1 by USDF locked on the UnyKorn L1 canonical ledger. Redeemable via the FTH x402 bridge service."
+conditions = "sUSDF is issued when USDF is locked on UnyKorn L1 via the FTH bridge. Redemption burns sUSDF and unlocks the corresponding USDF on L1. Supply is always <= USDF locked in the bridge contract."
+image = "https://fthtrading.com/assets/susdf-logo.png"
+fixed_number = false
+is_asset_anchored = true
+anchor_asset_type = "fiat"
+anchor_asset = "USD"
+redemption_instructions = "To redeem sUSDF for USDF on UnyKorn L1, use the FTH bridge at https://bridge.l1.unykorn.org or submit a burn transaction via the FTH x402 SDK."
+status = "test"
+
+# ══════════════════════════════════════════════════════════════════════
+# Validators (not applicable — FTH does not operate Stellar validators)
+# ══════════════════════════════════════════════════════════════════════
+
+# ══════════════════════════════════════════════════════════════════════
+# Bridge Configuration (FTH-specific extension)
+# ══════════════════════════════════════════════════════════════════════
+
+[FTH_BRIDGE]
+canonical_asset = "USDF"
+canonical_rail = "unykorn-l1"
+bridge_direction = "bidirectional"
+min_bridge_amount = "1.00"
+max_bridge_amount = "1000000.00"
+bridge_fee_percent = "0.0"
+settlement_time_seconds = 30
+facilitator_url = "https://api.l1.unykorn.org/facilitator"

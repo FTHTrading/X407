@@ -20,6 +20,8 @@ import { checkRateLimit } from "./rate-limiter";
 import { dispatchEvent } from "./webhooks";
 import { verifyUnykornTxHash } from "./verifyUnykornTxHash";
 import { verifyTxHashPayment } from "./verifyTxHash";
+import { verifyStellarSignedAuth } from "../adapters/stellar";
+import { verifyXrplPayment } from "../adapters/xrpl";
 import nacl from "tweetnacl";
 import { decodeBase64, decodeUTF8 } from "tweetnacl-util";
 import pool from "../db";
@@ -97,17 +99,20 @@ export async function verifyPayment(body: VerifyBody): Promise<VerifyResult> {
         settlementResult = await verifyChannelSpend(body.proof, invoice);
         break;
       case "signed_auth":
-        // Stellar auth — stub for Phase 2
-        settlementResult = {
-          verified: false,
-          error: "signed_auth not yet supported",
-          error_code: "rail_not_allowed",
-        };
+        settlementResult = await verifyStellarSignedAuthProof(body.proof as any, invoice);
+        break;
+      case "xrpl_payment":
+        // XRPL payment proof — delegates to XRPL adapter for on-ledger tx verification
+        settlementResult = await verifyXrplTxHashProof(body.proof as any, invoice);
         break;
       case "tx_hash":
-        settlementResult = body.proof.rail === "unykorn-l1"
-          ? await verifyUnykornTxHash(body.proof, invoice)
-          : await verifyTxHashPayment(body.proof, invoice);
+        if (body.proof.rail === "unykorn-l1") {
+          settlementResult = await verifyUnykornTxHash(body.proof, invoice);
+        } else if (body.proof.rail === "xrpl") {
+          settlementResult = await verifyXrplTxHashProof(body.proof, invoice);
+        } else {
+          settlementResult = await verifyTxHashPayment(body.proof, invoice);
+        }
         break;
       default:
         settlementResult = {
@@ -240,6 +245,52 @@ async function verifyChannelSpend(
   }
 
   await spendChannel(proof.channel_id, proof.sequence, invoice.amount, invoice.invoice_id);
+
+  return { verified: true };
+}
+
+/**
+ * Verify Stellar signed_auth proof. Bridges the adapter result into VerifyResult.
+ */
+async function verifyStellarSignedAuthProof(
+  proof: { payer: string; auth_entry: string; source_address: string; invoice_id: string; amount: string; proof_type: string },
+  invoice: Invoice,
+): Promise<VerifyResult> {
+  const result = await verifyStellarSignedAuth({
+    auth_entry: proof.auth_entry,
+    source_address: proof.source_address ?? proof.payer,
+    invoice_id: invoice.invoice_id,
+    amount: invoice.amount,
+    asset: invoice.asset,
+  });
+
+  if (!result.valid) {
+    return { verified: false, error: result.error ?? "Stellar auth failed", error_code: "invalid_proof" };
+  }
+
+  // Credit the payment via deposit (Stellar rail funds arrive via bridge)
+  await charge(proof.payer, invoice.amount, invoice.invoice_id);
+
+  return { verified: true };
+}
+
+/**
+ * Verify XRPL tx_hash proof on the XRPL rail. Bridges adapter result into VerifyResult.
+ */
+async function verifyXrplTxHashProof(
+  proof: { payer: string; tx_hash: string; rail: string; proof_type: string },
+  invoice: Invoice,
+): Promise<VerifyResult> {
+  const result = await verifyXrplPayment(
+    proof.tx_hash,
+    invoice.receiver ?? "",
+    invoice.amount,
+    "xUSDF",
+  );
+
+  if (!result.valid) {
+    return { verified: false, error: result.error ?? "XRPL payment verification failed", error_code: "invalid_proof" };
+  }
 
   return { verified: true };
 }

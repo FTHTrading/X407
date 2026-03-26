@@ -19,14 +19,15 @@
 export type Rail = "unykorn-l1" | "stellar" | "xrpl" | "base";
 
 /** Accepted payment asset symbols. */
-export type AssetSymbol = "USDF" | "sUSDF" | "xUSDF" | "USDC" | "UNY";
+export type AssetSymbol = "USDF" | "sUSDF" | "xUSDF" | "USDC" | "UNY" | "wXAU" | "wUSTB" | "wBOND" | "wINV";
 
 /** Accepted payment proof mechanisms. */
 export type ProofType =
   | "prepaid_credit"
   | "channel_spend"
   | "signed_auth"
-  | "tx_hash";
+  | "tx_hash"
+  | "xrpl_payment";
 
 /** KYC/access tier for gated routes. */
 export type PassTier = "basic" | "pro" | "institutional" | "kyc-enhanced";
@@ -48,7 +49,10 @@ export type WebhookEvent =
   | "channel.opened"
   | "channel.closed"
   | "credit.deposited"
-  | "receipt.created";
+  | "receipt.created"
+  | "payment.received"
+  | "trade_finance.escrow_locked"
+  | "trade_finance.escrow_released";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Route & Policy
@@ -144,11 +148,21 @@ export interface TxHashProof {
   timestamp: string;
 }
 
+export interface XrplPaymentProof {
+  proof_type: "xrpl_payment";
+  rail: "xrpl";
+  tx_hash: string;
+  invoice_id: string;
+  nonce: string;
+  payer: string;
+}
+
 export type PaymentProof =
   | PrepaidCreditProof
   | ChannelSpendProof
   | SignedAuthProof
-  | TxHashProof;
+  | TxHashProof
+  | XrplPaymentProof;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Verification & Settlement (facilitator responses)
@@ -319,7 +333,7 @@ export const HEADERS = {
 export const DEFAULT_INVOICE_TTL_SECONDS = 300;
 
 /** Accepted asset symbols. */
-export const ACCEPTED_ASSETS = ["USDF", "sUSDF", "xUSDF", "USDC", "UNY"] as const;
+export const ACCEPTED_ASSETS = ["USDF", "sUSDF", "xUSDF", "USDC", "UNY", "wXAU", "wUSTB", "wBOND", "wINV"] as const;
 
 /** All settlement rails. */
 export const ALL_RAILS: Rail[] = ["unykorn-l1", "stellar", "xrpl", "base"];
@@ -330,4 +344,5 @@ export const ALL_PROOF_TYPES: ProofType[] = [
   "channel_spend",
   "signed_auth",
   "tx_hash",
+  "xrpl_payment",
 ];
