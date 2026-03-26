@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "description": "FTH Guardian — daemon army for UnyKorn L1 + x402 infrastructure: monitoring, security, auto-healing, revenue generation, and self-upgrade",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "dev": "tsx watch --env-file=../../.env src/index.ts",
     "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc",
-    "start": "node --env-file=../../.env dist/index.js",
+    "start": "node --env-file=../../.env dist/src/index.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
