@@ -16,89 +16,124 @@ import { TokenBalance }      from "./components/TokenBalance";
 import { SwapWidget }        from "./components/SwapWidget";
 import { RegistryView }      from "./components/RegistryView";
 import { SiteFooter }        from "./components/SiteFooter";
+import { ScrollToTop }       from "./components/ScrollToTop";
+import { useReveal }         from "./hooks/useReveal";
+
+/** Wrapper that applies scroll-triggered reveal animation */
+function Reveal({ children }: { children: React.ReactNode }) {
+  const ref = useReveal<HTMLDivElement>();
+  return <div ref={ref} className="reveal">{children}</div>;
+}
 
 export default function App() {
   return (
     <>
+      {/* ── Skip to content (accessibility) ────────────────────────────────── */}
+      <a href="#stats" className="skip-to-content">Skip to content</a>
+
       {/* ── Fixed navigation ──────────────────────────────────────────────── */}
       <SiteHeader />
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <Hero />
 
+      {/* ── Main content ──────────────────────────────────────────────────── */}
+      <main>
+
       {/* ── Divider ───────────────────────────────────────────────────────── */}
       <hr className="divider" />
 
       {/* ── Token stats ───────────────────────────────────────────────────── */}
-      <TokenStats />
+      <Reveal>
+        <TokenStats />
+      </Reveal>
 
       {/* ── Divider ───────────────────────────────────────────────────────── */}
       <hr className="divider" />
 
       {/* ── Why UnyKorn ───────────────────────────────────────────────────── */}
-      <WhyUnyKorn />
+      <Reveal>
+        <WhyUnyKorn />
+      </Reveal>
 
       {/* ── Divider ───────────────────────────────────────────────────────── */}
       <hr className="divider" />
 
       {/* ── Pool info ─────────────────────────────────────────────────────── */}
-      <PoolInfo />
+      <Reveal>
+        <PoolInfo />
+      </Reveal>
 
       {/* ── Divider ───────────────────────────────────────────────────────── */}
       <hr className="divider" />
 
       {/* ── Ecosystem ─────────────────────────────────────────────────────── */}
-      <Ecosystem />
+      <Reveal>
+        <Ecosystem />
+      </Reveal>
 
       {/* ── Divider ───────────────────────────────────────────────────────── */}
       <hr className="divider" />
 
       {/* ── Roadmap ───────────────────────────────────────────────────────── */}
-      <Roadmap />
+      <Reveal>
+        <Roadmap />
+      </Reveal>
 
       {/* ── Divider ───────────────────────────────────────────────────────── */}
       <hr className="divider" />
 
       {/* ── Community ─────────────────────────────────────────────────────── */}
-      <CommunityBanner />
+      <Reveal>
+        <CommunityBanner />
+      </Reveal>
 
       {/* ── Divider ───────────────────────────────────────────────────────── */}
       <hr className="divider" />
 
       {/* ── FAQ ───────────────────────────────────────────────────────────── */}
-      <FAQ />
+      <Reveal>
+        <FAQ />
+      </Reveal>
 
       {/* ── Divider ───────────────────────────────────────────────────────── */}
       <hr className="divider" />
 
       {/* ── Wallet section ────────────────────────────────────────────────── */}
-      <section className="section" id="wallet">
-        <div className="section-header">
-          <span className="badge-gold badge">DApp</span>
-          <h2 style={{ marginTop: 16 }}>Your Wallet</h2>
-          <p>Connect your wallet to view balances, swap tokens, and manage positions.</p>
-        </div>
-
-        <div style={{ maxWidth: 520, margin: "0 auto" }}>
-          {/* Balances */}
-          <div style={{ marginBottom: 20 }}>
-            <TokenBalance />
+      <Reveal>
+        <section className="section" id="wallet">
+          <div className="section-header">
+            <span className="badge-gold badge">DApp</span>
+            <h2 style={{ marginTop: 16 }}>Your Wallet</h2>
+            <p>Connect your wallet to view balances, swap tokens, and manage positions.</p>
           </div>
 
-          {/* Swap */}
-          <div style={{ marginBottom: 20 }}>
-            <SwapWidget />
-          </div>
+          <div style={{ maxWidth: 520, margin: "0 auto" }}>
+            {/* Balances */}
+            <div style={{ marginBottom: 20 }}>
+              <TokenBalance />
+            </div>
 
-          {/* Registry */}
-          <div>
-            <RegistryView />
+            {/* Swap */}
+            <div style={{ marginBottom: 20 }}>
+              <SwapWidget />
+            </div>
+
+            {/* Registry */}
+            <div>
+              <RegistryView />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </Reveal>
+
+      </main>
 
       {/* ── Footer ────────────────────────────────────────────────────────── */}
       <SiteFooter />
+
+      {/* ── Scroll to top ─────────────────────────────────────────────────── */}
+      <ScrollToTop />
     </>
   );
 }

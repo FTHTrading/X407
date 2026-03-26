@@ -1,0 +1,37 @@
+# Docker build context ignore — keep only what Dockerfiles need
+node_modules
+.git
+*.md
+*.log
+dist
+build
+out
+coverage
+.next
+.env*
+*.tgz
+
+# Heavy monorepo dirs not needed by x402 Dockerfiles
+apps/
+contracts/
+docs/
+test/
+tests/
+tools/
+aws/docker/
+.github/
+.vscode/
+
+# Artifacts
+artifacts/
+cache/
+typechain-types/
+
+# Large binary/asset dirs
+*.tar.gz
+*.zip
+*.png
+*.jpg
+*.gif
+*.mp4
+*.wasm

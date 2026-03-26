@@ -106,8 +106,8 @@ contract UnyKornLPManager is Ownable {
         _pullToken(tokenY, amountY);
 
         // Approve router
-        uny.approve(address(router), amountX);
-        IERC20(tokenY).approve(address(router), amountY);
+        uny.forceApprove(address(router), amountX);
+        IERC20(tokenY).forceApprove(address(router), amountY);
 
         uint256 minX = amountX * (10000 - slippageBps) / 10000;
         uint256 minY = amountY * (10000 - slippageBps) / 10000;
@@ -158,7 +158,7 @@ contract UnyKornLPManager is Ownable {
         uint256 slippageBps
     ) external payable onlyOwner returns (uint256 positionId) {
         _pullToken(address(uny), amountX);
-        uny.approve(address(router), amountX);
+        uny.forceApprove(address(router), amountX);
 
         uint256 amountY = msg.value;
         uint256 minX = amountX * (10000 - slippageBps) / 10000;
@@ -205,9 +205,13 @@ contract UnyKornLPManager is Ownable {
     /// @notice Remove all liquidity from a tracked position
     /// @param positionId  Index into positions[]
     /// @param amounts     LP amounts to burn per bin (match binIds order)
+    /// @param amountXMin  Minimum tokenX to receive (slippage protection)
+    /// @param amountYMin  Minimum tokenY to receive (slippage protection)
     function removeLiquidity(
         uint256 positionId,
-        uint256[] calldata amounts
+        uint256[] calldata amounts,
+        uint256 amountXMin,
+        uint256 amountYMin
     ) external onlyOwner {
         Position storage pos = _getPosition(positionId);
 
@@ -215,8 +219,8 @@ contract UnyKornLPManager is Ownable {
             LBR.IERC20(pos.tokenX),
             LBR.IERC20(pos.tokenY),
             pos.binStep,
-            0, // amountXMin — we trust on-chain for now
-            0, // amountYMin
+            amountXMin,
+            amountYMin,
             pos.binIds,
             amounts,
             address(this),

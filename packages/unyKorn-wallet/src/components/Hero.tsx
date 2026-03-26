@@ -1,11 +1,49 @@
 /**
  * src/components/Hero.tsx
- * Full-screen hero section with animated background, branding, and CTA buttons.
+ * Full-screen hero section with animated background, particles, branding, and CTA buttons.
  */
 
+import { useMemo } from "react";
+import { UNYKORN_CHAIN } from "../wagmi";
+
+// Generate random particles for the background
+function useParticles(count: number) {
+  return useMemo(() => {
+    return Array.from({ length: count }, (_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      delay: Math.random() * 15,
+      duration: 8 + Math.random() * 12,
+      size: 1 + Math.random() * 3,
+      opacity: 0.2 + Math.random() * 0.5,
+    }));
+  }, [count]);
+}
+
 export function Hero() {
+  const particles = useParticles(30);
+
   return (
     <section className="hero-bg" id="top">
+      {/* Particle field */}
+      <div className="hero-particles">
+        {particles.map((p) => (
+          <span
+            key={p.id}
+            className="particle"
+            style={{
+              left: `${p.left}%`,
+              bottom: `-5%`,
+              width: p.size,
+              height: p.size,
+              opacity: p.opacity,
+              animationDelay: `${p.delay}s`,
+              animationDuration: `${p.duration}s`,
+            }}
+          />
+        ))}
+      </div>
+
       <div style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "0 24px", maxWidth: 800 }}>
 
         {/* Floating unicorn */}
@@ -21,7 +59,7 @@ export function Hero() {
         <div className="animate-fade-in" style={{ marginBottom: 20 }}>
           <span className="badge">
             <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--color-green)", boxShadow: "0 0 8px var(--color-green)" }} />
-            Live on Avalanche C-Chain
+            Live on UnyKorn L1
           </span>
         </div>
 
@@ -36,19 +74,19 @@ export function Hero() {
           margin: "16px auto 0",
           lineHeight: 1.5,
         }}>
-          The unicorn of Avalanche DeFi. An ERC-20 token powering
-          decentralized pools, vaults, and cross-chain infrastructure.
+          Sovereign payment infrastructure on AWS-backed UnyKorn L1.
+          Fund agents, issue invoices, verify settlement, and unlock paid APIs.
         </p>
 
         {/* CTA */}
         <div className="animate-fade-in-d3" style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 36, flexWrap: "wrap" }}>
           <a
-            href="https://traderjoexyz.com/avalanche/trade?inputCurrency=AVAX&outputCurrency=0xc09003213b34c7bec8d2eddfad4b43e51d007d66"
+            href={UNYKORN_CHAIN.blockExplorers.default.url}
             target="_blank"
             rel="noreferrer"
             className="btn-primary"
           >
-            Buy UNY on TraderJoe
+            Open UnyKorn Explorer
           </a>
           <a href="#wallet" className="btn-secondary">
             Connect Wallet
@@ -63,10 +101,10 @@ export function Hero() {
           marginTop: 48,
           flexWrap: "wrap",
         }}>
-          <QuickStat label="Network" value="Avalanche" />
-          <QuickStat label="Standard" value="ERC-20" />
-          <QuickStat label="Supply" value="1B UNY" />
-          <QuickStat label="DEX" value="TraderJoe" />
+          <QuickStat label="Network" value="UnyKorn L1" />
+          <QuickStat label="Infra" value="AWS" />
+          <QuickStat label="Asset" value="UNY" />
+          <QuickStat label="Flow" value="x402" />
         </div>
 
         {/* Scroll indicator */}

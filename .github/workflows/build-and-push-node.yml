@@ -1,0 +1,171 @@
+name: Build and Push Node Image
+
+on:
+  push:
+    branches:
+      - main
+      - release/**
+    paths:
+      - 'crates/**'
+      - 'system-modules/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'aws/docker/Dockerfile.node'
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Image tag to push (default: git SHA)'
+        required: false
+        default: ''
+
+permissions:
+  id-token: write   # Required for OIDC authentication to AWS
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 933629770808.dkr.ecr.us-east-1.amazonaws.com
+  ECR_NODE_REPO: unykorn-l1/node
+
+jobs:
+  build-and-push:
+    name: Build Rust Node → ECR
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── Checkout ────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Rust toolchain ──────────────────────────────────────
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          target: x86_64-unknown-linux-musl
+
+      # ── Cargo cache ─────────────────────────────────────────
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      # ── Build binary ─────────────────────────────────────────
+      - name: Build unykorn binary (release)
+        run: |
+          # Binary output name is 'unykorn' (from [[bin]] name in crates/node/Cargo.toml)
+          cargo build --release -p unykorn-node \
+            --features "compliance-quorum,mod-trade-finance"
+          echo "Build complete:"
+          ls -lh target/release/unykorn
+
+      # ── Verify binary runs ───────────────────────────────────────────────────────
+      - name: Smoke-test binary
+        run: |
+          ./target/release/unykorn --version || true
+
+      # ── Set up Docker Buildx ─────────────────────────────────
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # ── Determine image tag ──────────────────────────────────
+      - name: Determine image tag
+        id: tag
+        run: |
+          if [ -n "${{ github.event.inputs.image_tag }}" ]; then
+            TAG="${{ github.event.inputs.image_tag }}"
+          else
+            TAG="${{ github.sha }}"
+          fi
+          SHORT_SHA="${TAG:0:8}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
+          echo "Image will be tagged: ${ECR_REGISTRY}/${ECR_NODE_REPO}:${TAG}"
+          echo "Image will also be tagged: ${ECR_REGISTRY}/${ECR_NODE_REPO}:latest"
+
+      # ── Configure AWS credentials (OIDC) ─────────────────────
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: GHActions-UnyKorn-NodeBuild
+
+      # ── Login to ECR ─────────────────────────────────────────
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # ── Build and push Docker image ──────────────────────────      # NOTE: This workflow must run from the unykorn-l1 chain source repo,
+      # not from unyKorn-master. The Dockerfile context is the repo root.      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: aws/docker/Dockerfile.node
+          push: true
+          tags: |
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_NODE_REPO }}:${{ steps.tag.outputs.tag }}
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_NODE_REPO }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILD_SHA=${{ steps.tag.outputs.tag }}
+
+      # ── Verify push ──────────────────────────────────────────
+      - name: Verify image in ECR
+        run: |
+          IMAGE_COUNT=$(aws ecr list-images \
+            --repository-name $ECR_NODE_REPO \
+            --region $AWS_REGION \
+            --query 'length(imageIds)' \
+            --output text)
+          echo "ECR image count after push: ${IMAGE_COUNT}"
+          if [ "${IMAGE_COUNT}" -lt 1 ]; then
+            echo "ERROR: No images found in ECR after push. Push failed."
+            exit 1
+          fi
+          echo "ECR push verified successfully."
+
+      # ── Summary ──────────────────────────────────────────────
+      - name: Write job summary
+        run: |
+          echo "## UnyKorn Node Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | \`${ECR_REGISTRY}/${ECR_NODE_REPO}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tag | \`${{ steps.tag.outputs.tag }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Also pushed | \`latest\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next step:** SSH to EC2 nodes and run \`bootstrap-node-runtime.sh\`" >> $GITHUB_STEP_SUMMARY
+
+# ── Required GitHub Secrets ─────────────────────────────────────
+# AWS_ROLE_ARN — IAM role ARN for OIDC authentication
+#   Format: arn:aws:iam::933629770808:role/<github-actions-role-name>
+#   The role must have:
+#     - ecr:GetAuthorizationToken
+#     - ecr:BatchCheckLayerAvailability
+#     - ecr:GetDownloadUrlForLayer
+#     - ecr:BatchGetImage
+#     - ecr:InitiateLayerUpload
+#     - ecr:UploadLayerPart
+#     - ecr:CompleteLayerUpload
+#     - ecr:PutImage
+#     - ecr:ListImages
+#
+# Trust policy for the role must include:
+#   "StringLike": {
+#     "token.actions.githubusercontent.com:sub": "repo:<org>/<repo>:*"
+#   }
+#
+# If not using OIDC, you can use AWS_ACCESS_KEY_ID + AWS_SECRET_ACCESS_KEY
+# secrets instead and switch configure-aws-credentials to use them.

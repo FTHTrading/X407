@@ -13,7 +13,7 @@ import { writeFileSync, mkdirSync } from "fs";
 import { resolve } from "path";
 
 // UNY token already live on Avalanche (from registry/contracts/contracts.json)
-// Operator deployer: 0x8aced25DC8530FDaf0f86D53a0A1E02AAfA7Ac7A
+// Operator deployer: 0x95989eB2AD1bF8036d23B53db4d587455a322022
 const KNOWN_ENTRIES = [
   {
     label:       "uny-token-43114",

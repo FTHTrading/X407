@@ -1,10 +1,17 @@
 /**
  * src/components/PoolInfo.tsx
- * Displays TraderJoe V1 pool reserves and pricing info.
+ * Displays TraderJoe V1 pool reserves, pricing, and TVL info.
  */
 
 import { useReadContracts } from "wagmi";
 import { formatUnits }      from "viem";
+import {
+  UNY_WAVAX_POOL_ADDRESS,
+  UNY_USDC_POOL_ADDRESS,
+  LFJ_ROUTER_URL_AVAX,
+  LFJ_ROUTER_URL_USDC,
+} from "../wagmi";
+import { CopyButton } from "./CopyButton";
 
 const PAIR_ABI = [
   { name: "getReserves", type: "function", stateMutability: "view", inputs: [], outputs: [
@@ -15,12 +22,12 @@ const PAIR_ABI = [
   { name: "totalSupply", type: "function", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
 ] as const;
 
-const WAVAX_UNY_PAIR = "0xC6F5273D74571d91CBcBA0A2900ed5F7C800F5d0" as const;
-const USDC_UNY_PAIR  = "0x9ff923a83B3d12DB280Ff65D69AE37819a743f83" as const;
+const WAVAX_UNY_PAIR = UNY_WAVAX_POOL_ADDRESS;
+const USDC_UNY_PAIR  = UNY_USDC_POOL_ADDRESS;
 
 export function PoolInfo() {
   // Batch read reserves for both pools
-  const { data } = useReadContracts({
+  const { data, isLoading, isError } = useReadContracts({
     contracts: [
       { address: WAVAX_UNY_PAIR, abi: PAIR_ABI, functionName: "getReserves" },
       { address: USDC_UNY_PAIR,  abi: PAIR_ABI, functionName: "getReserves" },
@@ -33,20 +40,23 @@ export function PoolInfo() {
   let wavaxReserve = "—", wavaxUny = "—", wavaxPrice = "—";
   if (data?.[0]?.result) {
     const [r0, r1] = data[0].result as [bigint, bigint, number];
-    wavaxReserve = parseFloat(formatUnits(r0, 18)).toFixed(3);
+    wavaxReserve = parseFloat(formatUnits(r0, 18)).toFixed(4);
     wavaxUny     = fmtK(parseFloat(formatUnits(r1, 18)));
     const price  = parseFloat(formatUnits(r0, 18)) / parseFloat(formatUnits(r1, 18));
     wavaxPrice   = price.toFixed(8);
   }
 
   // USDC/UNY: token0 = USDC (6 dec), token1 = UNY (18 dec)
-  let usdcReserve = "—", usdcUny = "—", usdcPrice = "—";
+  let usdcReserve = "—", usdcUny = "—", usdcPrice = "—", usdcTvl = "—";
   if (data?.[1]?.result) {
     const [r0, r1] = data[1].result as [bigint, bigint, number];
-    usdcReserve = parseFloat(formatUnits(r0, 6)).toFixed(2);
+    const usdcVal = parseFloat(formatUnits(r0, 6));
+    usdcReserve = usdcVal.toFixed(2);
     usdcUny     = fmtK(parseFloat(formatUnits(r1, 18)));
-    const price = parseFloat(formatUnits(r0, 6)) / parseFloat(formatUnits(r1, 18));
+    const price = usdcVal / parseFloat(formatUnits(r1, 18));
     usdcPrice   = "$" + price.toFixed(6);
+    // TVL estimate: USDC side * 2 (standard AMM TVL calc)
+    usdcTvl = "$" + (usdcVal * 2).toFixed(2);
   }
 
   return (
@@ -67,12 +77,26 @@ export function PoolInfo() {
             </div>
             <span className="badge-green badge" style={{ fontSize: 10 }}>Active</span>
           </div>
-          <PoolDetail label="WAVAX Reserve" value={wavaxReserve} />
-          <PoolDetail label="UNY Reserve"   value={wavaxUny} />
-          <PoolDetail label="UNY Price"     value={`${wavaxPrice} WAVAX`} highlight />
+          {isError ? (
+            <p className="muted" style={{ fontSize: 13, color: "var(--color-accent)", textAlign: "center", padding: "20px 0" }}>
+              Unable to load pool data. RPC may be temporarily unavailable.
+            </p>
+          ) : isLoading ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <span className="skeleton skeleton--wide" />
+              <span className="skeleton skeleton--wide" />
+              <span className="skeleton skeleton--wide" />
+            </div>
+          ) : (
+            <>
+              <PoolDetail label="WAVAX Reserve" value={wavaxReserve} />
+              <PoolDetail label="UNY Reserve"   value={wavaxUny} />
+              <PoolDetail label="UNY Price"     value={`${wavaxPrice} WAVAX`} highlight />
+            </>
+          )}
           <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
             <a
-              href="https://traderjoexyz.com/avalanche/trade?inputCurrency=AVAX&outputCurrency=0xc09003213b34c7bec8d2eddfad4b43e51d007d66"
+              href={LFJ_ROUTER_URL_AVAX}
               target="_blank"
               rel="noreferrer"
               className="btn-primary"
@@ -90,6 +114,13 @@ export function PoolInfo() {
               Chart
             </a>
           </div>
+          {/* Pool address with copy */}
+          <div style={{ marginTop: 12, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+            <span className="muted" style={{ fontSize: 11, fontFamily: "monospace" }}>
+              {WAVAX_UNY_PAIR.slice(0, 8)}…{WAVAX_UNY_PAIR.slice(-6)}
+            </span>
+            <CopyButton text={WAVAX_UNY_PAIR} label="" />
+          </div>
         </div>
 
         {/* USDC / UNY */}
@@ -101,12 +132,29 @@ export function PoolInfo() {
             </div>
             <span className="badge-green badge" style={{ fontSize: 10 }}>Active</span>
           </div>
-          <PoolDetail label="USDC Reserve" value={`$${usdcReserve}`} />
-          <PoolDetail label="UNY Reserve"  value={usdcUny} />
-          <PoolDetail label="UNY Price"    value={usdcPrice} highlight />
+          {isError ? (
+            <p className="muted" style={{ fontSize: 13, color: "var(--color-accent)", textAlign: "center", padding: "20px 0" }}>
+              Unable to load pool data. RPC may be temporarily unavailable.
+            </p>
+          ) : isLoading ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <span className="skeleton skeleton--wide" />
+              <span className="skeleton skeleton--wide" />
+              <span className="skeleton skeleton--wide" />
+            </div>
+          ) : (
+            <>
+              <PoolDetail label="USDC Reserve" value={`$${usdcReserve}`} />
+              <PoolDetail label="UNY Reserve"  value={usdcUny} />
+              <PoolDetail label="UNY Price"    value={usdcPrice} highlight />
+              {usdcTvl !== "—" && (
+                <PoolDetail label="Est. TVL" value={usdcTvl} />
+              )}
+            </>
+          )}
           <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
             <a
-              href="https://traderjoexyz.com/avalanche/trade?inputCurrency=0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e&outputCurrency=0xc09003213b34c7bec8d2eddfad4b43e51d007d66"
+              href={LFJ_ROUTER_URL_USDC}
               target="_blank"
               rel="noreferrer"
               className="btn-primary"
@@ -124,7 +172,25 @@ export function PoolInfo() {
               Chart
             </a>
           </div>
+          {/* Pool address with copy */}
+          <div style={{ marginTop: 12, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+            <span className="muted" style={{ fontSize: 11, fontFamily: "monospace" }}>
+              {USDC_UNY_PAIR.slice(0, 8)}…{USDC_UNY_PAIR.slice(-6)}
+            </span>
+            <CopyButton text={USDC_UNY_PAIR} label="" />
+          </div>
         </div>
+      </div>
+
+      {/* LP Warning */}
+      <div className="card" style={{ marginTop: 20, padding: "16px 24px", textAlign: "center" }}>
+        <p style={{ fontSize: 13, color: "var(--color-accent)" }}>
+          ⚠ Liquidity is currently thin. Use small trades and check{" "}
+          <a href={`https://dexscreener.com/avalanche/${UNY_WAVAX_POOL_ADDRESS}`} target="_blank" rel="noreferrer">
+            DexScreener
+          </a>{" "}
+          for live depth before swapping.
+        </p>
       </div>
     </section>
   );

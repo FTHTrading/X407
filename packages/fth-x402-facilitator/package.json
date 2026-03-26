@@ -1,0 +1,28 @@
+{
+  "name": "fth-x402-facilitator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FTH x402 Facilitator — payment verification, settlement, receipts, replay guard, channel management",
+  "main": "dist/fth-x402-facilitator/src/index.js",
+  "scripts": {
+    "dev": "tsx watch --env-file=../../.env src/index.ts",
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc",
+    "start": "node --env-file=../../.env dist/fth-x402-facilitator/src/index.js",
+    "start:local": "node --env-file=../../.env dist/fth-x402-facilitator/src/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "fastify": "^5.8.4",
+    "@fastify/cors": "^11.2.0",
+    "pg": "^8.12.0",
+    "nanoid": "^5.0.0",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "@types/pg": "^8.11.0",
+    "tsx": "^4.10.0",
+    "typescript": "^5.4.0"
+  }
+}

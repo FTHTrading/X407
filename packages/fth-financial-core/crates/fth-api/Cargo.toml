@@ -1,0 +1,36 @@
+[package]
+name = "fth-api"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "fth-financial-core"
+path = "src/main.rs"
+
+[dependencies]
+fth-types = { workspace = true }
+fth-ledger = { workspace = true }
+fth-settlement = { workspace = true }
+fth-vault = { workspace = true }
+fth-risk = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+rust_decimal = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+axum = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+sqlx = { workspace = true }
+reqwest = { workspace = true }
+prometheus = { workspace = true }
+ed25519-dalek = { workspace = true }
+base64 = { workspace = true }
+envy = { workspace = true }

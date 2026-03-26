@@ -1,0 +1,20 @@
+# Terraform
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+.terraform/
+.terraform.lock.hcl
+tfplan
+crash.log
+
+# Environment-specific overrides (may contain real values)
+*.auto.tfvars
+
+# Packer
+packer_cache/
+*.box
+
+# Secrets (never commit)
+*.pem
+*.key
+node-keys.json

@@ -1,0 +1,133 @@
+# docker-compose.production.yml
+# Full x402 + Guardian production stack
+# Runs on AWS alongside the L1 node fleet
+
+version: "3.9"
+
+services:
+  # ─────────────────────────────────────────────────
+  # PostgreSQL — Shared database for all services
+  # ─────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: fth_x402
+      POSTGRES_USER: fth_x402_app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/01-init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fth_x402_app -d fth_x402"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─────────────────────────────────────────────────
+  # x402 Facilitator — Payment processing
+  # ─────────────────────────────────────────────────
+  facilitator:
+    build:
+      context: ../../
+      dockerfile: aws/docker/Dockerfile.facilitator
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: "3100"
+      DATABASE_URL: postgresql://fth_x402_app:${POSTGRES_PASSWORD}@postgres:5432/fth_x402
+      FTH_SIGNING_KEY: ${FTH_SIGNING_KEY:?Set FTH_SIGNING_KEY}
+      UNYKORN_RPC_URL: http://rpc.l1.unykorn.org:3001
+      UNYKORN_RPC_FALLBACK_URL: http://rpc.l1.unykorn.org:3002
+      L1_CHAIN_ID: "1337"
+      OPERATOR_WEBHOOK_SECRET: ${OPERATOR_WEBHOOK_SECRET:-}
+    ports:
+      - "3100:3100"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3100/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ─────────────────────────────────────────────────
+  # x402 Treasury — Agent fund management
+  # ─────────────────────────────────────────────────
+  treasury:
+    build:
+      context: ../../
+      dockerfile: aws/docker/Dockerfile.treasury
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: "3200"
+      DATABASE_URL: postgresql://fth_x402_app:${POSTGRES_PASSWORD}@postgres:5432/fth_x402
+      TREASURY_MASTER_KEY: ${TREASURY_MASTER_KEY:-}
+      UNYKORN_RPC_URL: http://rpc.l1.unykorn.org:3001
+      L1_CHAIN_ID: "1337"
+    ports:
+      - "3200:3200"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3200/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ─────────────────────────────────────────────────
+  # Guardian — Army of daemons
+  # ─────────────────────────────────────────────────
+  guardian:
+    build:
+      context: ../../
+      dockerfile: aws/docker/Dockerfile.guardian
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      facilitator:
+        condition: service_healthy
+      treasury:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      GUARDIAN_PORT: "3300"
+      DATABASE_URL: postgresql://fth_x402_app:${POSTGRES_PASSWORD}@postgres:5432/fth_x402
+      UNYKORN_RPC_URL: http://rpc.l1.unykorn.org:3001
+      FACILITATOR_URL: http://facilitator:3100
+      TREASURY_URL: http://treasury:3200
+      FACILITATOR_PUBLIC_URL: http://facilitator:3100/health
+      L1_CHAIN_ID: "1337"
+      ALERT_WEBHOOK_URL: ${ALERT_WEBHOOK_URL:-}
+      AWS_REGION: us-east-1
+    ports:
+      - "3300:3300"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3300/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ─────────────────────────────────────────────────
+  # Grafana — Monitoring dashboards
+  # ─────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:11-alpine
+    restart: always
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s:3400/"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3400:3000"
+
+volumes:
+  pgdata:
+  grafana_data:

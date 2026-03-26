@@ -7,8 +7,8 @@
 
 import { useState } from "react";
 import { useReadContract, useChainId } from "wagmi";
-import { avalanche }                    from "wagmi/chains";
 import { VAULT_REGISTRY_ABI, ENTRY_TYPE_LABEL } from "../abis/vaultRegistry";
+import { UNYKORN_CHAIN } from "../wagmi";
 
 const REGISTRY_ADDRESS =
   (import.meta.env.VITE_VAULT_REGISTRY_ADDRESS as `0x${string}` | undefined) ?? "";
@@ -29,7 +29,7 @@ function shortAddr(a: string) {
 
 export function RegistryView() {
   const chainId     = useChainId();
-  const isAvalanche = chainId === avalanche.id;
+  const isUnyKorn   = chainId === UNYKORN_CHAIN.id;
   const [page]      = useState(0);
   const PAGE_SIZE   = 20;
 
@@ -37,7 +37,7 @@ export function RegistryView() {
     address:      REGISTRY_ADDRESS as `0x${string}`,
     abi:          VAULT_REGISTRY_ABI,
     functionName: "entryCount",
-    query:        { enabled: !!REGISTRY_ADDRESS && isAvalanche },
+    query:        { enabled: !!REGISTRY_ADDRESS && isUnyKorn },
   });
 
   const { data: entries, isLoading } = useReadContract({
@@ -45,7 +45,7 @@ export function RegistryView() {
     abi:          VAULT_REGISTRY_ABI,
     functionName: "getEntries",
     args:         [BigInt(page * PAGE_SIZE), BigInt((page + 1) * PAGE_SIZE)],
-    query:        { enabled: !!REGISTRY_ADDRESS && isAvalanche && count !== undefined && count > 0n },
+    query:        { enabled: !!REGISTRY_ADDRESS && isUnyKorn && count !== undefined && count > 0n },
   });
 
   if (!REGISTRY_ADDRESS) {
@@ -53,20 +53,17 @@ export function RegistryView() {
       <div className="card">
         <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>On-chain Registry</h2>
         <p className="muted">
-          VaultRegistry not deployed yet.{" "}
-          <code style={{ fontSize: 12 }}>npm run deploy:registry:avalanche</code>{" "}
-          then set <code style={{ fontSize: 12 }}>VITE_VAULT_REGISTRY_ADDRESS</code> in{" "}
-          <code style={{ fontSize: 12 }}>.env</code>.
+          VaultRegistry not deployed yet. Set <code style={{ fontSize: 12 }}>VITE_VAULT_REGISTRY_ADDRESS</code> in <code style={{ fontSize: 12 }}>.env</code> once your registry is available on the selected chain.
         </p>
       </div>
     );
   }
 
-  if (!isAvalanche) {
+  if (!isUnyKorn) {
     return (
       <div className="card">
         <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>On-chain Registry</h2>
-        <p className="muted">Switch to Avalanche C-Chain to view the registry.</p>
+        <p className="muted">Switch to UnyKorn L1 to view the registry.</p>
       </div>
     );
   }
@@ -128,7 +125,7 @@ export function RegistryView() {
       ))}
 
       <p className="muted" style={{ fontSize: 11, marginTop: 12 }}>
-        Registry: <a href={`https://snowtrace.io/address/${REGISTRY_ADDRESS}`} target="_blank" rel="noreferrer">{shortAddr(REGISTRY_ADDRESS)}</a>
+        Registry: <a href={`${UNYKORN_CHAIN.blockExplorers.default.url.replace(/\/$/, "")}/address/${REGISTRY_ADDRESS}`} target="_blank" rel="noreferrer">{shortAddr(REGISTRY_ADDRESS)}</a>
       </p>
     </div>
   );

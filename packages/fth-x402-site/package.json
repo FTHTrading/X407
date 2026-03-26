@@ -1,0 +1,12 @@
+{
+  "name": "fth-x402-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Information site for x402.unykorn.org",
+  "scripts": {
+    "deploy": "npm run deploy:preview",
+    "deploy:preview": "npx wrangler pages deploy public --project-name x402-site",
+    "deploy:production": "npx wrangler pages deploy public --project-name x402-site --branch main"
+  },
+  "dependencies": {}
+}

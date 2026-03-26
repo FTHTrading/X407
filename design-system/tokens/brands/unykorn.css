@@ -1,0 +1,26 @@
+/*
+ * SOVEREIGN Design System — UnyKorn Brand Skin
+ * Core sovereign ecosystem layer
+ * Palette: deep black, white, royal electric blue
+ *
+ * Usage: @import "sovereign.css"; @import "brands/unykorn.css";
+ */
+
+[data-brand="unykorn"],
+.brand-unykorn {
+  --sov-accent-1:      #3b82f6;         /* royal electric blue */
+  --sov-accent-2:      #a855f7;         /* purple */
+  --sov-accent-3:      #ffffff;         /* white */
+
+  --sov-glow:          rgba(59, 130, 246, 0.25);
+  --sov-border-glow:   rgba(59, 130, 246, 0.3);
+
+  --sov-gradient:      linear-gradient(135deg, #3b82f6 0%, #a855f7 100%);
+  --sov-gradient-h:    linear-gradient(90deg, #3b82f6 0%, #a855f7 100%);
+}
+
+/*
+ * Hero object: Unicorn sigil — orb or constellation
+ * Tone: Sovereign, engineered, foundational
+ * Module emphasis: Core, Capital, RWA, Trust
+ */

@@ -3,7 +3,7 @@
  * Professional footer with links, branding, and contract info.
  */
 
-import { UNY_TOKEN_ADDRESS } from "../wagmi";
+import { UNY_TOKEN_ADDRESS, UNY_WAVAX_POOL_ADDRESS } from "../wagmi";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -33,7 +33,7 @@ export function SiteFooter() {
               Resources
             </h4>
             <FooterLink href={`https://snowtrace.io/token/${UNY_TOKEN_ADDRESS}`} label="Snowtrace" />
-            <FooterLink href="https://dexscreener.com/avalanche/0xC6F5273D74571d91CBcBA0A2900ed5F7C800F5d0" label="DexScreener" />
+            <FooterLink href={`https://dexscreener.com/avalanche/${UNY_WAVAX_POOL_ADDRESS}`} label="DexScreener" />
             <FooterLink href="https://traderjoexyz.com/avalanche" label="TraderJoe" />
             <FooterLink href="https://ram.unykorn.org" label="RAMM Protocol" />
             <FooterLink href="#faq" label="FAQ" />
@@ -95,7 +95,7 @@ export function SiteFooter() {
           </p>
           <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
             <a
-              href="https://snowtrace.io/token/0xc09003213b34c7bec8d2eddfad4b43e51d007d66"
+              href={`https://snowtrace.io/token/${UNY_TOKEN_ADDRESS}`}
               target="_blank"
               rel="noreferrer"
               style={{ color: "var(--color-muted)", fontSize: 12 }}

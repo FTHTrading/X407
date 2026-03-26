@@ -1,0 +1,16 @@
+{
+  "name": "fth-x402-pricing",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FTH x402 Pricing Engine — route price catalog, policies, PASS tier entitlements",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "typescript": "^5.4.0"
+  }
+}

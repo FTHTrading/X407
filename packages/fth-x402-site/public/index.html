@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X402 Protocol | The Payment Layer for the Machine Web</title>
+    <meta name="description" content="x402 is the native payment protocol for AI agents. Monetize APIs with HTTP 402. Zero-fee micro-settlement. Edge-first. Built on UnyKorn L1.">
+    <meta property="og:title" content="x402 — Let Agents Pay Agents">
+    <meta property="og:description" content="The HTTP 402 monetization standard for AI-to-AI commerce. No subscriptions. No API keys. Just cryptographic proof and instant fulfillment.">
+    <meta property="og:url" content="https://x402.unykorn.org">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        if (window.location.hostname === 'explorer.unykorn.org' && (window.location.pathname === '/' || window.location.pathname === '/index.html')) {
+            window.location.replace('/explorer.html' + window.location.search + window.location.hash);
+        }
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        dark: '#0f172a',
+                        darker: '#020617',
+                        accent: '#38bdf8',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; overflow-x: hidden; }
+        .gradient-text { -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; background-image: linear-gradient(135deg, #8b5cf6, #38bdf8); }
+        .gradient-text-warm { -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; background-image: linear-gradient(135deg, #f59e0b, #ef4444); }
+        .glass-panel { background: rgba(15, 23, 42, 0.6); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glow-sphere { position: absolute; width: 400px; height: 400px; border-radius: 50%; filter: blur(100px); z-index: 0; pointer-events: none; }
+        .glow-primary { background: rgba(99,102,241,0.12); }
+        .glow-accent { background: rgba(56,189,248,0.08); }
+        .glow-secondary { background: rgba(139,92,246,0.1); }
+        @keyframes float  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+        @keyframes pulse-glow { 0%,100%{opacity:.4} 50%{opacity:.7} }
+        .floating { animation: float 5s ease-in-out infinite; }
+        .floating-delay-1 { animation-delay: 0.5s; }
+        .floating-delay-2 { animation-delay: 1s; }
+        .pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+        .scenario-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(99,102,241,0.15); }
+        .scenario-card { transition: all 0.3s ease; }
+        .trust-pill { display: inline-flex; align-items: center; gap: .55rem; padding: .7rem 1rem; border-radius: 999px; border: 1px solid rgba(148,163,184,.18); background: rgba(15,23,42,.55); color: #e2e8f0; font-size: .84rem; font-weight: 600; }
+        .trust-pill i { color: #38bdf8; }
+        .metric-card { background: rgba(15,23,42,.58); border: 1px solid rgba(255,255,255,.08); border-radius: 1rem; padding: 1.25rem 1rem; }
+        .metric-card .value { font-size: 2rem; font-weight: 800; line-height: 1; color: #f8fafc; }
+        .metric-card .label { margin-top: .5rem; color: #94a3b8; font-size: .84rem; text-transform: uppercase; letter-spacing: .08em; }
+        .agent-card { transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+        .agent-card:hover { transform: translateY(-4px); border-color: rgba(56,189,248,.35); box-shadow: 0 18px 40px rgba(2,6,23,.35); }
+        .assistant-shell { background: linear-gradient(180deg, rgba(15,23,42,.9), rgba(2,6,23,.92)); border: 1px solid rgba(255,255,255,.08); border-radius: 1.5rem; overflow: hidden; }
+        .assistant-chip { display:inline-flex; align-items:center; gap:.45rem; padding:.55rem .85rem; border-radius:999px; border:1px solid rgba(99,102,241,.25); background:rgba(99,102,241,.1); color:#cbd5e1; font-size:.8rem; font-weight:600; cursor:pointer; transition:all .2s ease; }
+        .assistant-chip:hover, .assistant-chip.active { background:rgba(56,189,248,.14); border-color:rgba(56,189,248,.35); color:#f8fafc; }
+        .assistant-message { background: rgba(15,23,42,.72); border: 1px solid rgba(148,163,184,.12); border-radius: 1rem; padding: 1rem; }
+        .assistant-question { color: #38bdf8; font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .45rem; }
+        .faq-item[open] summary { color: #f8fafc; }
+        .faq-item summary { cursor: pointer; list-style: none; color: #cbd5e1; font-weight: 700; }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item { border: 1px solid rgba(255,255,255,.08); border-radius: 1rem; padding: 1rem 1.1rem; background: rgba(15,23,42,.45); }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Ambient glow -->
+    <div class="glow-sphere glow-primary top-0 left-1/4 pulse-glow"></div>
+    <div class="glow-sphere glow-accent top-1/3 right-0 pulse-glow"></div>
+    <div class="glow-sphere glow-secondary bottom-0 left-0 pulse-glow"></div>
+
+    <!-- ═══════════ NAV ═══════════ -->
+    <nav class="fixed w-full z-50 glass-panel border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="#" class="flex items-center space-x-2">
+                    <i class="fa-solid fa-bolt text-accent text-xl"></i>
+                    <span class="font-extrabold text-xl tracking-tight">x402</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-8 text-sm">
+                    <a href="#about" class="hover:text-accent transition-colors">What is it</a>
+                    <a href="#how-it-works" class="hover:text-accent transition-colors">How it works</a>
+                    <a href="#agent-desk" class="hover:text-accent transition-colors">Agent Desk</a>
+                    <a href="#agent-systems" class="hover:text-accent transition-colors">Systems</a>
+                    <a href="#ai-scenarios" class="hover:text-accent transition-colors">AI Scenarios</a>
+                    <a href="#why-x402" class="hover:text-accent transition-colors">Why x402</a>
+                    <a href="#developer" class="hover:text-accent transition-colors">Developers</a>
+                    <a href="/explorer.html" class="hover:text-accent transition-colors">Explorer</a>
+                    <a href="https://docs.unykorn.org" class="bg-primary hover:bg-secondary transition-colors px-4 py-2 rounded-lg font-semibold">Docs</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="pt-36 pb-24 md:pt-52 md:pb-36 px-4 relative">
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center px-4 py-1.5 rounded-full border border-accent/30 bg-accent/10 text-accent text-sm font-medium mb-8">
+                <i class="fa-solid fa-microchip mr-2"></i> The payment layer for the Machine Web
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]">
+                Let AI agents<br/>
+                <span class="gradient-text">pay each other</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+                x402 turns every API into a monetizable endpoint for the machine web. No subscriptions. No API-key portals. Just an HTTP challenge, a cryptographic proof, and settlement-ready receipts executed at the edge.
+            </p>
+            <div class="flex flex-wrap justify-center gap-3 mb-10 max-w-5xl mx-auto">
+                <span class="trust-pill"><i class="fa-solid fa-badge-check"></i> ESIGN Compliant</span>
+                <span class="trust-pill"><i class="fa-solid fa-scale-balanced"></i> UETA Compliant</span>
+                <span class="trust-pill"><i class="fa-solid fa-shield"></i> SEC 17a-4 Aligned</span>
+                <span class="trust-pill"><i class="fa-solid fa-bolt"></i> x402 Protocol</span>
+                <span class="trust-pill"><i class="fa-solid fa-key"></i> Ed25519 Signing</span>
+                <span class="trust-pill"><i class="fa-solid fa-cubes"></i> IPFS Anchored</span>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="https://docs.unykorn.org/agreement" class="bg-primary hover:bg-primary/90 text-white font-bold py-3.5 px-10 rounded-xl transition shadow-lg shadow-primary/25 flex items-center justify-center">
+                    ■ Generate Agreement + QR <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+                </a>
+                <a href="https://docs.unykorn.org/architecture" class="glass-panel hover:bg-white/5 font-bold py-3.5 px-10 rounded-xl transition flex items-center justify-center">
+                    View Architecture
+                </a>
+                <a href="/explorer.html" class="glass-panel hover:bg-white/5 font-bold py-3.5 px-10 rounded-xl transition flex items-center justify-center">
+                    Open Explorer
+                </a>
+                <a href="https://docs.unykorn.org/pilot" class="glass-panel hover:bg-white/5 font-bold py-3.5 px-10 rounded-xl transition flex items-center justify-center">
+                    Pilot Configuration
+                </a>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-12 max-w-5xl mx-auto text-left">
+                <div class="metric-card">
+                    <div class="value">49+</div>
+                    <div class="label">Core Modules</div>
+                </div>
+                <div class="metric-card">
+                    <div class="value">6</div>
+                    <div class="label">Security Layers</div>
+                </div>
+                <div class="metric-card">
+                    <div class="value">7</div>
+                    <div class="label">Audit Ledgers</div>
+                </div>
+                <div class="metric-card">
+                    <div class="value">3</div>
+                    <div class="label">Anchor Chains</div>
+                </div>
+                <div class="metric-card col-span-2 md:col-span-1">
+                    <div class="value">0</div>
+                    <div class="label">Exposed Ports</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ WHAT IS IT ═══════════ -->
+    <section id="about" class="py-24 bg-dark relative border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-extrabold mb-4">What is x402?</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">A protocol that lets any HTTP endpoint charge for access — and any client (human or AI) pay instantly without signing up.</p>
+                <div class="w-24 h-1 bg-gradient-to-r from-secondary to-accent mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-panel p-8 rounded-2xl scenario-card">
+                    <div class="bg-primary/20 w-14 h-14 rounded-xl flex items-center justify-center mb-6 border border-primary/30">
+                        <i class="fa-solid fa-robot text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Agent-Native</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Built for a world where AI agents call APIs on behalf of users. No browser needed. No OAuth dance. The agent reads the 402 response, signs a proof, and retries — all autonomously.
+                    </p>
+                </div>
+
+                <div class="glass-panel p-8 rounded-2xl scenario-card">
+                    <div class="bg-secondary/20 w-14 h-14 rounded-xl flex items-center justify-center mb-6 border border-secondary/30">
+                        <i class="fa-solid fa-bolt text-2xl text-secondary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Edge-First Speed</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        The Gateway runs on Cloudflare Workers — the same network that powers 20% of the web. Proof verification happens at the edge. No database round-trip blocks the response.
+                    </p>
+                </div>
+
+                <div class="glass-panel p-8 rounded-2xl scenario-card">
+                    <div class="bg-accent/20 w-14 h-14 rounded-xl flex items-center justify-center mb-6 border border-accent/30">
+                        <i class="fa-solid fa-coins text-2xl text-accent"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">True Micro-Payments</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Stripe charges 30&cent; per transaction. x402 charges nothing. Proofs are cryptographic, settlements are batched on-chain asynchronously. Charge a fraction of a cent profitably.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ HOW IT WORKS ═══════════ -->
+    <section id="how-it-works" class="py-24 px-4 relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-extrabold mb-4">The x402 Flow</h2>
+                <p class="text-slate-400 text-lg">Request. Challenge. Prove. Fulfill. Four steps. Zero friction.</p>
+                <div class="w-24 h-1 bg-gradient-to-r from-secondary to-accent mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <div class="space-y-12">
+                <!-- Step 1 -->
+                <div class="flex flex-col md:flex-row items-center gap-8 glass-panel p-6 md:p-8 rounded-2xl">
+                    <div class="md:w-1/2">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 text-primary font-bold border border-primary/30">1</span>
+                            <h3 class="text-2xl font-semibold">The Request</h3>
+                        </div>
+                        <p class="text-slate-400 md:pr-8">
+                            An AI agent (or any HTTP client) hits a paid endpoint. It doesn't need to know the price ahead of time. The Gateway intercepts the request before it reaches the origin.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2 w-full bg-black/40 p-4 rounded-xl font-mono text-sm leading-relaxed text-emerald-400 border-l-4 border-emerald-500">
+                        <span class="text-slate-500">// AI agent makes a normal request</span><br/>
+                        GET /api/v1/market-signal/btc<br/>
+                        Host: api.fth.trading<br/>
+                        User-Agent: TradingBot/2.0
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex flex-col md:flex-row-reverse items-center gap-8 glass-panel p-6 md:p-8 rounded-2xl">
+                    <div class="md:w-1/2">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-amber-500/20 text-amber-400 font-bold border border-amber-500/30">2</span>
+                            <h3 class="text-2xl font-semibold">The 402 Challenge</h3>
+                        </div>
+                        <p class="text-slate-400 md:pl-8">
+                            No proof? The Gateway returns <code class="text-amber-400">402 Payment Required</code> with a machine-readable invoice: the asset, the amount, and a unique nonce. The agent parses this instantly.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2 w-full bg-black/40 flex flex-col p-4 rounded-xl font-mono text-sm border-l-4 border-amber-500">
+                        <span class="text-amber-400 mb-1">HTTP/1.1 402 Payment Required</span>
+                        <span class="text-slate-500 mb-1">X-PAYMENT-REQUIRED: true</span>
+                        <pre class="text-slate-300 p-2 bg-black/30 rounded mt-1">{
+  "version": "fth-x402/2.0",
+  "asset": "USDF",
+  "amount": "0.25",
+  "invoice_id": "inv_8y3GkP",
+  "nonce": "n_z4zcz",
+  "facilitator_url": "https://..."
+}</pre>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex flex-col md:flex-row items-center gap-8 glass-panel p-6 md:p-8 rounded-2xl">
+                    <div class="md:w-1/2">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-accent/20 text-accent font-bold border border-accent/30">3</span>
+                            <h3 class="text-2xl font-semibold">Cryptographic Proof</h3>
+                        </div>
+                        <p class="text-slate-400 md:pr-8">
+                            The agent signs the invoice using its Ed25519 private key — creating a <strong>prepaid credit</strong> deduction or a <strong>state channel</strong> update. No external API call. No wallet popup. It's one function call.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2 w-full bg-black/40 flex flex-col p-4 rounded-xl font-mono text-sm border-l-4 border-accent leading-relaxed">
+                        <span class="text-slate-500">// Agent SDK — 3 lines</span><br/>
+                        <span class="text-purple-400">import</span> <span class="text-slate-300">{ sign402 }</span> <span class="text-purple-400">from</span> <span class="text-emerald-400">'fth-x402-sdk'</span><br/><br/>
+                        <span class="text-slate-300">const proof = sign402(invoice, myKey)</span><br/>
+                        <span class="text-slate-500">// → "prepaid_credit;sig=DslL...;wallet=uny1_..."</span>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="flex flex-col md:flex-row-reverse items-center gap-8 glass-panel p-6 md:p-8 rounded-2xl">
+                    <div class="md:w-1/2">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">4</span>
+                            <h3 class="text-2xl font-semibold">Instant Fulfillment</h3>
+                        </div>
+                        <p class="text-slate-400 md:pl-8">
+                            The agent retries with the proof header. The edge verifies the signature cryptographically, deducts the balance asynchronously, and streams the response to the agent. The whole loop takes milliseconds.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2 w-full bg-black/40 flex flex-col p-4 rounded-xl font-mono text-sm border-l-4 border-emerald-500 leading-relaxed">
+                        <span class="text-slate-300">GET /api/v1/market-signal/btc</span><br/>
+                        <span class="text-accent">X-Payment-Proof: prepaid_credit;sig="DslL..."</span><br/><br/>
+                        <span class="text-emerald-400">HTTP/1.1 200 OK</span><br/>
+                        <span class="text-slate-500">X-Receipt-Id: rcpt_9PcHDn2</span><br/>
+                        <span class="text-slate-300">{ "signal": "bullish", "confidence": 0.92 }</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ AI-TO-AI SCENARIOS ═══════════ -->
+    <section id="ai-scenarios" class="py-24 bg-dark relative border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-extrabold mb-4">AI-to-AI Use Cases</h2>
+                <p class="text-slate-400 text-lg max-w-3xl mx-auto">Every scenario below is possible today. x402 is the missing financial plumbing that lets autonomous agents transact without human gatekeepers.</p>
+                <div class="w-24 h-1 bg-gradient-to-r from-secondary to-accent mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Scenario 1 -->
+                <div class="glass-panel p-8 rounded-2xl scenario-card">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="bg-purple-500/20 w-12 h-12 rounded-xl flex items-center justify-center border border-purple-500/30">
+                            <i class="fa-solid fa-brain text-xl text-purple-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">LLM Orchestration Chains</h3>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-4">
+                        A master agent coordinates specialist models. It sends a prompt to a <strong>code-generation agent</strong>, pays per token, then routes the output to a <strong>security-audit agent</strong> for analysis — each call settled independently via 402.
+                    </p>
+                    <div class="flex items-center text-sm text-accent">
+                        <i class="fa-solid fa-diagram-project mr-2"></i>
+                        Agent A → Agent B → Agent C — each paid per-call
+                    </div>
+                </div>
+
+                <!-- Scenario 2 -->
+                <div class="glass-panel p-8 rounded-2xl scenario-card">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="bg-emerald-500/20 w-12 h-12 rounded-xl flex items-center justify-center border border-emerald-500/30">
+                            <i class="fa-solid fa-chart-line text-xl text-emerald-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Real-Time Market Intelligence</h3>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-4">
+                        A trading bot needs live sentiment analysis. It hits a <strong>market-signal API</strong> that costs a fraction of a cent per call. The bot opens a <strong>state channel</strong>, streams hundreds of requests per second, and settles the total later.
+                    </p>
+                    <div class="flex items-center text-sm text-accent">
+                        <i class="fa-solid fa-bolt mr-2"></i>
+                        State channels — thousands of micro-payments, one settlement
+                    </div>
+                </div>
+
+                <!-- Scenario 3 -->
+                <div class="glass-panel p-8 rounded-2xl scenario-card">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="bg-amber-500/20 w-12 h-12 rounded-xl flex items-center justify-center border border-amber-500/30">
+                            <i class="fa-solid fa-database text-xl text-amber-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Data Marketplace</h3>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-4">
+                        An ML training pipeline needs fresh labeled data. It discovers a <strong>data-provider API</strong>, pays per row returned, and ingests it directly into the training loop. No contract negotiation. No sales call. The 402 header <em>is</em> the price tag.
+                    </p>
+                    <div class="flex items-center text-sm text-accent">
+                        <i class="fa-solid fa-database mr-2"></i>
+                        Autonomous data procurement — pay per row
+                    </div>
+                </div>
+
+                <!-- Scenario 4 -->
+                <div class="glass-panel p-8 rounded-2xl scenario-card">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="bg-rose-500/20 w-12 h-12 rounded-xl flex items-center justify-center border border-rose-500/30">
+                            <i class="fa-solid fa-image text-xl text-rose-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Generative Content Pipelines</h3>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-4">
+                        A content agent composes a blog post, then calls a <strong>image generation API</strong> to create illustrations and a <strong>voice synthesis API</strong> for the audio version. Each API charges independently. The agent's wallet handles all three payments in sequence.
+                    </p>
+                    <div class="flex items-center text-sm text-accent">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>
+                        Multi-vendor pipelines — one wallet, many APIs
+                    </div>
+                </div>
+
+                <!-- Scenario 5 -->
+                <div class="glass-panel p-8 rounded-2xl scenario-card">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="bg-cyan-500/20 w-12 h-12 rounded-xl flex items-center justify-center border border-cyan-500/30">
+                            <i class="fa-solid fa-shield-halved text-xl text-cyan-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Security & Compliance Agents</h3>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-4">
+                        A CI/CD pipeline agent submits code diffs to a <strong>vulnerability scanner API</strong> and a <strong>license-compliance checker</strong>. Each scan costs micro-cents. 402 ensures every scan is paid for without monthly billing surprises.
+                    </p>
+                    <div class="flex items-center text-sm text-accent">
+                        <i class="fa-solid fa-lock mr-2"></i>
+                        Pay-per-scan DevSecOps — exact cost per commit
+                    </div>
+                </div>
+
+                <!-- Scenario 6 -->
+                <div class="glass-panel p-8 rounded-2xl scenario-card">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="bg-indigo-500/20 w-12 h-12 rounded-xl flex items-center justify-center border border-indigo-500/30">
+                            <i class="fa-solid fa-network-wired text-xl text-indigo-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Federated Agent Swarms</h3>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-4">
+                        A coordinating agent dispatches tasks to a swarm of specialist agents across different providers. Each specialist exposes an x402 endpoint. The coordinator pays each one individually — no centralized billing, no pre-negotiation.
+                    </p>
+                    <div class="flex items-center text-sm text-accent">
+                        <i class="fa-solid fa-cloud mr-2"></i>
+                        Decentralized agent economy — zero coordination overhead
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ AGENT DESK ═══════════ -->
+    <section id="agent-desk" class="py-24 px-4 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-extrabold mb-4">AI Agent Guide Desk</h2>
+                <p class="text-slate-400 text-lg max-w-3xl mx-auto">Interactive specialist agents guide builders, product teams, and compliance operators through x402 adoption without a support ticket loop.</p>
+                <div class="w-24 h-1 bg-gradient-to-r from-secondary to-accent mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <div class="grid lg:grid-cols-[1.15fr_.85fr] gap-8 items-start">
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="glass-panel p-7 rounded-2xl agent-card border border-white/10">
+                        <div class="bg-primary/20 w-14 h-14 rounded-xl flex items-center justify-center mb-5 border border-primary/30">
+                            <i class="fa-solid fa-sitemap text-2xl text-primary"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Integration Agent</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Guides developers through gateway routing, SDK retry behavior, proof headers, and the fastest path to production.</p>
+                        <button class="assistant-chip" data-agent="integration" data-question="How do I add x402 to an API in minutes?">
+                            <i class="fa-solid fa-code"></i> Ask integration
+                        </button>
+                    </div>
+
+                    <div class="glass-panel p-7 rounded-2xl agent-card border border-white/10">
+                        <div class="bg-accent/20 w-14 h-14 rounded-xl flex items-center justify-center mb-5 border border-accent/30">
+                            <i class="fa-solid fa-chart-column text-2xl text-accent"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Monetization Agent</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Explains pricing models, prepaid credit, state channels, metering, receipts, and how to monetize AI endpoints profitably.</p>
+                        <button class="assistant-chip" data-agent="monetization" data-question="What pricing model fits AI-to-AI traffic?">
+                            <i class="fa-solid fa-coins"></i> Ask monetization
+                        </button>
+                    </div>
+
+                    <div class="glass-panel p-7 rounded-2xl agent-card border border-white/10">
+                        <div class="bg-emerald-500/20 w-14 h-14 rounded-xl flex items-center justify-center mb-5 border border-emerald-500/30">
+                            <i class="fa-solid fa-shield-halved text-2xl text-emerald-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Compliance Agent</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Answers questions on auditability, evidence bundles, cryptographic proof, ESIGN posture, and regulated workflow alignment.</p>
+                        <button class="assistant-chip" data-agent="compliance" data-question="How does x402 support audit and compliance workflows?">
+                            <i class="fa-solid fa-scale-balanced"></i> Ask compliance
+                        </button>
+                    </div>
+                </div>
+
+                <div class="assistant-shell">
+                    <div class="p-6 border-b border-white/10 flex flex-col gap-4">
+                        <div class="flex items-center justify-between gap-3 flex-wrap">
+                            <div>
+                                <div class="text-xs uppercase tracking-[0.18em] text-accent font-bold mb-2">Live Guidance</div>
+                                <h3 class="text-2xl font-bold text-white">x402 Concierge</h3>
+                            </div>
+                            <span class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Agent Assist Ready
+                            </span>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="assistant-chip active" data-agent="integration" data-question="How do I add x402 to an API in minutes?">Fast integration</button>
+                            <button class="assistant-chip" data-agent="monetization" data-question="How should I price micro-requests?">Pricing help</button>
+                            <button class="assistant-chip" data-agent="compliance" data-question="What proof do auditors need?">Audit evidence</button>
+                            <button class="assistant-chip" data-agent="integration" data-question="What happens after a 402 response?">402 flow</button>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="assistant-message">
+                            <div class="assistant-question" id="assistant-question">How do I add x402 to an API in minutes?</div>
+                            <div class="text-slate-200 leading-relaxed text-sm md:text-[0.95rem]" id="assistant-answer">
+                                Put the gateway in front of an existing route, define the namespace, asset, and price, then deploy the Worker. Your origin stays unchanged. The gateway handles the <strong>402 challenge → proof verification → receipt issuance</strong> loop automatically.
+                            </div>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-3 text-sm text-slate-400">
+                            <div class="glass-panel rounded-xl p-4 border border-white/5">
+                                <div class="text-white font-semibold mb-2">Best next step</div>
+                                <div id="assistant-next-step">Deploy the gateway in front of a single paid route and verify the `X-PAYMENT-REQUIRED` challenge.</div>
+                            </div>
+                            <div class="glass-panel rounded-xl p-4 border border-white/5">
+                                <div class="text-white font-semibold mb-2">Recommended asset</div>
+                                <div id="assistant-asset">Start with prepaid credit for low-friction developer onboarding and deterministic receipts.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 grid md:grid-cols-3 gap-4">
+                <details class="faq-item">
+                    <summary>Can agents answer buyer questions before payment?</summary>
+                    <p class="text-slate-400 text-sm mt-3 leading-relaxed">Yes. Use a free discovery route for metadata, pricing, and capability descriptions, then reserve paid inference, premium data, or fulfillment for the x402-protected endpoint.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Can regulated document flows use x402?</summary>
+                    <p class="text-slate-400 text-sm mt-3 leading-relaxed">Yes. x402 receipts, proof metadata, and anchored evidence can complement document workflows where auditability, deterministic pricing, and cryptographic provenance matter.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Can one wallet pay many providers?</summary>
+                    <p class="text-slate-400 text-sm mt-3 leading-relaxed">Yes. That is one of the core protocol advantages. A single agent identity can interact across multiple x402-enabled APIs without separate billing portals.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ WHY x402 / COMPETITIVE EDGE ═══════════ -->
+    <section id="why-x402" class="py-24 px-4 relative">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-extrabold mb-4">Why This Wins</h2>
+                <p class="text-slate-400 text-lg max-w-3xl mx-auto">Every competitor forces agents through human-designed billing funnels. x402 is the only protocol purpose-built for machine-to-machine commerce.</p>
+                <div class="w-24 h-1 bg-gradient-to-r from-secondary to-accent mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Comparison rows -->
+                <div class="glass-panel rounded-2xl p-6">
+                    <h3 class="font-bold text-lg mb-4 text-red-400"><i class="fa-solid fa-xmark mr-2"></i>Traditional API Billing</h3>
+                    <ul class="space-y-3 text-slate-400">
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-xmark text-red-400/60 mt-1 text-sm"></i> Requires human sign-up and credit card</li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-xmark text-red-400/60 mt-1 text-sm"></i> Minimum charges make micro-calls unprofitable</li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-xmark text-red-400/60 mt-1 text-sm"></i> API keys are static and leak easily</li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-xmark text-red-400/60 mt-1 text-sm"></i> Billing is monthly — opaque until the invoice</li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-xmark text-red-400/60 mt-1 text-sm"></i> Cross-vendor payments require separate accounts</li>
+                    </ul>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 border-primary/30">
+                    <h3 class="font-bold text-lg mb-4 text-emerald-400"><i class="fa-solid fa-check mr-2"></i>x402 Protocol</h3>
+                    <ul class="space-y-3 text-slate-300">
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-400 mt-1 text-sm"></i> Agent-native: keypair is the identity + wallet</li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-400 mt-1 text-sm"></i> Zero processing fees — charge $0.001 profitably</li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-400 mt-1 text-sm"></i> Proofs are per-request, cryptographically bound</li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-400 mt-1 text-sm"></i> Real-time balance — agents know exactly what they spend</li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-400 mt-1 text-sm"></i> One wallet pays every x402 API on the network</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Strategic advantages -->
+            <div class="mt-16 grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-primary/20 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-primary/30 floating">
+                        <i class="fa-solid fa-rocket text-2xl text-primary"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">First-Mover Protocol</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">HTTP 402 has existed since 1997 but nobody implemented it for real. x402 is the first production-grade protocol to activate the status code at scale.</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="bg-secondary/20 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-secondary/30 floating floating-delay-1">
+                        <i class="fa-solid fa-layer-group text-2xl text-secondary"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Network Effect Moat</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">Every new API provider that adopts x402 makes every existing agent wallet more valuable. The protocol <em>is</em> the lock-in — not the vendor.</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="bg-accent/20 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-accent/30 floating floating-delay-2">
+                        <i class="fa-solid fa-plug text-2xl text-accent"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Drop-In Integration</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">Add x402 to any existing API with a single Cloudflare Worker. No backend changes. No new auth system. Your existing API just gains a monetization layer.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ NAMED AGENT SYSTEMS ═══════════ -->
+    <section id="agent-systems" class="py-24 px-4 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-extrabold mb-4">Named Agent Systems</h2>
+                <p class="text-slate-400 text-lg max-w-3xl mx-auto">These are the first live-ready AI transaction lanes built on the UnyKorn-first x402 stack. Each system can issue invoices, retry with proof, surface receipts, and feed operator visibility.</p>
+                <div class="w-24 h-1 bg-gradient-to-r from-secondary to-accent mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <div class="grid xl:grid-cols-[1.2fr_.8fr] gap-8 items-start">
+                <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div class="glass-panel p-6 rounded-2xl border border-white/10 agent-card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-cyan-500/20 w-12 h-12 rounded-xl flex items-center justify-center border border-cyan-500/30"><i class="fa-solid fa-wave-square text-cyan-400"></i></div>
+                            <div>
+                                <h3 class="font-bold text-lg">Atlas Broker</h3>
+                                <div class="text-xs uppercase tracking-[0.18em] text-slate-500">Market agent</div>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Requests premium market inference, pays per provider lane, and clears the unlock through <strong>/api/v1/agent/pay-api/atlas</strong>.</p>
+                        <div class="text-xs text-accent">Payment lane: invoice → tx hash proof → receipt</div>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl border border-white/10 agent-card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-emerald-500/20 w-12 h-12 rounded-xl flex items-center justify-center border border-emerald-500/30"><i class="fa-solid fa-shield-halved text-emerald-400"></i></div>
+                            <div>
+                                <h3 class="font-bold text-lg">Sentinel Audit</h3>
+                                <div class="text-xs uppercase tracking-[0.18em] text-slate-500">Compliance agent</div>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Runs evidence checks, maps receipt metadata to control narratives, and watches anchored batches for audit export readiness.</p>
+                        <div class="text-xs text-accent">Explorer feeds: receipts, anchoring, invoice failures</div>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl border border-white/10 agent-card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-amber-500/20 w-12 h-12 rounded-xl flex items-center justify-center border border-amber-500/30"><i class="fa-solid fa-chart-line text-amber-400"></i></div>
+                            <div>
+                                <h3 class="font-bold text-lg">Genesis Trader</h3>
+                                <div class="text-xs uppercase tracking-[0.18em] text-slate-500">Trade verification</div>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Monetizes trade attestation and replay-safe verification through <strong>/api/v1/trade/verify/:trade_id</strong>.</p>
+                        <div class="text-xs text-accent">Proof lane: verified trade response with receipt header</div>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl border border-white/10 agent-card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-rose-500/20 w-12 h-12 rounded-xl flex items-center justify-center border border-rose-500/30"><i class="fa-solid fa-photo-film text-rose-400"></i></div>
+                            <div>
+                                <h3 class="font-bold text-lg">Aurora Studio</h3>
+                                <div class="text-xs uppercase tracking-[0.18em] text-slate-500">Content pipeline</div>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Coordinates text, image, and voice services across paid endpoints while the treasury funds the next task automatically.</p>
+                        <div class="text-xs text-accent">Burst mode: repeatable micro-transactions in seconds</div>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl border border-white/10 agent-card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-indigo-500/20 w-12 h-12 rounded-xl flex items-center justify-center border border-indigo-500/30"><i class="fa-solid fa-bezier-curve text-indigo-400"></i></div>
+                            <div>
+                                <h3 class="font-bold text-lg">Vector Swarm</h3>
+                                <div class="text-xs uppercase tracking-[0.18em] text-slate-500">Federated specialists</div>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Dispatches specialist agents across multiple paid routes and rolls the outcome back into a shared operator dashboard view.</p>
+                        <div class="text-xs text-accent">Multi-agent mesh with route-level metering</div>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl border border-white/10 agent-card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-purple-500/20 w-12 h-12 rounded-xl flex items-center justify-center border border-purple-500/30"><i class="fa-solid fa-network-wired text-purple-400"></i></div>
+                            <div>
+                                <h3 class="font-bold text-lg">MoltMesh</h3>
+                                <div class="text-xs uppercase tracking-[0.18em] text-slate-500">Molt-style orchestrator</div>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">A Molt-style coordinator lane for chained AI calls. No dedicated Moltbot package was found in-repo, so this stack surfaces an orchestration-ready payment lane instead.</p>
+                        <div class="text-xs text-accent">Coordinator path: /api/v1/agent/pay-api/moltmesh</div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="assistant-shell p-6">
+                        <div class="text-xs uppercase tracking-[0.18em] text-accent font-bold mb-3">Explorer Surfaces</div>
+                        <h3 class="text-2xl font-bold mb-4">Where the explorer lives</h3>
+                        <div class="space-y-3 text-sm text-slate-300">
+                            <div class="assistant-message">
+                                <div class="assistant-question">Public site</div>
+                                <div><strong>x402.unykorn.org</strong> is the main protocol site and entry point for the named systems.</div>
+                            </div>
+                            <div class="assistant-message">
+                                <div class="assistant-question">Operator explorer</div>
+                                <div><strong>/explorer.html</strong> maps invoice, receipt, anchoring, and L1 health surfaces in one place.</div>
+                            </div>
+                            <div class="assistant-message">
+                                <div class="assistant-question">Chain explorer</div>
+                                <div><strong>explorer.unykorn.org</strong> remains the canonical transaction and address explorer for settlement proofs.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-6 border border-white/10">
+                        <div class="text-xs uppercase tracking-[0.18em] text-accent font-bold mb-3">Operator API map</div>
+                        <ul class="space-y-3 text-sm text-slate-300">
+                            <li><span class="text-accent font-semibold">/admin/invoices</span> — monitor challenge issuance and invoice status</li>
+                            <li><span class="text-accent font-semibold">/admin/receipts</span> — inspect successful payment receipts</li>
+                            <li><span class="text-accent font-semibold">/admin/anchoring</span> — review batch anchoring state</li>
+                            <li><span class="text-accent font-semibold">/l1/health</span> — verify UnyKorn rail health</li>
+                            <li><span class="text-accent font-semibold">/l1/batches</span> — inspect anchored receipt batches</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-6 border border-white/10">
+                        <div class="text-xs uppercase tracking-[0.18em] text-accent font-bold mb-3">Stack test lane</div>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Use the built-in load runner to push named agent routes for seconds or minutes and measure how many challenge loops the stack clears.</p>
+                        <div class="bg-black/40 rounded-xl p-4 font-mono text-sm text-slate-200 border border-white/5">
+                            npm run x402:load:agents -- --duration 60 --concurrency 24
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ DEVELOPER QUICKSTART ═══════════ -->
+    <section id="developer" class="py-24 bg-dark relative border-y border-white/5">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-extrabold mb-4">Build With x402</h2>
+                <p class="text-slate-400 text-lg">Whether you're an API provider or an agent developer, integration takes minutes.</p>
+                <div class="w-24 h-1 bg-gradient-to-r from-secondary to-accent mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Provider side -->
+                <div class="glass-panel p-8 rounded-2xl">
+                    <h3 class="text-xl font-bold mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-server text-primary"></i> API Providers
+                    </h3>
+                    <p class="text-slate-400 mb-6 text-sm">Monetize your endpoint in one config file.</p>
+                    <div class="bg-black/40 rounded-xl p-4 font-mono text-sm leading-relaxed">
+                        <span class="text-slate-500"># wrangler.toml — route config</span><br/>
+                        <span class="text-amber-400">[[routes]]</span><br/>
+                        <span class="text-slate-300">pattern = "/api/v1/signal/*"</span><br/>
+                        <span class="text-slate-300">price   = "0.25"</span><br/>
+                        <span class="text-slate-300">asset   = "USDF"</span><br/>
+                        <span class="text-slate-300">namespace = "genesis"</span><br/><br/>
+                        <span class="text-slate-500"># That's it. Deploy and earn.</span><br/>
+                        <span class="text-emerald-400">$ ./scripts/x402-deploy-gateway.sh</span><br/>
+                        <span class="text-emerald-400">$ npm run x402:load:agents -- --duration 15 --concurrency 12</span>
+                    </div>
+                </div>
+
+                <!-- Consumer side -->
+                <div class="glass-panel p-8 rounded-2xl">
+                    <h3 class="text-xl font-bold mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-robot text-accent"></i> Agent Developers
+                    </h3>
+                    <p class="text-slate-400 mb-6 text-sm">Teach your agent to pay with 5 lines.</p>
+                    <div class="bg-black/40 rounded-xl p-4 font-mono text-sm leading-relaxed">
+                        <span class="text-purple-400">import</span> <span class="text-slate-300">{ X402Client }</span> <span class="text-purple-400">from</span> <span class="text-emerald-400">'fth-x402-sdk'</span><br/><br/>
+                        <span class="text-slate-300">const client = new X402Client(myKey)</span><br/><br/>
+                        <span class="text-slate-500">// Handles 402→sign→retry automatically</span><br/>
+                        <span class="text-slate-300">const data = <span class="text-purple-400">await</span> client.fetch(</span><br/>
+                        <span class="text-emerald-400">  'https://api.fth.trading/api/v1/signal/btc'</span><br/>
+                        <span class="text-slate-300">)</span><br/><br/>
+                        <span class="text-slate-500">// data = { signal: "bullish", ... }</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Architecture overview -->
+            <div class="mt-16 glass-panel rounded-2xl p-8 text-center">
+                <h3 class="text-xl font-bold mb-6">Architecture</h3>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-sm font-mono">
+                    <div class="bg-primary/20 border border-primary/30 px-6 py-3 rounded-xl">
+                        <i class="fa-solid fa-robot text-primary mr-2"></i>AI Agent
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-slate-500 hidden md:block"></i>
+                    <i class="fa-solid fa-arrow-down text-slate-500 md:hidden"></i>
+                    <div class="bg-amber-500/20 border border-amber-500/30 px-6 py-3 rounded-xl">
+                        <i class="fa-solid fa-shield text-amber-400 mr-2"></i>Edge Gateway
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-slate-500 hidden md:block"></i>
+                    <i class="fa-solid fa-arrow-down text-slate-500 md:hidden"></i>
+                    <div class="bg-secondary/20 border border-secondary/30 px-6 py-3 rounded-xl">
+                        <i class="fa-solid fa-gavel text-secondary mr-2"></i>Facilitator
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-slate-500 hidden md:block"></i>
+                    <i class="fa-solid fa-arrow-down text-slate-500 md:hidden"></i>
+                    <div class="bg-accent/20 border border-accent/30 px-6 py-3 rounded-xl">
+                        <i class="fa-solid fa-cubes text-accent mr-2"></i>UnyKorn L1
+                    </div>
+                </div>
+                <p class="text-slate-500 mt-6 text-sm">Gateway verifies proofs at the edge. Facilitator manages balances & receipts. L1 anchors finality.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ CTA ═══════════ -->
+    <section class="py-24 px-4 relative">
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <h2 class="text-3xl md:text-5xl font-extrabold mb-6">
+                The future is <span class="gradient-text">agents paying agents</span>
+            </h2>
+            <p class="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
+                Every API becomes a revenue stream. Every agent becomes a customer. x402 connects them with nothing but HTTP.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="https://docs.unykorn.org" class="bg-primary hover:bg-primary/90 text-white font-bold py-3.5 px-10 rounded-xl transition shadow-lg shadow-primary/25">
+                    Read the Docs <i class="fa-solid fa-book-open ml-2"></i>
+                </a>
+                <a href="/explorer.html" class="glass-panel hover:bg-white/5 font-bold py-3.5 px-10 rounded-xl transition">
+                    Open Explorer <i class="fa-solid fa-chart-network ml-2"></i>
+                </a>
+                <a href="mailto:protocol@fth.trading" class="glass-panel hover:bg-white/5 font-bold py-3.5 px-10 rounded-xl transition">
+                    Partner With Us <i class="fa-solid fa-handshake ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <footer class="border-t border-white/10 bg-dark py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0 text-white">
+                    <i class="fa-solid fa-bolt text-accent"></i>
+                    <span class="font-extrabold tracking-tight text-xl">x402.unykorn.org</span>
+                </div>
+                <div class="flex items-center space-x-6 text-slate-500 text-sm">
+                    <a href="https://docs.unykorn.org" class="hover:text-accent transition-colors">Documentation</a>
+                    <a href="/explorer.html" class="hover:text-accent transition-colors">Explorer</a>
+                    <a href="https://github.com/fth-trading" class="hover:text-accent transition-colors">GitHub</a>
+                    <span>FTH Trading &copy; 2026</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const agentAnswers = {
+            integration: {
+                answer: 'Put the gateway in front of an existing route, define the namespace, asset, and price, then deploy the Worker. Your origin stays unchanged. The gateway handles the <strong>402 challenge → proof verification → receipt issuance</strong> loop automatically.',
+                next: 'Deploy the gateway in front of a single paid route and verify the `X-PAYMENT-REQUIRED` challenge.',
+                asset: 'Start with prepaid credit for low-friction developer onboarding and deterministic receipts.'
+            },
+            monetization: {
+                answer: 'For AI-to-AI traffic, charge per request when value is discrete, per token when output size varies, and use prepaid credit or state channels for bursty workloads. x402 works best when pricing is machine-readable, predictable, and attached directly to the endpoint.',
+                next: 'Choose one premium route, publish the price in the 402 invoice, and compare conversion with your existing billing funnel.',
+                asset: 'Use prepaid credit for onboarding, then graduate high-volume clients to state-channel settlement.'
+            },
+            compliance: {
+                answer: 'x402 supports audit workflows with signed proofs, unique invoice identifiers, receipt issuance, and optional ledger anchoring. That gives operators a clean trail showing what was requested, what was paid, and what was fulfilled.',
+                next: 'Define your receipt retention policy and decide which events should be anchored or exported into your evidence bundle.',
+                asset: 'Pair receipt IDs, request metadata, and Ed25519 verification with your existing controls and retention policy.'
+            }
+        };
+
+        const chips = document.querySelectorAll('[data-agent][data-question]');
+        const questionEl = document.getElementById('assistant-question');
+        const answerEl = document.getElementById('assistant-answer');
+        const nextEl = document.getElementById('assistant-next-step');
+        const assetEl = document.getElementById('assistant-asset');
+
+        chips.forEach((chip) => {
+            chip.addEventListener('click', () => {
+                const agent = chip.getAttribute('data-agent');
+                const question = chip.getAttribute('data-question') || '';
+                const payload = agentAnswers[agent] || agentAnswers.integration;
+
+                chips.forEach((item) => item.classList.remove('active'));
+                chip.classList.add('active');
+
+                questionEl.textContent = question;
+                answerEl.innerHTML = payload.answer;
+                nextEl.textContent = payload.next;
+                assetEl.textContent = payload.asset;
+            });
+        });
+    </script>
+
+</body>
+</html>

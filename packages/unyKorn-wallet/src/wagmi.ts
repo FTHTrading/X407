@@ -6,11 +6,35 @@
  */
 
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { defineChain } from "viem";
 import {
+  base,
   avalanche,
   polygon,
 } from "wagmi/chains";
 
+const UNYKORN_CHAIN_ID = Number(import.meta.env.VITE_UNYKORN_CHAIN_ID || 7331);
+const UNYKORN_RPC_URL = import.meta.env.VITE_UNYKORN_RPC_URL || "https://rpc.l1.unykorn.org";
+const UNYKORN_EXPLORER_URL = import.meta.env.VITE_UNYKORN_EXPLORER_URL || "https://explorer.unykorn.org";
+
+export const UNYKORN_CHAIN = defineChain({
+  id: UNYKORN_CHAIN_ID,
+  name: "UnyKorn L1",
+  nativeCurrency: {
+    name: "UnyKorn",
+    symbol: "UNY",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: { http: [UNYKORN_RPC_URL] },
+    public: { http: [UNYKORN_RPC_URL] },
+  },
+  blockExplorers: {
+    default: { name: "UnyKorn Explorer", url: UNYKORN_EXPLORER_URL },
+  },
+});
+
+export const BASE_CHAIN      = base;
 export const AVALANCHE_CHAIN = avalanche;
 export const POLYGON_CHAIN   = polygon;
 
@@ -23,11 +47,20 @@ const WALLETCONNECT_PROJECT_ID =
 export const wagmiConfig = getDefaultConfig({
   appName:   "UnyKorn Wallet",
   projectId: WALLETCONNECT_PROJECT_ID,
-  chains:    [avalanche, polygon],
+  chains:    [UNYKORN_CHAIN, base, avalanche, polygon],
   ssr:       false,
 });
 
 // ── Published contract addresses ─────────────────────────────────────────────
+
+export const BASE_USDC_ADDRESS: `0x${string}` =
+  ((import.meta.env.VITE_BASE_USDC_ADDRESS as `0x${string}` | undefined) ??
+  "0x833589fCD6EDB6E08f4c7C32D4f71b54bdA02913") as `0x${string}`;
+
+export const UNYKORN_TREASURY_ADDRESS =
+  import.meta.env.VITE_UNYKORN_TREASURY_ADDRESS || "uny1_DEMO_TREASURY";
+
+export const UNYKORN_EXPLORER_TX_BASE = `${UNYKORN_EXPLORER_URL.replace(/\/$/, "")}/tx/`;
 
 export const UNY_TOKEN_ADDRESS =
   (import.meta.env.VITE_UNY_TOKEN_ADDRESS as `0x${string}`) ??
@@ -45,7 +78,7 @@ export const USDC_ADDRESS: `0x${string}` =
 export const WAVAX_ADDRESS: `0x${string}` =
   "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7";
 
-// LFJ (Trader Joe V2.2) — deep-link URLs pre-filled with UNY as output
+// LFJ (Trader Joe V1) — deep-link URLs pre-filled with UNY as output
 export const LFJ_ROUTER_URL_USDC =
   `https://traderjoexyz.com/avalanche/trade?inputCurrency=${USDC_ADDRESS}&outputCurrency=${UNY_TOKEN_ADDRESS}`;
 

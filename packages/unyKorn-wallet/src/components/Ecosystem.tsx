@@ -3,6 +3,12 @@
  * Links to related UnyKorn ecosystem projects and tools.
  */
 
+import {
+  LFJ_ROUTER_URL_AVAX,
+  UNY_TOKEN_ADDRESS,
+  UNY_WAVAX_POOL_ADDRESS,
+} from "../wagmi";
+
 export function Ecosystem() {
   return (
     <section className="section" id="ecosystem">
@@ -17,21 +23,21 @@ export function Ecosystem() {
           icon="🔀"
           title="TraderJoe"
           description="Swap UNY on Avalanche's leading DEX with AVAX or USDC pools."
-          href="https://traderjoexyz.com/avalanche/trade?inputCurrency=AVAX&outputCurrency=0xc09003213b34c7bec8d2eddfad4b43e51d007d66"
+          href={LFJ_ROUTER_URL_AVAX}
           delay={0}
         />
         <EcoCard
           icon="📊"
           title="DexScreener"
           description="Real-time charts, price history, and trading volume analytics."
-          href="https://dexscreener.com/avalanche/0xC6F5273D74571d91CBcBA0A2900ed5F7C800F5d0"
+          href={`https://dexscreener.com/avalanche/${UNY_WAVAX_POOL_ADDRESS}`}
           delay={1}
         />
         <EcoCard
           icon="🔍"
           title="Snowtrace"
           description="Verified contract, holder data, and transaction history on Avalanche."
-          href="https://snowtrace.io/token/0xc09003213b34c7bec8d2eddfad4b43e51d007d66"
+          href={`https://snowtrace.io/token/${UNY_TOKEN_ADDRESS}`}
           delay={2}
         />
         <EcoCard
@@ -44,7 +50,7 @@ export function Ecosystem() {
         <EcoCard
           icon="🌉"
           title="Cross-Chain"
-          description="UnyKorn infrastructure spans Avalanche, Polygon, and THORChain."
+          description="UnyKorn infrastructure spans Avalanche, Polygon, Solana, and XRPL."
           href="#pools"
           delay={4}
         />

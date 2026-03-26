@@ -6,10 +6,11 @@
 import { useReadContract } from "wagmi";
 import { formatUnits }     from "viem";
 import { UNY_TOKEN_ABI }   from "../abis/unyToken";
-import { UNY_TOKEN_ADDRESS } from "../wagmi";
+import { UNY_TOKEN_ADDRESS, OPERATOR_ADDRESS } from "../wagmi";
+import { CopyButton }      from "./CopyButton";
 
 const DEAD_ADDRESS   = "0x000000000000000000000000000000000000dEaD" as const;
-const DEPLOYER       = "0x95989eB2AD1bF8036d23B53db4d587455a322022" as const;
+const DEPLOYER       = OPERATOR_ADDRESS;
 
 function fmtCompact(value: bigint, decimals: number): string {
   const n = parseFloat(formatUnits(value, decimals));
@@ -20,32 +21,34 @@ function fmtCompact(value: bigint, decimals: number): string {
 }
 
 export function TokenStats() {
-  const { data: totalSupply } = useReadContract({
+  const { data: totalSupply, isError: supplyError } = useReadContract({
     address: UNY_TOKEN_ADDRESS,
     abi: UNY_TOKEN_ABI,
     functionName: "totalSupply",
   });
 
-  const { data: burnedRaw } = useReadContract({
+  const { data: burnedRaw, isError: burnedError } = useReadContract({
     address: UNY_TOKEN_ADDRESS,
     abi: UNY_TOKEN_ABI,
     functionName: "balanceOf",
     args: [DEAD_ADDRESS],
   });
 
-  const { data: deployerBal } = useReadContract({
+  const { data: deployerBal, isError: deployerError } = useReadContract({
     address: UNY_TOKEN_ADDRESS,
     abi: UNY_TOKEN_ABI,
     functionName: "balanceOf",
     args: [DEPLOYER],
   });
 
-  const supply  = totalSupply ? fmtCompact(totalSupply as bigint, 18) : "—";
+  const rpcFailed = supplyError || burnedError || deployerError;
+
+  const supply  = totalSupply ? fmtCompact(totalSupply as bigint, 18) : null;
   const burned  = burnedRaw  ? fmtCompact(burnedRaw as bigint, 18)  : "0";
-  const holder  = deployerBal ? fmtCompact(deployerBal as bigint, 18) : "—";
+  const holder  = deployerBal ? fmtCompact(deployerBal as bigint, 18) : null;
 
   // Calculate circulating (total - burned - deployer)
-  let circulating = "—";
+  let circulating: string | null = null;
   if (totalSupply && deployerBal) {
     const t = totalSupply as bigint;
     const b = (burnedRaw as bigint) ?? 0n;
@@ -68,6 +71,7 @@ export function TokenStats() {
           sub="Fixed cap, no minting"
           icon="📊"
           delay={0}
+          error={rpcFailed}
         />
         <StatCard
           label="Circulating"
@@ -75,6 +79,7 @@ export function TokenStats() {
           sub="Excludes deployer & burned"
           icon="🔄"
           delay={1}
+          error={rpcFailed}
         />
         <StatCard
           label="Burned"
@@ -82,6 +87,7 @@ export function TokenStats() {
           sub="Sent to 0xdead"
           icon="🔥"
           delay={2}
+          error={rpcFailed}
         />
         <StatCard
           label="Deployer Held"
@@ -89,6 +95,7 @@ export function TokenStats() {
           sub="Treasury / operations"
           icon="🏦"
           delay={3}
+          error={rpcFailed}
         />
       </div>
 
@@ -106,8 +113,8 @@ export function TokenStats() {
   );
 }
 
-function StatCard({ label, value, sub, icon, delay }: {
-  label: string; value: string; sub: string; icon: string; delay: number;
+function StatCard({ label, value, sub, icon, delay, error }: {
+  label: string; value: string | null; sub: string; icon: string; delay: number; error?: boolean;
 }) {
   const cls = delay === 0 ? "animate-fade-in" :
               delay === 1 ? "animate-fade-in-d1" :
@@ -116,7 +123,15 @@ function StatCard({ label, value, sub, icon, delay }: {
     <div className={`card ${cls}`} style={{ textAlign: "center" }}>
       <div style={{ fontSize: 28, marginBottom: 8 }}>{icon}</div>
       <p className="label">{label}</p>
-      <p className="stat-value">{value}</p>
+      {error ? (
+        <p className="muted" style={{ fontSize: 12, color: "var(--color-accent)" }}>RPC unavailable</p>
+      ) : value !== null ? (
+        <p className="stat-value stat-value-glow">{value}</p>
+      ) : (
+        <div style={{ display: "flex", justifyContent: "center", padding: "4px 0" }}>
+          <span className="skeleton skeleton--stat" />
+        </div>
+      )}
       <p className="muted" style={{ marginTop: 6, fontSize: 12 }}>{sub}</p>
     </div>
   );
@@ -134,7 +149,7 @@ function Detail({ label, value, mono, link }: {
     : value;
 
   return (
-    <div>
+    <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
       <span className="muted" style={{ marginRight: 6, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>
         {label}
       </span>
@@ -143,6 +158,7 @@ function Detail({ label, value, mono, link }: {
       ) : (
         <span style={valStyle}>{shortened}</span>
       )}
+      {mono && <CopyButton text={value} label="" />}
     </div>
   );
 }

@@ -1,0 +1,60 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/fth-types",
+    "crates/fth-ledger",
+    "crates/fth-settlement",
+    "crates/fth-vault",
+    "crates/fth-risk",
+    "crates/fth-api",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+authors = ["FTH Trading / UnyKorn <engineering@fthtrading.com>"]
+license = "Proprietary"
+repository = "https://github.com/fth-trading/unykorn"
+
+[workspace.dependencies]
+# Shared deps — versions pinned at workspace level
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "2"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+axum = { version = "0.8", features = ["macros"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace", "compression-gzip"] }
+sqlx = { version = "0.8", features = ["runtime-tokio", "tls-rustls", "postgres", "uuid", "chrono", "bigdecimal", "rust_decimal"] }
+bigdecimal = { version = "0.4", features = ["serde"] }
+rust_decimal = { version = "1", features = ["serde"] }
+ed25519-dalek = { version = "2", features = ["serde"] }
+sha2 = "0.10"
+hmac = "0.12"
+rand = "0.9"
+hex = "0.4"
+base64 = "0.22"
+reqwest = { version = "0.12", features = ["json", "rustls-tls"] }
+dashmap = "6"
+parking_lot = "0.12"
+prometheus = "0.13"
+envy = "0.4"
+
+# Internal crates
+fth-types = { path = "crates/fth-types" }
+fth-ledger = { path = "crates/fth-ledger" }
+fth-settlement = { path = "crates/fth-settlement" }
+fth-vault = { path = "crates/fth-vault" }
+fth-risk = { path = "crates/fth-risk" }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = true
+panic = "abort"

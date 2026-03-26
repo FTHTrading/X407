@@ -10,7 +10,7 @@ export function WhyUnyKorn() {
       <div className="section-header">
         <span className="badge-gold badge">Why UnyKorn?</span>
         <h2 style={{ marginTop: 16 }}>Built Different</h2>
-        <p>Real liquidity. Real contracts. Real utility. No hype — just substance.</p>
+        <p>Real contracts. Real utility. Real infrastructure. No hype — just substance.</p>
       </div>
 
       <div className="grid-3">
@@ -30,16 +30,16 @@ export function WhyUnyKorn() {
         />
         <FeatureCard
           icon="💧"
-          title="Deep Liquidity"
-          description="Dual pools on TraderJoe — AVAX/UNY and USDC/UNY — providing robust two-sided liquidity for traders."
+          title="Dual Liquidity Pools"
+          description="Two active pools on TraderJoe V1 — AVAX/UNY and USDC/UNY — giving traders multiple on-ramps to UNY."
           highlight="2 active pools"
           delay={2}
         />
         <FeatureCard
           icon="🌐"
           title="Cross-Chain Ready"
-          description="Multi-chain architecture spanning Avalanche, Polygon, and THORChain. More bridges coming."
-          highlight="3+ chains"
+          description="Multi-chain architecture spanning Avalanche, Polygon, Solana, and XRPL. More bridges coming."
+          highlight="4 chains"
           delay={3}
         />
         <FeatureCard

@@ -1,0 +1,21 @@
+{
+  "commands": [
+    "#!/bin/bash",
+    "set -euo pipefail",
+    "echo '[fix] Force-removing stale container...'",
+    "docker rm -f unykorn-charlie 2>/dev/null || true",
+    "echo '[bootstrap] Creating data dirs...'",
+    "mkdir -p /app/data /app/logs",
+    "chown 1000:1000 /app/data /app/logs",
+    "echo '[bootstrap] Starting container...'",
+    "docker run -d --name unykorn-charlie --restart unless-stopped --network host -v /app/data:/app/data -v /app/logs:/app/logs -e RUST_LOG=info,unykorn=debug 933629770808.dkr.ecr.us-east-1.amazonaws.com/unykorn-l1/node:latest --config /app/devnet/node-3-docker.toml",
+    "sleep 8",
+    "echo '[bootstrap] Container status:'",
+    "docker ps --filter name=unykorn-charlie",
+    "echo '[bootstrap] Port check:'",
+    "ss -tlnp | grep 3003 || echo 'Port 3003 not yet listening'",
+    "echo '[bootstrap] Recent logs:'",
+    "docker logs unykorn-charlie --tail 15 2>&1 || true",
+    "echo '[bootstrap] Done.'"
+  ]
+}

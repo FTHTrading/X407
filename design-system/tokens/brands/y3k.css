@@ -1,0 +1,26 @@
+/*
+ * SOVEREIGN Design System — Y3K Markets Brand Skin
+ * Execution, signals, risk, speed
+ * Palette: black, emerald, ice-blue, gold
+ *
+ * Usage: @import "sovereign.css"; @import "brands/y3k.css";
+ */
+
+[data-brand="y3k"],
+.brand-y3k {
+  --sov-accent-1:      #10b981;         /* emerald */
+  --sov-accent-2:      #60a5fa;         /* ice blue */
+  --sov-accent-3:      #fbbf24;         /* gold */
+
+  --sov-glow:          rgba(16, 185, 129, 0.25);
+  --sov-border-glow:   rgba(16, 185, 129, 0.3);
+
+  --sov-gradient:      linear-gradient(135deg, #10b981 0%, #60a5fa 100%);
+  --sov-gradient-h:    linear-gradient(90deg, #10b981 0%, #60a5fa 100%);
+}
+
+/*
+ * Hero object: Signal grid — live execution matrix
+ * Tone: Fast, precise, profitable
+ * Module emphasis: Intelligence, Execution, Capital
+ */

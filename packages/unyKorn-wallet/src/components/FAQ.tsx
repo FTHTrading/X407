@@ -6,6 +6,7 @@
  */
 
 import { useState } from "react";
+import { UNY_TOKEN_ADDRESS } from "../wagmi";
 
 const FAQS = [
   {
@@ -14,11 +15,11 @@ const FAQS = [
   },
   {
     q: "How do I buy UNY tokens?",
-    a: "You can buy UNY on TraderJoe DEX on Avalanche. Simply connect your wallet, select AVAX or USDC as the input currency, and swap for UNY. The token contract address is 0xc09003213b34c7bec8d2eddfad4b43e51d007d66.",
+    a: `You can buy UNY on TraderJoe DEX on Avalanche. Simply connect your wallet, select AVAX or USDC as the input currency, and swap for UNY. The token contract address is ${UNY_TOKEN_ADDRESS}.`,
   },
   {
     q: "What blockchain is UNY on?",
-    a: "UNY is deployed on Avalanche C-Chain (Chain ID 43114). The contract is fully verified on Snowtrace. UnyKorn also has infrastructure on Polygon (RAMM Protocol) and THORChain for cross-chain operations.",
+    a: "UNY is deployed on Avalanche C-Chain (Chain ID 43114). The contract is fully verified on Snowtrace. UnyKorn also has infrastructure on Polygon (RAMM Protocol), Solana, and XRPL for cross-chain operations.",
   },
   {
     q: "Is UnyKorn safe? Is the contract verified?",
@@ -26,7 +27,7 @@ const FAQS = [
   },
   {
     q: "What are the UNY trading pools?",
-    a: "UNY has two active liquidity pools on TraderJoe V1: WAVAX/UNY and USDC/UNY. Both pools provide deep two-sided liquidity for trading and earn fees for liquidity providers.",
+    a: "UNY has two active liquidity pools on TraderJoe V1: WAVAX/UNY and USDC/UNY. Both pools support trading and earn fees for liquidity providers. LP depth is growing — check DexScreener for current reserves.",
   },
   {
     q: "Where is UnyKorn based?",

@@ -1,0 +1,323 @@
+/*
+ * SOVEREIGN Design System — Base Tokens
+ * The universal foundation. Brand skins override accent/glow/gradient values.
+ * Import this FIRST, then import the brand skin.
+ *
+ * Usage:
+ *   @import "sovereign.css";
+ *   @import "brands/unykorn.css";
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   1. THEME TOKENS — Color & Surface
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Backgrounds ──────────────────────────────────────────────────────── */
+  --sov-bg:             #0a0a0f;
+  --sov-bg-alt:         #0f0f18;
+  --sov-bg-elevated:    #141420;
+
+  /* ── Surfaces ─────────────────────────────────────────────────────────── */
+  --sov-surface:        rgba(22, 22, 30, 0.65);
+  --sov-surface-solid:  #16161e;
+  --sov-surface-hover:  rgba(22, 22, 30, 0.85);
+
+  /* ── Borders ──────────────────────────────────────────────────────────── */
+  --sov-border:         rgba(255, 255, 255, 0.06);
+  --sov-border-hover:   rgba(255, 255, 255, 0.12);
+  --sov-border-glow:    rgba(168, 85, 247, 0.25);  /* overridden by brand */
+
+  /* ── Text ─────────────────────────────────────────────────────────────── */
+  --sov-text:           #f0f0f5;
+  --sov-text-muted:     #707080;
+  --sov-text-faint:     #50505c;
+  --sov-text-inverse:   #ffffff;
+
+  /* ── Accents (overridden by brand skin) ───────────────────────────────── */
+  --sov-accent-1:       #3b82f6;
+  --sov-accent-2:       #a855f7;
+  --sov-accent-3:       #ffffff;
+
+  /* ── Semantic ─────────────────────────────────────────────────────────── */
+  --sov-success:        #22c55e;
+  --sov-warning:        #f5a623;
+  --sov-danger:         #e84142;
+  --sov-info:           #60a5fa;
+
+  /* ── Glow & Glass (overridden by brand skin) ──────────────────────────── */
+  --sov-glow:           rgba(59, 130, 246, 0.25);
+  --sov-glass-blur:     20px;
+  --sov-glass-fill:     0.65;
+
+  /* ── Gradients (overridden by brand skin) ─────────────────────────────── */
+  --sov-gradient:       linear-gradient(135deg, var(--sov-accent-1), var(--sov-accent-2));
+  --sov-gradient-h:     linear-gradient(90deg, var(--sov-accent-1), var(--sov-accent-2));
+  --sov-gradient-surface: linear-gradient(135deg, rgba(22, 22, 30, 0.8) 0%, rgba(15, 15, 24, 0.9) 100%);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2. TYPOGRAPHY TOKENS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Typefaces ─────────────────────────────────────────────────────────── */
+  --sov-font-sans:      "Inter", "SF Pro Display", system-ui, -apple-system, sans-serif;
+  --sov-font-mono:      "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+
+  /* ── Sizes ────────────────────────────────────────────────────────────── */
+  --sov-text-xs:        11px;
+  --sov-text-sm:        13px;
+  --sov-text-md:        15px;
+  --sov-text-lg:        18px;
+  --sov-text-xl:        clamp(1.5rem, 3vw, 2rem);
+  --sov-text-2xl:       clamp(2rem, 5vw, 3.5rem);
+  --sov-text-display:   clamp(2.5rem, 7vw, 5rem);
+
+  /* ── Line height ──────────────────────────────────────────────────────── */
+  --sov-leading-tight:  1.2;
+  --sov-leading-normal: 1.6;
+  --sov-leading-loose:  1.8;
+
+  /* ── Letter spacing ───────────────────────────────────────────────────── */
+  --sov-tracking-tight: -0.02em;
+  --sov-tracking-normal: 0;
+  --sov-tracking-wide:  0.06em;
+  --sov-tracking-caps:  0.1em;
+
+  /* ── Font weights ─────────────────────────────────────────────────────── */
+  --sov-weight-normal:  400;
+  --sov-weight-medium:  500;
+  --sov-weight-semi:    600;
+  --sov-weight-bold:    700;
+  --sov-weight-black:   800;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   3. LAYOUT TOKENS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Max widths ───────────────────────────────────────────────────────── */
+  --sov-max-width:        1100px;
+  --sov-max-width-narrow: 720px;
+  --sov-max-width-wide:   1440px;
+
+  /* ── Spacing scale ────────────────────────────────────────────────────── */
+  --sov-gap-2xs:     2px;
+  --sov-gap-xs:      4px;
+  --sov-gap-sm:      8px;
+  --sov-gap-md:      16px;
+  --sov-gap-lg:      24px;
+  --sov-gap-xl:      48px;
+  --sov-gap-2xl:     80px;
+  --sov-gap-3xl:     120px;
+
+  /* ── Border radius ────────────────────────────────────────────────────── */
+  --sov-radius-xs:   6px;
+  --sov-radius-sm:   10px;
+  --sov-radius-md:   16px;
+  --sov-radius-lg:   24px;
+  --sov-radius-full: 9999px;
+
+  /* ── Fixed dimensions ─────────────────────────────────────────────────── */
+  --sov-header-height:  64px;
+  --sov-dock-width:     360px;
+  --sov-sidebar-width:  240px;
+  --sov-nav-density:    28px;
+  --sov-tab-height:     44px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   4. MOTION TOKENS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Durations ────────────────────────────────────────────────────────── */
+  --sov-speed-instant:   100ms;
+  --sov-speed-fast:      150ms;
+  --sov-speed-normal:    300ms;
+  --sov-speed-slow:      500ms;
+  --sov-speed-dramatic:  800ms;
+
+  /* ── Easing ───────────────────────────────────────────────────────────── */
+  --sov-ease-default:    cubic-bezier(0.4, 0, 0.2, 1);
+  --sov-ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+  --sov-ease-exit:       cubic-bezier(0.4, 0, 1, 1);
+  --sov-ease-enter:      cubic-bezier(0, 0, 0.2, 1);
+
+  /* ── Ambient cycles ──────────────────────────────────────────────────── */
+  --sov-pulse-rhythm:    3s;
+  --sov-float-period:    6s;
+  --sov-orbit-drift:     30s;
+  --sov-signal-sweep:    2s;
+  --sov-particle-life:   12s;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   5. SHADOW TOKENS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --sov-shadow-sm:       0 2px 8px rgba(0, 0, 0, 0.3);
+  --sov-shadow-md:       0 4px 20px rgba(0, 0, 0, 0.4);
+  --sov-shadow-lg:       0 8px 40px rgba(0, 0, 0, 0.5);
+  --sov-shadow-glow:     0 0 30px var(--sov-glow);
+  --sov-shadow-glow-lg:  0 0 60px var(--sov-glow);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   6. Z-INDEX SCALE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --sov-z-base:        0;
+  --sov-z-content:     1;
+  --sov-z-elevated:    10;
+  --sov-z-dock:        50;
+  --sov-z-header:      100;
+  --sov-z-overlay:     200;
+  --sov-z-modal:       300;
+  --sov-z-toast:       400;
+  --sov-z-tooltip:     500;
+  --sov-z-command:     600;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   7. BASE KEYFRAMES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes sov-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+@keyframes sov-pulse {
+  0%, 100% { box-shadow: 0 0 20px var(--sov-glow); }
+  50%      { box-shadow: 0 0 40px var(--sov-glow); }
+}
+
+@keyframes sov-fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sov-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes sov-slide-in-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes sov-slide-in-left {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes sov-scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes sov-orbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes sov-signal-sweep {
+  0%   { opacity: 0; transform: translateX(-100%); }
+  50%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(100%); }
+}
+
+@keyframes sov-particle-rise {
+  0%   { transform: translateY(0) scale(1); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
+}
+
+@keyframes sov-skeleton {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 0.6; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   8. UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Animate */
+.sov-float         { animation: sov-float var(--sov-float-period) ease-in-out infinite; }
+.sov-pulse         { animation: sov-pulse var(--sov-pulse-rhythm) ease-in-out infinite; }
+.sov-fade-in       { animation: sov-fade-in-up var(--sov-speed-dramatic) ease-out both; }
+.sov-orbit         { animation: sov-orbit var(--sov-orbit-drift) linear infinite; }
+
+/* Text */
+.sov-gradient-text {
+  background: var(--sov-gradient-h);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.sov-mono          { font-family: var(--sov-font-mono); }
+.sov-muted         { color: var(--sov-text-muted); }
+.sov-faint         { color: var(--sov-text-faint); }
+.sov-label {
+  font-size: var(--sov-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--sov-tracking-caps);
+  color: var(--sov-text-muted);
+  font-weight: var(--sov-weight-medium);
+}
+
+/* Glass surface */
+.sov-glass {
+  background: var(--sov-surface);
+  backdrop-filter: blur(var(--sov-glass-blur));
+  border: 1px solid var(--sov-border);
+}
+.sov-glass:hover {
+  border-color: var(--sov-border-glow);
+}
+
+/* Status */
+.sov-live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sov-success);
+  box-shadow: 0 0 8px var(--sov-success);
+}
+
+/* Skeleton */
+.sov-skeleton {
+  display: inline-block;
+  background: linear-gradient(90deg, var(--sov-border) 25%, rgba(255,255,255,0.06) 50%, var(--sov-border) 75%);
+  background-size: 200% 100%;
+  animation: sov-skeleton 1.5s ease-in-out infinite;
+  border-radius: var(--sov-radius-xs);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   9. MOTION SAFETY
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   10. COLOR SCHEME
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  color-scheme: dark;
+}

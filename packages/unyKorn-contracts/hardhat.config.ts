@@ -14,6 +14,7 @@ const signers = [PRIVATE_KEY, PRIVATE_KEY_2, PRIVATE_KEY_3].filter(k => k !== ZE
 const accounts = signers.length > 0 ? signers : [ZERO_KEY];
 
 const AVALANCHE_RPC = process.env.AVALANCHE_RPC || "https://api.avax.network/ext/bc/C/rpc";
+const BASE_RPC      = process.env.BASE_RPC      || "https://mainnet.base.org";
 const POLYGON_RPC   = process.env.POLYGON_RPC   || "https://polygon-rpc.com";
 
 const config: HardhatUserConfig = {
@@ -34,6 +35,11 @@ const config: HardhatUserConfig = {
       chainId:  43114,
       accounts,
     },
+    base: {
+      url:      BASE_RPC,
+      chainId:  8453,
+      accounts,
+    },
     polygon: {
       url:      POLYGON_RPC,
       chainId:  137,
@@ -44,6 +50,7 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       avalanche: process.env.SNOWTRACE_API_KEY    || "",
+      base:      process.env.BASESCAN_API_KEY     || "",
       polygon:   process.env.POLYGONSCAN_API_KEY  || "",
     },
     customChains: [

@@ -1,0 +1,26 @@
+/*
+ * SOVEREIGN Design System — NIL33 Brand Skin
+ * Athlete intelligence and valuation
+ * Palette: graphite, silver-white, athletic electric accents
+ *
+ * Usage: @import "sovereign.css"; @import "brands/nil33.css";
+ */
+
+[data-brand="nil33"],
+.brand-nil33 {
+  --sov-accent-1:      #e2e8f0;         /* silver-white */
+  --sov-accent-2:      #3b82f6;         /* electric blue */
+  --sov-accent-3:      #8b5cf6;         /* athletic violet */
+
+  --sov-glow:          rgba(226, 232, 240, 0.2);
+  --sov-border-glow:   rgba(226, 232, 240, 0.25);
+
+  --sov-gradient:      linear-gradient(135deg, #e2e8f0 0%, #3b82f6 100%);
+  --sov-gradient-h:    linear-gradient(90deg, #e2e8f0 0%, #3b82f6 100%);
+}
+
+/*
+ * Hero object: Performance orb — velocity arcs
+ * Tone: Athletic, precise, elite
+ * Module emphasis: Intelligence, Execution, Capital
+ */

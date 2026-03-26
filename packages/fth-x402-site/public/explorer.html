@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>x402 Explorer | Operator Surfaces for Agent Commerce</title>
+    <meta name="description" content="Explorer surface for the UnyKorn-first x402 stack. Track invoices, receipts, treasury refills, anchoring, L1 health, and named AI systems.">
+    <meta property="og:title" content="x402 Explorer">
+    <meta property="og:description" content="Operator explorer for invoices, receipts, anchoring, named AI systems, and throughput testing on x402.">
+    <meta property="og:url" content="https://x402.unykorn.org/explorer.html">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        dark: '#0f172a',
+                        darker: '#020617',
+                        accent: '#38bdf8'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #020617; color: #f8fafc; }
+        .glass-panel { background: rgba(15,23,42,.65); border: 1px solid rgba(255,255,255,.08); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+        .gradient-text { -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; background-image: linear-gradient(135deg, #8b5cf6, #38bdf8); }
+        .soft-grid { background-image: linear-gradient(rgba(148,163,184,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,.08) 1px, transparent 1px); background-size: 32px 32px; }
+        .status-dot { width: .65rem; height: .65rem; border-radius: 999px; display: inline-block; }
+        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace; }
+    </style>
+</head>
+<body class="antialiased soft-grid">
+    <nav class="sticky top-0 z-50 glass-panel border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2 font-extrabold text-xl tracking-tight">
+                <i class="fa-solid fa-chart-network text-accent"></i>
+                <span>x402 Explorer</span>
+            </a>
+            <div class="flex items-center gap-5 text-sm text-slate-300">
+                <a href="/" class="hover:text-accent transition-colors">Site</a>
+                <a href="https://docs.unykorn.org" class="hover:text-accent transition-colors">Docs</a>
+                <a href="https://explorer.unykorn.org" class="hover:text-accent transition-colors">UnyKorn Explorer</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="px-4 pt-20 pb-14">
+        <div class="max-w-7xl mx-auto grid xl:grid-cols-[1.05fr_.95fr] gap-8 items-start">
+            <div>
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/30 bg-accent/10 text-accent text-sm font-semibold mb-6">
+                    <i class="fa-solid fa-satellite-dish"></i> Operator view for agent transactions
+                </div>
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+                    Map the <span class="gradient-text">live explorer surfaces</span><br/>for the x402 stack
+                </h1>
+                <p class="text-slate-300 text-lg max-w-3xl leading-relaxed mb-8">
+                    This page shows where the site lives, where the operator explorer lives, which AI systems are named in the stack, and which endpoints expose invoices, receipts, anchoring, and UnyKorn rail health.
+                </p>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="glass-panel rounded-2xl p-5">
+                        <div class="text-slate-400 text-xs uppercase tracking-[0.18em] mb-2">Protocol site</div>
+                        <div class="text-xl font-bold mb-2">x402.unykorn.org</div>
+                        <p class="text-slate-400 text-sm">Primary public narrative and system launch surface.</p>
+                    </div>
+                    <div class="glass-panel rounded-2xl p-5">
+                        <div class="text-slate-400 text-xs uppercase tracking-[0.18em] mb-2">Operator explorer</div>
+                        <div class="text-xl font-bold mb-2">/explorer.html</div>
+                        <p class="text-slate-400 text-sm">Static operator map with optional live facilitator probes.</p>
+                    </div>
+                    <div class="glass-panel rounded-2xl p-5">
+                        <div class="text-slate-400 text-xs uppercase tracking-[0.18em] mb-2">Settlement explorer</div>
+                        <div class="text-xl font-bold mb-2">explorer.unykorn.org</div>
+                        <p class="text-slate-400 text-sm">Canonical chain-level transaction and address explorer.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-3xl p-6">
+                <div class="text-xs uppercase tracking-[0.18em] text-accent font-bold mb-3">Probe live surfaces</div>
+                <h2 class="text-2xl font-bold mb-3">Explorer probe</h2>
+                <p class="text-slate-400 text-sm leading-relaxed mb-4">Enter gateway, facilitator, and treasury base URLs to probe the full operating loop: gateway health, paid-route challenge behavior, invoices, receipts, treasury refills, anchoring, and UnyKorn rail health. If you are on the public HTTPS site, a plain <strong>http://127.0.0.1</strong> address points to your own machine and will usually be blocked by the browser.</p>
+                <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-5">
+                    <div>
+                        <label class="block text-sm text-slate-300 mb-2" for="gateway-url">Gateway base URL</label>
+                        <input id="gateway-url" class="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-slate-100 outline-none focus:border-accent" placeholder="https://api.fth.trading or http://127.0.0.1:8788" />
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-300 mb-2" for="facilitator-url">Facilitator base URL</label>
+                        <input id="facilitator-url" class="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-slate-100 outline-none focus:border-accent" placeholder="https://facilitator.fth.trading or http://127.0.0.1:3100" />
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-300 mb-2" for="treasury-url">Treasury base URL</label>
+                        <input id="treasury-url" class="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-slate-100 outline-none focus:border-accent" placeholder="http://127.0.0.1:3200 or future treasury host" />
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-300 mb-2" for="admin-token">Admin token</label>
+                        <input id="admin-token" type="password" class="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-slate-100 outline-none focus:border-accent" placeholder="Optional facilitator admin bearer token" />
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 mb-5">
+                    <button id="probe-button" class="rounded-xl bg-primary hover:bg-secondary transition-colors px-5 py-3 font-semibold">Probe live operating view</button>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-4 text-xs">
+                    <button id="use-public-stack" class="rounded-full border border-white/10 px-3 py-1.5 text-slate-300 hover:border-accent hover:text-white transition-colors">Use public stack</button>
+                    <button id="use-local-stack" class="rounded-full border border-white/10 px-3 py-1.5 text-slate-300 hover:border-accent hover:text-white transition-colors">Use local live demo</button>
+                </div>
+                <div id="probe-warning" class="hidden rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100 mb-4"></div>
+                <div id="probe-status" class="text-sm text-slate-400">Ready to check health, invoices, receipts, anchoring, and L1 batches.</div>
+                <div class="flex flex-wrap items-center gap-3 mt-4 mb-2">
+                    <button id="autorefresh-button" class="rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:border-accent hover:text-white transition-colors">Auto refresh: off</button>
+                    <span class="text-xs text-slate-500">5 second local polling for a realistic operator view.</span>
+                </div>
+                <div id="board-metrics" class="grid sm:grid-cols-2 gap-3 mt-5"></div>
+                <div id="activity-feed" class="mt-4 space-y-3"></div>
+                <div id="normal-mode" class="mt-4"></div>
+                <div id="probe-results" class="grid sm:grid-cols-2 gap-3 mt-5"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="px-4 py-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-10">
+                <div class="text-xs uppercase tracking-[0.18em] text-accent font-bold mb-3">Named AI systems</div>
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-3">The active agent lanes</h2>
+                <p class="text-slate-400 text-lg max-w-4xl">The current stack has explicit named systems for market, compliance, orchestration, content, invoice export, and federated agent traffic. A dedicated Moltbot package was not present in the repo, so the orchestration lane is surfaced here as <strong>MoltMesh</strong>.</p>
+            </div>
+            <div id="systems-grid" class="grid md:grid-cols-2 xl:grid-cols-4 gap-5"></div>
+        </div>
+    </section>
+
+    <section class="px-4 py-12">
+        <div class="max-w-7xl mx-auto grid xl:grid-cols-[.95fr_1.05fr] gap-8 items-start">
+            <div class="glass-panel rounded-3xl p-6">
+                <div class="text-xs uppercase tracking-[0.18em] text-accent font-bold mb-3">Operator API surfaces</div>
+                <div id="surface-list" class="space-y-3"></div>
+            </div>
+            <div class="glass-panel rounded-3xl p-6">
+                <div class="text-xs uppercase tracking-[0.18em] text-accent font-bold mb-3">Throughput lane</div>
+                <h2 class="text-2xl font-bold mb-3">Test seconds and minutes</h2>
+                <p class="text-slate-400 text-sm leading-relaxed mb-4">The stack now includes a named load runner that rotates traffic across the agent systems and route families. It measures challenge-path throughput and snapshots explorer surfaces after the run.</p>
+                <div class="bg-black/40 rounded-2xl p-4 mono text-sm text-slate-200 border border-white/5 leading-relaxed mb-5">
+                    npm run x402:load:agents -- --duration 15 --concurrency 12<br/>
+                    npm run x402:load:agents -- --duration 60 --concurrency 24<br/>
+                    npm run x402:load:agents -- --duration 300 --concurrency 40 --json
+                </div>
+                <div class="grid sm:grid-cols-3 gap-4 text-sm">
+                    <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
+                        <div class="text-slate-400 mb-2">Measures</div>
+                        <div class="font-semibold">p50, p95, p99 latency</div>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
+                        <div class="text-slate-400 mb-2">Outputs</div>
+                        <div class="font-semibold">Req/s and req/min</div>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
+                        <div class="text-slate-400 mb-2">Snapshots</div>
+                        <div class="font-semibold">Invoices, receipts, anchoring, L1</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-white/10 bg-dark py-10 mt-12">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+            <div class="text-slate-400 text-sm">x402 Explorer for the UnyKorn-first settlement stack.</div>
+            <div class="flex flex-wrap gap-5 text-sm text-slate-500">
+                <a href="/" class="hover:text-accent transition-colors">Main site</a>
+                <a href="https://docs.unykorn.org" class="hover:text-accent transition-colors">Docs</a>
+                <a href="https://explorer.unykorn.org" class="hover:text-accent transition-colors">UnyKorn Explorer</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const systems = [
+            {
+                name: 'Atlas Broker',
+                route: '/api/v1/agent/pay-api/atlas',
+                type: 'Market intelligence',
+                note: 'Premium market signal and agent-pay lane.'
+            },
+            {
+                name: 'Sentinel Audit',
+                route: '/admin/receipts',
+                type: 'Compliance evidence',
+                note: 'Watches receipts, failures, and anchoring state.'
+            },
+            {
+                name: 'Genesis Trader',
+                route: '/api/v1/trade/verify/:trade_id',
+                type: 'Trade verification',
+                note: 'Paid verification lane for attestation and replay-safe checks.'
+            },
+            {
+                name: 'Aurora Studio',
+                route: '/api/v1/agent/pay-api/aurora',
+                type: 'Content pipeline',
+                note: 'Chains text, image, and voice outputs through micro-payments.'
+            },
+            {
+                name: 'Vector Swarm',
+                route: '/api/v1/genesis/repro-pack/:suite',
+                type: 'Federated swarm',
+                note: 'Coordinates multi-agent traffic across reproducible bundles.'
+            },
+            {
+                name: 'MoltMesh',
+                route: '/api/v1/agent/pay-api/moltmesh',
+                type: 'Molt-style orchestration',
+                note: 'Orchestration-ready lane added because no dedicated Moltbot module was found in-repo.'
+            },
+            {
+                name: 'Ledger Clerk',
+                route: '/api/v1/invoices/export/:format',
+                type: 'Invoice export',
+                note: 'Turns invoice export into a paid operator utility.'
+            },
+            {
+                name: 'Forge Coder',
+                route: '/api/v1/agent/pay-api/forge',
+                type: 'Code generation lane',
+                note: 'Named AI lane for chained code and validation calls.'
+            }
+        ];
+
+        const surfaces = [
+            {
+                endpoint: '/admin/invoices',
+                title: 'Invoice explorer',
+                detail: 'Lists recent invoice creation, paid status, expiry state, and route namespaces.'
+            },
+            {
+                endpoint: '/admin/receipts',
+                title: 'Receipt explorer',
+                detail: 'Shows successful payment receipts and proof metadata.'
+            },
+            {
+                endpoint: '/admin/anchoring',
+                title: 'Anchoring explorer',
+                detail: 'Summarizes receipt-root batch creation and chain anchoring state.'
+            },
+            {
+                endpoint: '/admin/verifications/failures',
+                title: 'Failure explorer',
+                detail: 'Tracks replay attempts, rate-limited flows, and failed invoice outcomes.'
+            },
+            {
+                endpoint: '/l1/health',
+                title: 'L1 health surface',
+                detail: 'Reports whether the UnyKorn settlement rail is reachable.'
+            },
+            {
+                endpoint: '/l1/batches',
+                title: 'L1 batch surface',
+                detail: 'Lists recent anchored receipt-root batches.'
+            },
+            {
+                endpoint: '/treasury/status',
+                title: 'Treasury status surface',
+                detail: 'Summarizes treasury refill mode, recent refills, and aggregate treasury exposure.'
+            },
+            {
+                endpoint: '/treasury/exposure',
+                title: 'Treasury exposure surface',
+                detail: 'Shows low-balance agents, refill volume, active halts, and current funded balances.'
+            },
+            {
+                endpoint: '/treasury/refills',
+                title: 'Treasury refill surface',
+                detail: 'Lists recent treasury-backed refill events for agent wallets.'
+            }
+        ];
+
+        const systemsGrid = document.getElementById('systems-grid');
+        const surfaceList = document.getElementById('surface-list');
+        const resultsEl = document.getElementById('probe-results');
+        const statusEl = document.getElementById('probe-status');
+        const probeButton = document.getElementById('probe-button');
+        const facilitatorInput = document.getElementById('facilitator-url');
+        const treasuryInput = document.getElementById('treasury-url');
+        const warningEl = document.getElementById('probe-warning');
+        const boardMetricsEl = document.getElementById('board-metrics');
+        const activityFeedEl = document.getElementById('activity-feed');
+        const autoRefreshButton = document.getElementById('autorefresh-button');
+        const gatewayInput = document.getElementById('gateway-url');
+        const adminTokenInput = document.getElementById('admin-token');
+        const usePublicStackButton = document.getElementById('use-public-stack');
+        const useLocalStackButton = document.getElementById('use-local-stack');
+        const normalModeEl = document.getElementById('normal-mode');
+        const publicFacilitatorBase = 'https://fri-immigration-butterfly-heroes.trycloudflare.com';
+        const publicGatewayBase = 'https://continent-anytime-auto-regular.trycloudflare.com';
+        const publicTreasuryBase = '';
+        const localFacilitatorBase = 'http://127.0.0.1:3100';
+        const localGatewayBase = 'http://127.0.0.1:8788';
+        const localTreasuryBase = 'http://127.0.0.1:3200';
+        const samplePaidRoute = '/api/v1/agent/pay-api/atlas';
+        let autoRefreshTimer = null;
+        let isAutoRefreshEnabled = false;
+
+        initializeProbeInput();
+
+        systems.forEach((system) => {
+            const card = document.createElement('div');
+            card.className = 'glass-panel rounded-2xl p-5';
+            card.innerHTML = `
+                <div class="text-xs uppercase tracking-[0.18em] text-accent font-bold mb-2">${system.type}</div>
+                <h3 class="text-xl font-bold mb-2">${system.name}</h3>
+                <div class="mono text-sm text-slate-300 mb-3">${system.route}</div>
+                <p class="text-slate-400 text-sm leading-relaxed">${system.note}</p>
+            `;
+            systemsGrid.appendChild(card);
+        });
+
+        surfaces.forEach((surface) => {
+            const item = document.createElement('div');
+            item.className = 'rounded-2xl border border-white/10 bg-black/20 p-4';
+            item.innerHTML = `
+                <div class="mono text-accent text-sm mb-1">${surface.endpoint}</div>
+                <div class="font-semibold mb-1">${surface.title}</div>
+                <div class="text-slate-400 text-sm leading-relaxed">${surface.detail}</div>
+            `;
+            surfaceList.appendChild(item);
+        });
+
+        usePublicStackButton.addEventListener('click', () => {
+            gatewayInput.value = publicGatewayBase;
+            facilitatorInput.value = publicFacilitatorBase;
+            treasuryInput.value = publicTreasuryBase;
+            localStorage.setItem('x402-explorer-gateway-base', publicGatewayBase);
+            localStorage.setItem('x402-explorer-facilitator-base', publicFacilitatorBase);
+            localStorage.setItem('x402-explorer-treasury-base', publicTreasuryBase);
+            stopAutoRefresh();
+            showWarning('Public stack mode selected. Use this when the deployed gateway and facilitator hosts are both reachable over HTTPS. If the treasury field is blank, the explorer will use facilitator-backed treasury admin surfaces.', 'amber');
+        });
+
+        useLocalStackButton.addEventListener('click', () => {
+            gatewayInput.value = localGatewayBase;
+            facilitatorInput.value = localFacilitatorBase;
+            treasuryInput.value = localTreasuryBase;
+            localStorage.setItem('x402-explorer-gateway-base', localGatewayBase);
+            localStorage.setItem('x402-explorer-facilitator-base', localFacilitatorBase);
+            localStorage.setItem('x402-explorer-treasury-base', localTreasuryBase);
+            showWarning('Local live demo selected. This shows the normal agent-commerce loop from a local development context. The public HTTPS page cannot usually reach your machine over plain HTTP.', 'amber');
+        });
+
+        autoRefreshButton.addEventListener('click', async () => {
+            isAutoRefreshEnabled = !isAutoRefreshEnabled;
+            autoRefreshButton.textContent = `Auto refresh: ${isAutoRefreshEnabled ? 'on' : 'off'}`;
+
+            if (!isAutoRefreshEnabled) {
+                stopAutoRefresh();
+                return;
+            }
+
+            await runProbe();
+            autoRefreshTimer = setInterval(() => {
+                runProbe({ silent: true });
+            }, 5000);
+        });
+
+        probeButton.addEventListener('click', async () => {
+            await runProbe();
+        });
+
+        async function runProbe(options = {}) {
+            const { silent = false } = options;
+            const gatewayBase = gatewayInput.value.replace(/\/$/, '');
+            const facilitatorBase = facilitatorInput.value.replace(/\/$/, '');
+            const treasuryBase = treasuryInput.value.replace(/\/$/, '');
+            const adminToken = adminTokenInput.value.trim();
+            const treasuryProbeBase = treasuryBase || facilitatorBase;
+            const treasuryViaFacilitator = !treasuryBase && Boolean(facilitatorBase);
+            const endpoints = [
+                { key: 'gateway-health', url: `${gatewayBase}/health` },
+                { key: 'gateway-sample', url: `${gatewayBase}${samplePaidRoute}` },
+                '/health',
+                '/admin/invoices?limit=3',
+                '/admin/receipts?limit=3',
+                '/admin/anchoring',
+                '/l1/health',
+                '/l1/batches'
+            ];
+
+            if (treasuryProbeBase) {
+                endpoints.push(
+                    { key: 'treasury-health', url: treasuryViaFacilitator ? `${facilitatorBase}/admin/treasury/status` : `${treasuryBase}/health` },
+                    { key: 'treasury-status', url: treasuryViaFacilitator ? `${facilitatorBase}/admin/treasury/status` : `${treasuryBase}/treasury/status` },
+                    { key: 'treasury-exposure', url: treasuryViaFacilitator ? `${facilitatorBase}/admin/treasury/exposure` : `${treasuryBase}/treasury/exposure` },
+                    { key: 'treasury-refills', url: treasuryViaFacilitator ? `${facilitatorBase}/admin/treasury/refills?limit=3` : `${treasuryBase}/treasury/refills?limit=3` }
+                );
+            }
+
+            warningEl.classList.add('hidden');
+
+            if (!gatewayBase || !facilitatorBase) {
+                showWarning('Enter both gateway and facilitator base URLs before probing.', 'red');
+                statusEl.textContent = 'Probe blocked until both gateway and facilitator URLs are provided.';
+                renderBoard([], '', '', '');
+                return;
+            }
+
+            if (window.location.protocol === 'https:' && (isLocalHttpBase(gatewayBase) || isLocalHttpBase(facilitatorBase) || isLocalHttpBase(treasuryBase)) && !isLocalPage()) {
+                showWarning('This public HTTPS page cannot directly probe local HTTP gateway, facilitator, or treasury addresses. Those addresses point to your own machine and the browser blocks mixed-content or loopback fetches here. Use deployed HTTPS hosts, or open the explorer from a local development host.', 'amber');
+                statusEl.textContent = `0/${endpoints.length} surfaces responded from the selected local stack.`;
+                resultsEl.innerHTML = '';
+                renderBoard([], gatewayBase, facilitatorBase, treasuryBase);
+                stopAutoRefresh();
+                return;
+            }
+
+            localStorage.setItem('x402-explorer-gateway-base', gatewayBase);
+            localStorage.setItem('x402-explorer-facilitator-base', facilitatorBase);
+            localStorage.setItem('x402-explorer-treasury-base', treasuryBase);
+            localStorage.setItem('x402-explorer-admin-token', adminToken);
+
+            if (!silent) {
+                statusEl.textContent = 'Probing gateway, facilitator, and UnyKorn settlement surfaces...';
+                resultsEl.innerHTML = '';
+            }
+
+            const responses = await Promise.all(endpoints.map(async (endpoint) => {
+                const key = typeof endpoint === 'string' ? endpoint : endpoint.key;
+                const url = typeof endpoint === 'string' ? `${facilitatorBase}${endpoint}` : endpoint.url;
+                const headers = { Accept: 'application/json' };
+                if (adminToken && shouldSendAdminToken(key, url, facilitatorBase, treasuryBase, treasuryViaFacilitator)) {
+                    headers.Authorization = `Bearer ${adminToken}`;
+                    headers['X-Admin-Token'] = adminToken;
+                }
+                try {
+                    const res = await fetch(url, {
+                        headers
+                    });
+                    const text = await res.text();
+                    let payload = text;
+                    try { payload = JSON.parse(text); } catch {}
+                    return { endpoint: key, ok: res.ok, status: res.status, payload };
+                } catch (error) {
+                    return { endpoint: key, ok: false, status: 0, payload: String(error) };
+                }
+            }));
+
+            resultsEl.innerHTML = '';
+            responses.forEach((response) => {
+                const card = document.createElement('div');
+                const expectedSuccess = isSuccessfulProbe(response);
+                const statusClass = expectedSuccess ? 'bg-emerald-400' : 'bg-red-400';
+                const payload = typeof response.payload === 'string'
+                    ? response.payload
+                    : JSON.stringify(response.payload, null, 2).slice(0, 500);
+                card.className = 'glass-panel rounded-2xl p-4';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <div class="mono text-sm text-accent">${response.endpoint}</div>
+                        <div class="flex items-center gap-2 text-xs text-slate-300">
+                            <span class="status-dot ${statusClass}"></span>
+                            <span>${response.status || 'ERR'}</span>
+                        </div>
+                    </div>
+                    <pre class="mono text-xs text-slate-300 whitespace-pre-wrap break-all">${escapeHtml(payload)}</pre>
+                `;
+                resultsEl.appendChild(card);
+            });
+
+            const okCount = responses.filter((response) => isSuccessfulProbe(response)).length;
+            statusEl.textContent = `${okCount}/${responses.length} surfaces responded from the selected stack.`;
+            renderBoard(responses, gatewayBase, facilitatorBase, treasuryBase, treasuryViaFacilitator);
+
+            if (okCount === 0 && isLikelyDnsFailure(responses)) {
+                showWarning('The selected facilitator host did not resolve from the browser. If you expected a public endpoint, deploy or expose the facilitator over HTTPS first. If you expected a local endpoint, run the explorer from a local origin instead of the public site.', 'red');
+            } else if (isAdminAuthRequired(responses) && !adminToken) {
+                showWarning('The facilitator is reachable, but one or more protected admin surfaces returned 401. Enter the admin token to probe invoices, receipts, anchoring, and facilitator-backed treasury views.', 'amber');
+            }
+        }
+
+        function initializeProbeInput() {
+            const saved = localStorage.getItem('x402-explorer-facilitator-base');
+            const savedGateway = localStorage.getItem('x402-explorer-gateway-base');
+            const savedTreasury = localStorage.getItem('x402-explorer-treasury-base');
+            const savedAdminToken = localStorage.getItem('x402-explorer-admin-token');
+            const queryBase = new URLSearchParams(window.location.search).get('facilitator');
+            const queryGateway = new URLSearchParams(window.location.search).get('gateway');
+            const queryTreasury = new URLSearchParams(window.location.search).get('treasury');
+            const queryAdminToken = new URLSearchParams(window.location.search).get('admin_token');
+            gatewayInput.value = queryGateway || savedGateway || (isLocalPage() ? localGatewayBase : publicGatewayBase);
+            facilitatorInput.value = queryBase || saved || (isLocalPage() ? localFacilitatorBase : publicFacilitatorBase);
+            treasuryInput.value = queryTreasury || savedTreasury || (isLocalPage() ? localTreasuryBase : publicTreasuryBase);
+            adminTokenInput.value = queryAdminToken || savedAdminToken || '';
+
+            if (!isLocalPage() && (facilitatorInput.value === localFacilitatorBase || gatewayInput.value === localGatewayBase || treasuryInput.value === localTreasuryBase)) {
+                showWarning('You are on the public site. Local gateway, facilitator, or treasury URLs usually will not respond here. Switch to deployed HTTPS services or run the explorer locally.', 'amber');
+            }
+        }
+
+        function isLocalPage() {
+            return ['localhost', '127.0.0.1'].includes(window.location.hostname);
+        }
+
+        function isLocalHttpBase(base) {
+            return /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/i.test(base);
+        }
+
+        function isLikelyDnsFailure(responses) {
+            return responses.every((response) => String(response.payload).includes('Failed to fetch') || response.status === 0);
+        }
+
+        function isAdminAuthRequired(responses) {
+            return responses.some((response) => isProtectedAdminEndpoint(response.endpoint) && response.status === 401);
+        }
+
+        function isProtectedAdminEndpoint(endpointKey) {
+            return String(endpointKey).startsWith('/admin/') || String(endpointKey).startsWith('treasury-');
+        }
+
+        function shouldSendAdminToken(endpointKey, url, facilitatorBase, treasuryBase, treasuryViaFacilitator) {
+            if (String(endpointKey).startsWith('/admin/')) return true;
+            if (treasuryViaFacilitator && String(endpointKey).startsWith('treasury-')) return url.startsWith(facilitatorBase);
+            if (treasuryBase && String(endpointKey).startsWith('treasury-')) return false;
+            return false;
+        }
+
+        function isSuccessfulProbe(response) {
+            return response.ok || (response.endpoint === 'gateway-sample' && response.status === 402);
+        }
+
+        function showWarning(message, tone) {
+            warningEl.classList.remove('hidden');
+            warningEl.textContent = message;
+            warningEl.className = 'rounded-2xl px-4 py-3 text-sm mb-4';
+            if (tone === 'red') {
+                warningEl.classList.add('border', 'border-red-500/30', 'bg-red-500/10', 'text-red-100');
+            } else {
+                warningEl.classList.add('border', 'border-amber-500/30', 'bg-amber-500/10', 'text-amber-100');
+            }
+        }
+
+        function stopAutoRefresh() {
+            isAutoRefreshEnabled = false;
+            autoRefreshButton.textContent = 'Auto refresh: off';
+            if (autoRefreshTimer) {
+                clearInterval(autoRefreshTimer);
+                autoRefreshTimer = null;
+            }
+        }
+
+        function renderBoard(responses, gatewayBase, facilitatorBase, treasuryBase, treasuryViaFacilitator = false) {
+            const responseMap = new Map(responses.map((response) => [response.endpoint, response]));
+            const gatewayHealth = responseMap.get('gateway-health');
+            const gatewaySample = responseMap.get('gateway-sample');
+            const health = responseMap.get('/health');
+            const invoices = responseMap.get('/admin/invoices?limit=3');
+            const receipts = responseMap.get('/admin/receipts?limit=3');
+            const anchoring = responseMap.get('/admin/anchoring');
+            const l1Health = responseMap.get('/l1/health');
+            const treasuryHealth = responseMap.get('treasury-health');
+            const treasuryStatus = responseMap.get('treasury-status');
+            const treasuryExposure = responseMap.get('treasury-exposure');
+            const treasuryRefills = responseMap.get('treasury-refills');
+
+            const gatewayHealthPayload = asObject(gatewayHealth?.payload);
+            const gatewaySamplePayload = asObject(gatewaySample?.payload);
+            const invoicePayload = asObject(invoices?.payload);
+            const receiptPayload = asObject(receipts?.payload);
+            const anchoringPayload = asObject(anchoring?.payload);
+            const l1Payload = asObject(l1Health?.payload);
+            const healthPayload = asObject(health?.payload);
+            const treasuryHealthPayload = asObject(treasuryHealth?.payload);
+            const treasuryStatusPayload = asObject(treasuryStatus?.payload);
+            const treasuryExposurePayload = asObject(treasuryExposure?.payload);
+            const treasuryRefillsPayload = asObject(treasuryRefills?.payload);
+            const effectiveTreasuryLabel = treasuryBase || (treasuryViaFacilitator && facilitatorBase ? `${facilitatorBase} (via facilitator)` : '');
+
+            const totalInvoices = Number(invoicePayload?.total ?? 0);
+            const totalReceipts = Number(receiptPayload?.total ?? 0);
+            const anchoredCount = Number(anchoringPayload?.summary?.anchored ?? 0);
+            const pendingCount = Number(anchoringPayload?.summary?.pending ?? 0);
+            const treasuryAgents = Number(treasuryExposurePayload?.summary?.agents_total ?? 0);
+            const agentsBelowMin = Number(treasuryExposurePayload?.summary?.agents_below_min ?? 0);
+            const refillVolume24h = treasuryExposurePayload?.refill_24h?.refill_volume_24h_usdf ?? '0';
+            const activeHalts = Array.isArray(treasuryExposurePayload?.active_halts) ? treasuryExposurePayload.active_halts.length : 0;
+            const sampleChallenge = gatewaySample?.status === 402;
+            const normalState = gatewayHealth?.ok && health?.ok && sampleChallenge && pendingCount === 0;
+
+            const cards = [
+                metricCard('Gateway health', gatewayHealth?.ok ? 'Live' : 'Down', gatewayHealth?.ok ? 'green' : 'red', gatewayHealthPayload?.status || `${gatewayHealth?.status || 'ERR'} status`),
+                metricCard('Challenge loop', sampleChallenge ? '402 ready' : 'No challenge', sampleChallenge ? 'green' : 'red', sampleChallenge ? 'Paid route is issuing machine-readable payment terms' : `${gatewaySample?.status || 'ERR'} status on sample route`),
+                metricCard('Total invoices', numberValue(totalInvoices), invoices?.ok ? 'green' : 'red', `${Array.isArray(invoicePayload?.invoices) ? invoicePayload.invoices.length : 0} shown`),
+                metricCard('Total receipts', numberValue(totalReceipts), receipts?.ok ? 'green' : 'red', `${Array.isArray(receiptPayload?.receipts) ? receiptPayload.receipts.length : 0} shown`),
+                metricCard('Anchoring', numberValue(anchoringPayload?.summary?.anchored), anchoring?.ok ? 'green' : 'red', `${numberValue(anchoringPayload?.summary?.pending)} pending batches`),
+                metricCard('L1 rail', l1Payload?.reachable ? 'Reachable' : 'Degraded', l1Payload?.reachable ? 'green' : 'amber', facilitatorBase || 'Unconfigured'),
+                metricCard('Receipts batched', numberValue(anchoringPayload?.summary?.total_receipts_batched), anchoring?.ok ? 'green' : 'amber', 'Cumulative batch count')
+            ];
+
+            if (effectiveTreasuryLabel) {
+                cards.push(
+                    metricCard('Treasury health', treasuryHealth?.ok ? 'Live' : 'Down', treasuryHealth?.ok ? 'green' : 'red', treasuryHealthPayload?.service || `${treasuryHealth?.status || 'ERR'} status`),
+                    metricCard('Treasury agents', numberValue(treasuryAgents), treasuryExposure?.ok ? 'green' : 'red', `${numberValue(agentsBelowMin)} below minimum balance`),
+                    metricCard('Refill volume 24h', String(refillVolume24h), treasuryExposure?.ok ? 'green' : 'amber', `${numberValue(treasuryExposurePayload?.refill_24h?.refill_count_24h)} refill events`),
+                    metricCard('Treasury halts', numberValue(activeHalts), activeHalts > 0 ? 'amber' : 'green', activeHalts > 0 ? 'One or more refill halts are active' : 'No active refill halts')
+                );
+            }
+
+            boardMetricsEl.innerHTML = cards.join('');
+            normalModeEl.innerHTML = renderNormalMode({
+                normalState,
+                totalInvoices,
+                totalReceipts,
+                anchoredCount,
+                pendingCount,
+                gatewayBase,
+                facilitatorBase,
+                treasuryBase: effectiveTreasuryLabel,
+                gatewaySamplePayload,
+                l1Payload,
+                treasuryStatusPayload,
+                treasuryAgents,
+                agentsBelowMin,
+                activeHalts,
+            });
+
+            const activityItems = [];
+            const recentInvoices = Array.isArray(invoicePayload?.invoices) ? invoicePayload.invoices : [];
+            const recentReceipts = Array.isArray(receiptPayload?.receipts) ? receiptPayload.receipts : [];
+            const recentBatches = Array.isArray(anchoringPayload?.batches) ? anchoringPayload.batches : [];
+            const recentRefills = Array.isArray(treasuryRefillsPayload?.refills) ? treasuryRefillsPayload.refills : [];
+
+            if (sampleChallenge && gatewaySamplePayload?.payment?.invoice_id) {
+                activityItems.push(feedItem('Challenge', gatewaySamplePayload.payment.invoice_id, `${gatewaySamplePayload.namespace || 'namespace'} • ${gatewaySamplePayload.payment.amount || '0'} ${gatewaySamplePayload.payment.asset || ''} • ${samplePaidRoute}`));
+            }
+
+            recentInvoices.slice(0, 3).forEach((invoice) => {
+                activityItems.push(feedItem('Invoice', invoice.invoice_id, `${invoice.status || 'unknown'} • ${invoice.namespace || 'no namespace'} • ${invoice.amount || '0'} ${invoice.asset || ''}`));
+            });
+            recentReceipts.slice(0, 3).forEach((receipt) => {
+                activityItems.push(feedItem('Receipt', receipt.receipt_id, `${receipt.proof_type || 'proof'} • ${receipt.rail || 'rail'} • ${receipt.amount || '0'} ${receipt.asset || ''}`));
+            });
+            recentBatches.slice(0, 2).forEach((batch) => {
+                activityItems.push(feedItem('Batch', batch.batch_id, `${batch.anchor_tx_hash ? 'anchored' : 'pending'} • ${batch.item_count || 0} receipts`));
+            });
+            recentRefills.slice(0, 3).forEach((refill) => {
+                activityItems.push(feedItem('Treasury refill', refill.refill_id, `${refill.status || 'status'} • ${refill.wallet_address || 'wallet'} • ${refill.amount_usdf || '0'} USDF`));
+            });
+
+            activityFeedEl.innerHTML = activityItems.length
+                ? activityItems.join('')
+                : '<div class="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-slate-400">Run the local facilitator and probe again to populate a realistic activity feed.</div>';
+        }
+
+        function renderNormalMode(state) {
+            const toneClass = state.normalState
+                ? 'border-emerald-400/20 bg-emerald-400/5 text-emerald-100'
+                : 'border-amber-400/20 bg-amber-400/5 text-amber-100';
+
+            const headline = state.normalState
+                ? 'Normal operating mode: agents are hitting paid routes, invoices are being minted, receipts are being recorded, and receipt batches are anchoring onto UnyKorn.'
+                : 'Operating mode is partial. Probe results show at least one layer is not yet behaving like the steady-state agent-commerce loop.';
+
+            return `
+                <div class="rounded-2xl border ${toneClass} p-4">
+                    <div class="text-xs uppercase tracking-[0.18em] mb-2 text-slate-300">Normal operating picture</div>
+                    <div class="text-sm leading-relaxed mb-4">${escapeHtml(headline)}</div>
+                    <div class="grid sm:grid-cols-2 gap-3 text-sm text-slate-200">
+                        <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
+                            <div class="text-slate-400 mb-1">Gateway</div>
+                            <div class="mono">${escapeHtml(state.gatewayBase || 'n/a')}</div>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
+                            <div class="text-slate-400 mb-1">Facilitator</div>
+                            <div class="mono">${escapeHtml(state.facilitatorBase || 'n/a')}</div>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
+                            <div class="text-slate-400 mb-1">Treasury</div>
+                            <div class="mono">${escapeHtml(state.treasuryBase || 'not configured')}</div>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
+                            <div class="text-slate-400 mb-1">Machine payment state</div>
+                            <div>${state.gatewaySamplePayload?.payment?.invoice_id ? '402 challenge issuing invoices' : 'No live payment challenge detected'}</div>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
+                            <div class="text-slate-400 mb-1">Anchoring state</div>
+                            <div>${escapeHtml(String(state.anchoredCount))} anchored • ${escapeHtml(String(state.pendingCount))} pending</div>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
+                            <div class="text-slate-400 mb-1">Commerce ledger</div>
+                            <div>${escapeHtml(String(state.totalInvoices))} invoices • ${escapeHtml(String(state.totalReceipts))} receipts</div>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
+                            <div class="text-slate-400 mb-1">UnyKorn rail</div>
+                            <div>${state.l1Payload?.reachable ? `reachable • chain ${escapeHtml(String(state.l1Payload.chain_id ?? 'n/a'))}` : 'degraded or unavailable'}</div>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
+                            <div class="text-slate-400 mb-1">Treasury state</div>
+                            <div>${state.treasuryBase ? `${escapeHtml(String(state.treasuryAgents))} agents • ${escapeHtml(String(state.agentsBelowMin))} below min • ${escapeHtml(String(state.activeHalts))} halts` : 'Treasury probe not configured'}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function metricCard(label, value, tone, detail) {
+            const toneClass = tone === 'green'
+                ? 'text-emerald-300 border-emerald-400/20 bg-emerald-400/5'
+                : tone === 'red'
+                    ? 'text-red-300 border-red-400/20 bg-red-400/5'
+                    : 'text-amber-200 border-amber-400/20 bg-amber-400/5';
+            return `
+                <div class="rounded-2xl border ${toneClass} p-4">
+                    <div class="text-xs uppercase tracking-[0.18em] text-slate-400 mb-2">${label}</div>
+                    <div class="text-2xl font-bold text-white mb-1">${escapeHtml(String(value))}</div>
+                    <div class="text-xs text-slate-400">${escapeHtml(String(detail || ''))}</div>
+                </div>
+            `;
+        }
+
+        function feedItem(kind, id, detail) {
+            return `
+                <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
+                    <div class="flex items-center justify-between gap-3 mb-2">
+                        <div class="text-xs uppercase tracking-[0.18em] text-accent font-bold">${escapeHtml(String(kind))}</div>
+                        <div class="mono text-xs text-slate-400">${escapeHtml(String(id || 'n/a'))}</div>
+                    </div>
+                    <div class="text-sm text-slate-300">${escapeHtml(String(detail || ''))}</div>
+                </div>
+            `;
+        }
+
+        function asObject(value) {
+            return value && typeof value === 'object' ? value : null;
+        }
+
+        function numberValue(value) {
+            const numeric = Number(value);
+            return Number.isFinite(numeric) ? numeric.toLocaleString() : '0';
+        }
+
+        function escapeHtml(value) {
+            return value
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
+    </script>
+</body>
+</html>

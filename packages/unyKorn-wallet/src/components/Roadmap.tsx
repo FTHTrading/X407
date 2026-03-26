@@ -34,7 +34,7 @@ export function Roadmap() {
             "RAMM Protocol launched on Polygon",
             "VaultRegistry smart contract system",
             "On-chain registry for verified assets",
-            "Cross-chain infrastructure (THORChain)",
+            "Cross-chain infrastructure (XRPL / Solana)",
             "Professional DApp + landing page",
           ]}
         />

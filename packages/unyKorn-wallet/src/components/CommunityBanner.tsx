@@ -5,6 +5,7 @@
  */
 
 import { useState } from "react";
+import { LFJ_ROUTER_URL_AVAX } from "../wagmi";
 
 export function CommunityBanner() {
   return (
@@ -29,7 +30,7 @@ export function CommunityBanner() {
             <SocialButton
               icon="🐦"
               label="Twitter"
-              href="https://twitter.com/intent/tweet?text=Just%20discovered%20%24UNY%20%E2%80%94%20the%20unicorn%20of%20Avalanche%20DeFi!%20Real%20liquidity%2C%20real%20contracts%2C%20real%20utility.%20Trade%20on%20TraderJoe%20%F0%9F%A6%84&url=https%3A%2F%2Favax.unykorn.org"
+              href="https://twitter.com/intent/tweet?text=Just%20discovered%20%24UNY%20%E2%80%94%20the%20unicorn%20of%20Avalanche%20DeFi!%20Real%20contracts%2C%20real%20utility%2C%20live%20on%20TraderJoe%20%F0%9F%A6%84&url=https%3A%2F%2Favax.unykorn.org"
             />
             <SocialButton
               icon="💬"
@@ -49,7 +50,7 @@ export function CommunityBanner() {
           <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
             <MiniStat value="1B" label="Total Supply" />
             <MiniStat value="2" label="Active Pools" />
-            <MiniStat value="3+" label="Chains" />
+            <MiniStat value="4" label="Chains" />
             <MiniStat value="24/7" label="Live Trading" />
           </div>
         </div>
@@ -125,7 +126,7 @@ function QuickStartCard() {
       <Step n={3} title="Swap for UNY" desc="Go to TraderJoe and swap your AVAX for UNY tokens." />
 
       <a
-        href="https://traderjoexyz.com/avalanche/trade?inputCurrency=AVAX&outputCurrency=0xc09003213b34c7bec8d2eddfad4b43e51d007d66"
+        href={LFJ_ROUTER_URL_AVAX}
         target="_blank"
         rel="noreferrer"
         className="btn-primary"

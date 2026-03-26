@@ -9,11 +9,19 @@ import {
   useReadContract,
   useChainId,
 } from "wagmi";
-import { avalanche } from "wagmi/chains";
+import { avalanche, base } from "wagmi/chains";
 import { formatUnits } from "viem";
 
 import { UNY_TOKEN_ABI }                                  from "../abis/unyToken";
-import { UNY_TOKEN_ADDRESS, USDC_ADDRESS, WAVAX_ADDRESS } from "../wagmi";
+import {
+  BASE_USDC_ADDRESS,
+  UNYKORN_CHAIN,
+  UNYKORN_EXPLORER_TX_BASE,
+  UNYKORN_TREASURY_ADDRESS,
+  UNY_TOKEN_ADDRESS,
+  USDC_ADDRESS,
+  WAVAX_ADDRESS,
+} from "../wagmi";
 
 function fmt(value: bigint, decimals: number, display = 4): string {
   const n = parseFloat(formatUnits(value, decimals));
@@ -37,7 +45,11 @@ function BalanceRow({ label, value, ticker, isLoading }: BalanceRowProps) {
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", padding: "14px 0", borderBottom: "1px solid var(--color-border)" }}>
       <div>
         <p className="label">{label}</p>
-        <p className="value">{isLoading ? "—" : value} <span style={{ fontSize: 14, color: "var(--color-muted)" }}>{ticker}</span></p>
+        {isLoading ? (
+          <span className="skeleton skeleton--wide" />
+        ) : (
+          <p className="value">{value} <span style={{ fontSize: 14, color: "var(--color-muted)" }}>{ticker}</span></p>
+        )}
       </div>
     </div>
   );
@@ -46,16 +58,18 @@ function BalanceRow({ label, value, ticker, isLoading }: BalanceRowProps) {
 export function TokenBalance() {
   const { address, isConnected } = useAccount();
   const chainId                  = useChainId();
+  const isUnyKorn                = chainId === UNYKORN_CHAIN.id;
   const isAvalanche              = chainId === avalanche.id;
+  const isBase                   = chainId === base.id;
 
   // Native balance (AVAX or MATIC)
-  const { data: nativeBal, isLoading: nativeLoading } = useBalance({
+  const { data: nativeBal, isLoading: nativeLoading, isError: nativeError } = useBalance({
     address,
     query: { enabled: isConnected },
   });
 
   // UNY balance
-  const { data: unyRaw, isLoading: unyLoading } = useReadContract({
+  const { data: unyRaw, isLoading: unyLoading, isError: unyError } = useReadContract({
     address:      UNY_TOKEN_ADDRESS,
     abi:          UNY_TOKEN_ABI,
     functionName: "balanceOf",
@@ -64,16 +78,16 @@ export function TokenBalance() {
   });
 
   // USDC balance (native USDC on Avalanche)
-  const { data: usdcRaw, isLoading: usdcLoading } = useReadContract({
-    address:      USDC_ADDRESS,
+  const { data: usdcRaw, isLoading: usdcLoading, isError: usdcError } = useReadContract({
+    address:      isBase ? BASE_USDC_ADDRESS : USDC_ADDRESS,
     abi:          UNY_TOKEN_ABI,
     functionName: "balanceOf",
     args:         [address!],
-    query:        { enabled: !!address && isAvalanche },
+    query:        { enabled: !!address && (isAvalanche || isBase) },
   });
 
   // WAVAX balance
-  const { data: wavaxRaw, isLoading: wavaxLoading } = useReadContract({
+  const { data: wavaxRaw, isLoading: wavaxLoading, isError: wavaxError } = useReadContract({
     address:      WAVAX_ADDRESS,
     abi:          UNY_TOKEN_ABI,
     functionName: "balanceOf",
@@ -81,10 +95,24 @@ export function TokenBalance() {
     query:        { enabled: !!address && isAvalanche },
   });
 
+  const anyError = nativeError || unyError || usdcError || wavaxError;
+
   if (!isConnected) {
     return (
       <div className="card" style={{ textAlign: "center", color: "var(--color-muted)", padding: 40 }}>
         Connect your wallet to view balances.
+      </div>
+    );
+  }
+
+  if (anyError) {
+    return (
+      <div className="card">
+        <h2 style={{ marginBottom: 4, fontSize: 16, fontWeight: 600 }}>Balances</h2>
+        <p className="muted" style={{ marginBottom: 16, wordBreak: "break-all" }}>{address}</p>
+        <p style={{ fontSize: 13, color: "var(--color-accent)", textAlign: "center", padding: "16px 0" }}>
+          Unable to fetch balances. RPC may be temporarily unavailable.
+        </p>
       </div>
     );
   }
@@ -98,11 +126,26 @@ export function TokenBalance() {
       <p className="muted" style={{ marginBottom: 16, wordBreak: "break-all" }}>{address}</p>
 
       <BalanceRow
-        label="Native"
+        label={isUnyKorn ? "Agent balance" : "Native"}
         value={nativeValue}
         ticker={nativeSymbol}
         isLoading={nativeLoading}
       />
+
+      {isUnyKorn && (
+        <>
+          <BalanceRow
+            label="Invoice receiver"
+            value={UNYKORN_TREASURY_ADDRESS}
+            ticker="Treasury"
+          />
+          <BalanceRow
+            label="Explorer"
+            value={UNYKORN_EXPLORER_TX_BASE}
+            ticker="tx"
+          />
+        </>
+      )}
 
       {isAvalanche && (
         <>
@@ -127,9 +170,18 @@ export function TokenBalance() {
         </>
       )}
 
-      {!isAvalanche && (
+      {isBase && (
+        <BalanceRow
+          label="USD Coin"
+          value={usdcRaw !== undefined ? fmt(usdcRaw as bigint, 6, 2) : "—"}
+          ticker="USDC"
+          isLoading={usdcLoading}
+        />
+      )}
+
+      {!isUnyKorn && !isAvalanche && !isBase && (
         <p className="muted" style={{ paddingTop: 16 }}>
-          Switch to Avalanche C-Chain to see UNY and USDC balances.
+          Switch to UnyKorn L1, Base, or Avalanche to see supported balances.
         </p>
       )}
     </div>

@@ -27,7 +27,12 @@
 import { ethers } from "hardhat";
 import { readFileSync } from "fs";
 import { resolve, join } from "path";
-import { checkKillSwitch } from "./lp-safety";
+import {
+  checkKillSwitch,
+  enforceSafetyThresholds,
+  checkDryRunRequired,
+  markDryRunComplete,
+} from "./lp-safety";
 
 const ROOT = resolve(__dirname, "../../..");
 
@@ -131,7 +136,7 @@ async function addToPool(
   const allowance = await unyToken.allowance(signer.address, routerAddr);
   if (allowance < unyNeeded) {
     console.log(`  │  Approving UNY...`);
-    const approveTx = await unyToken.approve(routerAddr, ethers.MaxUint256);
+    const approveTx = await unyToken.approve(routerAddr, unyNeeded);
     await approveTx.wait();
     console.log(`  │  ✓ Approved`);
   }
@@ -158,7 +163,7 @@ async function addToPool(
     const quoteAllow = await quoteToken.allowance(signer.address, routerAddr);
     if (quoteAllow < quoteAmount) {
       console.log(`  │  Approving ${quoteSym}...`);
-      const appTx = await quoteToken.approve(routerAddr, ethers.MaxUint256);
+      const appTx = await quoteToken.approve(routerAddr, quoteAmount);
       await appTx.wait();
       console.log(`  │  ✓ Approved`);
     }
@@ -244,12 +249,42 @@ async function main() {
     console.log(`\n  ── WAVAX/UNY Pool: ⏭️  Only ${availableAvax.toFixed(4)} AVAX available after gas reserve`);
   }
 
+  // ── Safety thresholds ────────────────────────────────────────────────────────
+  const unyAddr = usdcPoolConfig.token1?.symbol === "UNY"
+    ? usdcPoolConfig.token1.address : usdcPoolConfig.token0.address;
+  const unyToken = new ethers.Contract(unyAddr, ERC20_ABI, signer);
+  const unyBal: bigint = await unyToken.balanceOf(signer.address);
+
+  const safetyResult = await enforceSafetyThresholds({
+    slippageBps: SLIPPAGE,
+    amtX: unyBal,             // worst-case: full wallet
+    amtY: usdcAmountEnv,
+    balX: unyBal,
+    balY: usdcBal,
+    decX: 18,
+    decY: 6,
+    symX: "UNY",
+    symY: "USDC",
+    priceX_usd: undefined,
+    priceY_usd: 1.0,
+    isDryRun: DRY_RUN,
+  });
+
   // ── Summary ─────────────────────────────────────────────────────────────────
   console.log("\n═══════════════════════════════════════════════════════════════");
   if (DRY_RUN) {
+    markDryRunComplete("deepenPools", "all");
     console.log("  DRY RUN complete. To execute live:");
     console.log("    DRY_RUN=false npx hardhat run scripts/deepenPools.ts --network avalanche");
   } else {
+    if (!safetyResult.pass) {
+      console.error("\n✗ Safety thresholds violated — transaction blocked.");
+      console.error("  Adjust amounts or update safety_limits in registry/lp-config.json\n");
+      process.exit(1);
+    }
+    if (checkDryRunRequired("deepenPools", "all")) {
+      process.exit(1);
+    }
     console.log("  ✅ Pool deepening complete.");
     // Show final balances
     const finalAvax = await ethers.provider.getBalance(signer.address);

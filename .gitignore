@@ -45,3 +45,27 @@ lcov.info
 
 # ── LP safety markers ───────────────────────────────────────────────────────
 .lp-runs/
+
+# ── Rust ────────────────────────────────────────────────────────────────────
+target/
+**/*.rs.bk
+Cargo.lock
+cargo_*.txt
+
+# ── Docker / CI temp ────────────────────────────────────────────────────────
+docker_build.txt
+*.log
+!docs/**/*.log
+
+# ── SSM / temp output ───────────────────────────────────────────────────────
+*.tmp
+ssm_*.txt
+.tmp-ssm-*
+
+# ── Wrangler temp / Terraform cache ─────────────────────────────────────────
+.wrangler/
+**/.terraform/
+**/.terraform-provider-cache/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl

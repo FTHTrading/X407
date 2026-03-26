@@ -28,7 +28,12 @@
 import { ethers } from "hardhat";
 import { readFileSync } from "fs";
 import { resolve, join } from "path";
-import { checkKillSwitch } from "./lp-safety";
+import {
+  checkKillSwitch,
+  enforceSafetyThresholds,
+  checkDryRunRequired,
+  markDryRunComplete,
+} from "./lp-safety";
 
 const ROOT = resolve(__dirname, "../../..");
 
@@ -138,6 +143,34 @@ async function main() {
   console.log(`    Wallet AVAX  : ${ethers.formatEther(balAVAX)}`);
   console.log();
 
+  // ── Safety thresholds ──
+  const swapAmount = ethers.parseUnits(AMOUNT, DIRECTION === "sell" ? decUNY : decQuote);
+  const safetyResult = await enforceSafetyThresholds({
+    slippageBps: SLIPPAGE,
+    amtX: DIRECTION === "sell" ? swapAmount : 0n,
+    amtY: DIRECTION === "buy" ? swapAmount : 0n,
+    balX: balUNY,
+    balY: balQuote,
+    decX: decUNY,
+    decY: decQuote,
+    symX: "UNY",
+    symY: quoteSym,
+    priceX_usd: undefined,
+    priceY_usd: POOL === "usdc" ? 1.0 : undefined,
+    isDryRun: DRY_RUN,
+  });
+
+  if (!DRY_RUN) {
+    if (!safetyResult.pass) {
+      console.error("\n✗ Safety thresholds violated — swap blocked.");
+      console.error("  Adjust amounts or update safety_limits in registry/lp-config.json\n");
+      process.exit(1);
+    }
+    if (checkDryRunRequired("swapTokens", POOL)) {
+      process.exit(1);
+    }
+  }
+
   // ── Build swap list ─────────────────────────────────────────────────────────
   const swaps: { dir: "buy" | "sell"; label: string }[] = [];
 
@@ -197,7 +230,7 @@ async function main() {
       const allowance = await unyToken.allowance(signer.address, routerAddr);
       if (allowance < amountIn) {
         console.log(`    Approving router to spend UNY...`);
-        const approveTx = await unyToken.approve(routerAddr, ethers.MaxUint256);
+        const approveTx = await unyToken.approve(routerAddr, amountIn);
         await approveTx.wait();
         console.log(`    ✓ Approved`);
       }
@@ -266,7 +299,7 @@ async function main() {
         const allowance = await quoteToken!.allowance(signer.address, routerAddr);
         if (allowance < amountIn) {
           console.log(`    Approving router to spend ${quoteSym}...`);
-          const approveTx = await quoteToken!.approve(routerAddr, ethers.MaxUint256);
+          const approveTx = await quoteToken!.approve(routerAddr, amountIn);
           await approveTx.wait();
           console.log(`    ✓ Approved`);
         }
@@ -285,6 +318,9 @@ async function main() {
   // ── Summary ─────────────────────────────────────────────────────────────────
   console.log("  ══════════════════════════════════════════════════");
   console.log(`  Swaps executed : ${DRY_RUN ? "0 (dry run)" : `${swapCount}`}`);
+  if (DRY_RUN) {
+    markDryRunComplete("swapTokens", POOL);
+  }
   if (!DRY_RUN) {
     console.log(`  Total gas      : ${totalGasUsed.toString()}`);
 

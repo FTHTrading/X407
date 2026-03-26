@@ -30,7 +30,9 @@
       "dbaeumer.vscode-eslint",
       "esbenp.prettier-vscode",
       "redhat.vscode-yaml",
-      "mikestead.dotenv"
+      "mikestead.dotenv",
+      "hashicorp.terraform",
+      "ms-vscode.powershell"
     ]
   }
 }

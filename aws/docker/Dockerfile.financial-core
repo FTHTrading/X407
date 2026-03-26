@@ -1,0 +1,73 @@
+# ─────────────────────────────────────────────────────────
+#  FTH Financial Core — Multi-stage Rust Build
+#  Produces a ~5 MB statically-linked binary
+# ─────────────────────────────────────────────────────────
+
+# ═══════════ Stage 1: Build ═══════════
+FROM rust:1.93-bookworm AS builder
+
+WORKDIR /build
+
+# Copy workspace manifests first for dependency caching
+COPY packages/fth-financial-core/Cargo.toml packages/fth-financial-core/Cargo.lock* ./
+COPY packages/fth-financial-core/crates/fth-types/Cargo.toml crates/fth-types/Cargo.toml
+COPY packages/fth-financial-core/crates/fth-ledger/Cargo.toml crates/fth-ledger/Cargo.toml
+COPY packages/fth-financial-core/crates/fth-settlement/Cargo.toml crates/fth-settlement/Cargo.toml
+COPY packages/fth-financial-core/crates/fth-vault/Cargo.toml crates/fth-vault/Cargo.toml
+COPY packages/fth-financial-core/crates/fth-risk/Cargo.toml crates/fth-risk/Cargo.toml
+COPY packages/fth-financial-core/crates/fth-api/Cargo.toml crates/fth-api/Cargo.toml
+
+# Create dummy source files for dependency pre-build
+RUN mkdir -p crates/fth-types/src crates/fth-ledger/src crates/fth-settlement/src \
+             crates/fth-vault/src crates/fth-risk/src crates/fth-api/src && \
+    echo "fn main() {}" > crates/fth-api/src/main.rs && \
+    echo "" > crates/fth-types/src/lib.rs && \
+    echo "" > crates/fth-ledger/src/lib.rs && \
+    echo "" > crates/fth-settlement/src/lib.rs && \
+    echo "" > crates/fth-vault/src/lib.rs && \
+    echo "" > crates/fth-risk/src/lib.rs && \
+    echo "" > crates/fth-api/src/lib.rs
+
+# Pre-build dependencies (cached unless Cargo.toml changes)
+RUN cargo build --release 2>/dev/null || true
+
+# Now copy real source
+COPY packages/fth-financial-core/crates/ crates/
+
+# Touch source files to invalidate the dummy build
+RUN find crates -name "*.rs" -exec touch {} +
+
+# Build the real binary
+RUN cargo build --release --bin fth-financial-core
+
+# ═══════════ Stage 2: Runtime ═══════════
+FROM debian:bookworm-slim
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        libssl3 \
+        curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Non-root user for security
+RUN groupadd -r fth && useradd -r -g fth -d /app -s /sbin/nologin fth
+
+WORKDIR /app
+
+# Copy just the binary
+COPY --from=builder /build/target/release/fth-financial-core /app/fth-financial-core
+
+# Health check
+HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -sf http://localhost:4400/health || exit 1
+
+USER fth
+
+EXPOSE 4400
+
+ENV FTH_PORT=4400 \
+    FTH_LOG_LEVEL=info \
+    RUST_LOG=info,fth=debug
+
+ENTRYPOINT ["/app/fth-financial-core"]

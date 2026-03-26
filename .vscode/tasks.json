@@ -61,6 +61,56 @@
       "options": { "cwd": "${workspaceFolder}/packages/unyKorn-wallet" },
       "presentation": { "reveal": "always" },
       "problemMatcher": []
+    },
+
+    // ── AWS Infrastructure ───────────────────────────────
+    {
+      "label": "AWS: Setup Tools",
+      "type": "shell",
+      "command": "powershell.exe -ExecutionPolicy Bypass -File aws/scripts/setup-tools.ps1",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "AWS: Deploy (devnet)",
+      "type": "shell",
+      "command": "powershell.exe -ExecutionPolicy Bypass -File aws/scripts/deploy.ps1 -Environment devnet",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "AWS: Deploy (staging)",
+      "type": "shell",
+      "command": "powershell.exe -ExecutionPolicy Bypass -File aws/scripts/deploy.ps1 -Environment staging",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "AWS: Teardown (devnet)",
+      "type": "shell",
+      "command": "powershell.exe -ExecutionPolicy Bypass -File aws/scripts/teardown.ps1 -Environment devnet",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "AWS: Terraform Plan",
+      "type": "shell",
+      "command": "terraform plan -var-file=environments/devnet.tfvars",
+      "options": { "cwd": "${workspaceFolder}/aws/terraform" },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "AWS: Terraform Init",
+      "type": "shell",
+      "command": "terraform init -upgrade",
+      "options": { "cwd": "${workspaceFolder}/aws/terraform" },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
     }
   ]
 }

@@ -6,6 +6,74 @@ All notable changes to the UnyKorn monorepo are documented here.
 
 ## [Unreleased] — 2026-03-03
 
+### Production Hardening Pass
+
+**Claims / label audit (7 files):**
+- Removed all false THORChain references — actual supported chains are Avalanche, Polygon, Solana, and XRPL (confirmed from `registry/chains/chains.json` + `registry/xrpl/xrpl-assets.json`)
+- `WhyUnyKorn.tsx` — "THORChain" → "Solana, and XRPL"; "3+ chains" → "4 chains"
+- `Roadmap.tsx` — "Cross-chain infrastructure (THORChain)" → "(XRPL / Solana)"
+- `Ecosystem.tsx` — "Avalanche, Polygon, and THORChain" → "Avalanche, Polygon, Solana, and XRPL"
+- `FAQ.tsx` — Updated blockchain answer to list Solana and XRPL instead of THORChain
+- `CommunityBanner.tsx` — Twitter share text: removed "Real liquidity" claim (thin LP), chain count "3+" → "4"
+- `SwapWidget.tsx` — DEX label "LFJ (Trader Joe)" → "LFJ (Trader Joe V1)" for factual accuracy
+- `index.html` — JSON-LD FAQ answer updated; added "verified on Snowtrace" note
+
+**Error / fallback UI (3 components):**
+- `TokenStats.tsx` — `isError` destructuring on all 3 RPC reads; shows "RPC unavailable" instead of infinite skeleton
+- `PoolInfo.tsx` — `isError` from `useReadContracts`; both pool cards show "Unable to load pool data" on failure
+- `TokenBalance.tsx` — `isError` on all 4 balance reads; full error card with address still visible
+
+**Mobile responsive (index.css):**
+- Added 320–375 px narrow-phone breakpoint: smaller padding, h1, hero height, buttons, header/footer
+- Footer stacks vertically below 768 px
+
+**Accessibility (index.css + App.tsx):**
+- `focus-visible` outline on 11 interactive element types (hamburger, FAQ toggle, social/copy buttons, eco-cards, scroll-to-top, wallet buttons, mobile nav links)
+- Skip-to-content link (`<a href="#stats" class="skip-to-content">`) — hidden off-screen, visible on Tab focus
+- `<main>` landmark wraps page content between Hero and Footer
+- `@media (prefers-reduced-motion: reduce)` — disables all CSS animations, sets `scroll-behavior: auto`
+
+**Bundle size review:**
+- CSS: 43.6 KB (8.1 KB gzip) ✓
+- App code: < 30 KB gzip ✓
+- 3 chunks > 500 KB (raw): wagmi/viem core (845 KB), MetaMask SDK (554 KB), @reown/appkit (497 KB) — inherent to Web3 wallet connectors, already auto-split by Vite
+- All wallet connector icons lazy-loaded via dynamic imports (120+ chunks < 6 KB each)
+- No actionable bloat in application code
+
+**Wallet flow audit:**
+- `ConnectWallet.tsx` — all 4 states verified: mounting/loading, not-connected, wrong-network, connected
+- `TokenBalance`, `SwapWidget`, `RegistryView` — all guard on `isConnected` + correct chain before rendering data
+
+**Build verification:** `tsc && vite build` — 0 errors, 0 type errors, 4825 modules transformed
+
+### UI Enhancement Pass
+
+**Factual corrections:**
+- `SwapWidget.tsx` — "V2" → "V1" (TraderJoe Classic AMM, not Liquidity Book)
+- `PoolInfo.tsx` — "V2.1 Liquidity Book" → "V1 Classic AMM"
+- `FAQ.tsx` — Updated liquidity answer to reference V1 Classic AMM pools
+
+**New components:**
+- `ScrollToTop.tsx` — Floating button, appears after 400 px scroll, smooth-scrolls to top
+- `CopyButton.tsx` — Click-to-copy with checkmark feedback (used for contract addresses)
+- `useReveal.ts` — IntersectionObserver hook for scroll-triggered fade-in animations
+
+**Component improvements:**
+- `SiteHeader.tsx` — Mobile hamburger menu (slide-down overlay, body-scroll lock, auto-close on navigate)
+- `Hero.tsx` — Particle background canvas (48 animated dots + connecting lines within 120 px)
+- `PoolInfo.tsx` — TVL calculation from on-chain reserves × CoinGecko prices
+- `TokenStats.tsx` — Skeleton loading states with pulse animation
+- `RegistryView.tsx`, `TokenBalance.tsx`, `Ecosystem.tsx` — Wrapped in `<Reveal>` for scroll animations
+- `CommunityBanner.tsx` — Copy-to-clipboard on contract address
+
+**CSS polish (index.css):**
+- Card hover lift (`translateY(-4px)`) with shadow transition
+- `.skeleton` / `.skeleton-text` pulse animation
+- `.reveal` / `.reveal.visible` fade-in-up transition
+- Scroll-to-top button styles
+- Copy-button inline styles
+- Mobile hamburger menu + overlay
+
 ### LP V1 Rewrite (CRITICAL)
 
 **Discovery:** Smoke test revealed both UNY pools (UNY/USDC, UNY/WAVAX) are TraderJoe V1 classic AMM (x\*y=k), NOT Liquidity Book V2.1. Zero LB pairs exist for UNY. Confirmed via `diagnosePair.ts` and `diagnoseLB.ts` querying live contracts.

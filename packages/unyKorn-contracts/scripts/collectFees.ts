@@ -86,8 +86,8 @@ async function estimateForPool(signer: any, pool: PoolConfig, poolName: string) 
   }
 
   const sharePercent = Number((lpBalance * 10000n) / lpTotalSupply) / 100;
-  const myReserve0 = (reserve0 * lpBalance) / lpTotalSupply;
-  const myReserve1 = (reserve1 * lpBalance) / lpTotalSupply;
+  const myReserve0 = BigInt(reserve0) * BigInt(lpBalance) / BigInt(lpTotalSupply);
+  const myReserve1 = BigInt(reserve1) * BigInt(lpBalance) / BigInt(lpTotalSupply);
 
   console.log(`    Share    : ${sharePercent.toFixed(4)}%`);
   console.log(`    My ${sym0.padEnd(5)}: ${ethers.formatUnits(myReserve0, dec0)}`);

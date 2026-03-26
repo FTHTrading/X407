@@ -1,0 +1,78 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# UnyKorn L1 Node — Multi-stage Docker Build
+# Build context: root of unykorn-l1 repo (NOT unyKorn-master)
+#
+# Build:  docker build -f aws/docker/Dockerfile.node -t unykorn-node .
+# Run:    docker run --rm -p 3001:3001 unykorn-node --config /app/devnet/node-1-docker.toml
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Stage 1: Build ────────────────────────────────────────────────────────────
+FROM rust:1.85-bookworm AS builder
+
+# Install system deps required by rocksdb, libp2p, and openssl crates
+RUN apt-get update && apt-get install -y \
+    clang \
+    libclang-dev \
+    llvm-dev \
+    cmake \
+    pkg-config \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV LIBCLANG_PATH=/usr/lib/llvm-14/lib
+
+WORKDIR /build
+
+# Copy workspace manifests and source
+COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
+COPY crates/ crates/
+COPY system-modules/ system-modules/
+
+# Build release binary for the node package.
+# Binary output: target/release/unykorn  (from [[bin]] name in crates/node/Cargo.toml)
+RUN cargo build --release -p unykorn-node \
+    --features "compliance-quorum,mod-trade-finance"
+
+# Strip debug symbols (~80% size reduction)
+RUN strip target/release/unykorn || true
+
+# ── Stage 2: Runtime ──────────────────────────────────────────────────────────
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    libssl3 \
+    curl \
+    jq \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -m -u 1000 -s /bin/bash unykorn
+
+WORKDIR /app
+
+# Copy binary from builder — binary name is 'unykorn' (not 'unykorn-node')
+COPY --from=builder /build/target/release/unykorn /usr/local/bin/unykorn
+
+# Copy devnet node configs (node-1-docker.toml through node-5-docker.toml)
+COPY --chown=unykorn:unykorn devnet/*.toml /app/devnet/
+
+# Create data and log directories
+RUN mkdir -p /app/data /app/logs \
+    && chown -R unykorn:unykorn /app
+
+USER unykorn
+
+EXPOSE 3001 3002 3003 3004 3005
+EXPOSE 30301 30302 30303 30304 30305
+EXPOSE 9090
+
+ENV RUST_LOG=info,unykorn=debug
+ENV RPC_PORT=3001
+
+# Health check — uses configurable RPC /health endpoint
+HEALTHCHECK --interval=15s --timeout=5s --start-period=15s --retries=3 \
+    CMD curl -sf http://localhost:${RPC_PORT}/health || exit 1
+
+ENTRYPOINT ["unykorn"]
+# Default: node-1 (alpha). Override CMD for other nodes:
+#   docker run ... unykorn:latest --config /app/devnet/node-2-docker.toml
+CMD ["--config", "/app/devnet/node-1-docker.toml"]

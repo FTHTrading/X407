@@ -17,6 +17,7 @@ import {
   UNY_TOKEN_ADDRESS,
   UNY_USDC_POOL_ADDRESS,
 } from "../wagmi";
+import { CopyButton } from "./CopyButton";
 
 export function SwapWidget() {
   const { isConnected } = useAccount();
@@ -29,31 +30,37 @@ export function SwapWidget() {
     <div className="card">
       <h2 style={{ marginBottom: 4, fontSize: 16, fontWeight: 600 }}>Swap UNY ↔ USDC</h2>
       <p className="muted" style={{ marginBottom: 20 }}>
-        Liquidity pool: LFJ (Trader Joe) on Avalanche C-Chain
+        Liquidity pool: LFJ (Trader Joe V1) on Avalanche C-Chain
       </p>
 
       {/* Pool info */}
       <div style={{ background: "var(--color-bg)", borderRadius: 8, padding: "12px 16px", marginBottom: 20, fontSize: 13 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
           <span className="muted">Pool address</span>
-          <a href={dexScreenerUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "monospace", fontSize: 12 }}>
-            {UNY_USDC_POOL_ADDRESS.slice(0, 10)}…{UNY_USDC_POOL_ADDRESS.slice(-6)}
-          </a>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <a href={dexScreenerUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "monospace", fontSize: 12 }}>
+              {UNY_USDC_POOL_ADDRESS.slice(0, 10)}…{UNY_USDC_POOL_ADDRESS.slice(-6)}
+            </a>
+            <CopyButton text={UNY_USDC_POOL_ADDRESS} label="" />
+          </div>
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
           <span className="muted">UNY token</span>
-          <a
-            href={`https://snowtrace.io/token/${UNY_TOKEN_ADDRESS}`}
-            target="_blank"
-            rel="noreferrer"
-            style={{ fontFamily: "monospace", fontSize: 12 }}
-          >
-            {UNY_TOKEN_ADDRESS.slice(0, 10)}…{UNY_TOKEN_ADDRESS.slice(-6)}
-          </a>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <a
+              href={`https://snowtrace.io/token/${UNY_TOKEN_ADDRESS}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontFamily: "monospace", fontSize: 12 }}
+            >
+              {UNY_TOKEN_ADDRESS.slice(0, 10)}…{UNY_TOKEN_ADDRESS.slice(-6)}
+            </a>
+            <CopyButton text={UNY_TOKEN_ADDRESS} label="" />
+          </div>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <span className="muted">DEX</span>
-          <span>LFJ (Trader Joe v2.2)</span>
+          <span>LFJ (Trader Joe V1)</span>
         </div>
       </div>
 

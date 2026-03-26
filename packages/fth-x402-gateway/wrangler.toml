@@ -1,0 +1,61 @@
+name = "fth-x402-gateway"
+main = "src/index.ts"
+compatibility_date = "2026-03-01"
+
+# ---------------------------------------------------------------------------
+# Local development (wrangler dev)
+# ---------------------------------------------------------------------------
+[vars]
+FACILITATOR_URL = "http://localhost:3100"
+ENVIRONMENT = "development"
+UNYKORN_TREASURY_ADDRESS = "uny1_DEMO_TREASURY"
+
+# ---------------------------------------------------------------------------
+# Staging — deploy with: wrangler deploy --env staging
+# ---------------------------------------------------------------------------
+[env.staging]
+name = "fth-x402-gateway-staging"
+route = { pattern = "staging-api.fth.trading/api/*", zone_name = "fth.trading" }
+
+[env.staging.vars]
+FACILITATOR_URL = "https://facilitator-staging.fth.trading"
+ENVIRONMENT = "staging"
+UNYKORN_TREASURY_ADDRESS = "uny1_DEMO_TREASURY"
+
+# Staging secrets (set via `wrangler secret put --env staging`):
+#   OPENMETER_ENDPOINT
+#   OPENMETER_API_KEY
+
+# ---------------------------------------------------------------------------
+# Production — deploy with: wrangler deploy --env production
+# ---------------------------------------------------------------------------
+[env.production]
+name = "fth-x402-gateway"
+routes = [
+  { pattern = "api.fth.trading/api/*", zone_name = "fth.trading" },
+]
+
+[env.production.vars]
+FACILITATOR_URL = "https://facilitator.fth.trading"
+ENVIRONMENT = "production"
+UNYKORN_TREASURY_ADDRESS = "uny1_DEMO_TREASURY"
+
+# Production secrets (set via `wrangler secret put --env production`):
+#   OPENMETER_ENDPOINT
+#   OPENMETER_API_KEY
+
+# ---------------------------------------------------------------------------
+# R2 bucket for static premium assets (genesis repro packs, etc.)
+# ---------------------------------------------------------------------------
+# Uncomment when R2 bucket is created:
+# [[r2_buckets]]
+# binding = "ASSETS"
+# bucket_name = "fth-x402-assets"
+#
+# [[env.staging.r2_buckets]]
+# binding = "ASSETS"
+# bucket_name = "fth-x402-assets-staging"
+#
+# [[env.production.r2_buckets]]
+# binding = "ASSETS"
+# bucket_name = "fth-x402-assets"

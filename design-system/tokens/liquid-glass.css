@@ -1,0 +1,332 @@
+/*
+ * SOVEREIGN Design System — Liquid Glass Material Layer
+ * The material system for all glass surfaces across the ecosystem.
+ * Import AFTER sovereign.css and brand skin.
+ *
+ * Usage:
+ *   @import "sovereign.css";
+ *   @import "brands/unykorn.css";
+ *   @import "liquid-glass.css";
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIQUID GLASS TOKENS
+   Glass is selective. It is a tool, not wallpaper.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Glass fills ──────────────────────────────────────────────────────── */
+  --sov-glass-thin:       rgba(22, 22, 30, 0.35);
+  --sov-glass-standard:   rgba(22, 22, 30, 0.55);
+  --sov-glass-thick:      rgba(22, 22, 30, 0.75);
+  --sov-glass-solid:      rgba(22, 22, 30, 0.92);
+
+  /* ── Blur levels ──────────────────────────────────────────────────────── */
+  --sov-blur-subtle:      8px;
+  --sov-blur-standard:    20px;
+  --sov-blur-heavy:       40px;
+  --sov-blur-frosted:     60px;
+
+  /* ── Glass borders ────────────────────────────────────────────────────── */
+  --sov-glass-border:         1px solid rgba(255, 255, 255, 0.06);
+  --sov-glass-border-hover:   1px solid rgba(255, 255, 255, 0.12);
+  --sov-glass-border-active:  1px solid var(--sov-accent-1);
+  --sov-glass-border-glow:    1px solid var(--sov-border-glow);
+
+  /* ── Reflections ──────────────────────────────────────────────────────── */
+  --sov-glass-sheen:      linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.01) 40%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  --sov-glass-sheen-top:  linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0) 30%
+  );
+  --sov-glass-refract:    linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(var(--sov-accent-1-rgb, 59, 130, 246), 0.03) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+
+  /* ── Liquid depth shadows ─────────────────────────────────────────────── */
+  --sov-liquid-shadow-sm:    0 2px 8px rgba(0, 0, 0, 0.2),
+                             0 1px 2px rgba(0, 0, 0, 0.3),
+                             inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --sov-liquid-shadow-md:    0 4px 20px rgba(0, 0, 0, 0.3),
+                             0 2px 4px rgba(0, 0, 0, 0.2),
+                             inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --sov-liquid-shadow-lg:    0 8px 40px rgba(0, 0, 0, 0.4),
+                             0 4px 8px rgba(0, 0, 0, 0.25),
+                             inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --sov-liquid-shadow-float: 0 12px 60px rgba(0, 0, 0, 0.5),
+                             0 6px 12px rgba(0, 0, 0, 0.3),
+                             inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GLASS SURFACE CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Thin glass — nav overlays, tooltips ────────────────────────────────── */
+.sov-glass-thin {
+  background: var(--sov-glass-thin);
+  backdrop-filter: blur(var(--sov-blur-subtle));
+  -webkit-backdrop-filter: blur(var(--sov-blur-subtle));
+  border: var(--sov-glass-border);
+  box-shadow: var(--sov-liquid-shadow-sm);
+}
+
+/* ── Standard glass — cards, panels, modals ─────────────────────────────── */
+.sov-glass-standard {
+  background: var(--sov-glass-standard);
+  backdrop-filter: blur(var(--sov-blur-standard));
+  -webkit-backdrop-filter: blur(var(--sov-blur-standard));
+  border: var(--sov-glass-border);
+  box-shadow: var(--sov-liquid-shadow-md);
+  position: relative;
+}
+.sov-glass-standard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--sov-glass-sheen);
+  pointer-events: none;
+}
+
+/* ── Thick glass — elevated surfaces, active panels ────────────────────── */
+.sov-glass-thick {
+  background: var(--sov-glass-thick);
+  backdrop-filter: blur(var(--sov-blur-heavy));
+  -webkit-backdrop-filter: blur(var(--sov-blur-heavy));
+  border: var(--sov-glass-border);
+  box-shadow: var(--sov-liquid-shadow-lg);
+  position: relative;
+}
+.sov-glass-thick::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--sov-glass-sheen-top);
+  pointer-events: none;
+}
+
+/* ── Frosted glass — full overlays, docks, headers ──────────────────────── */
+.sov-glass-frosted {
+  background: var(--sov-glass-solid);
+  backdrop-filter: blur(var(--sov-blur-frosted));
+  -webkit-backdrop-filter: blur(var(--sov-blur-frosted));
+  border: var(--sov-glass-border);
+  box-shadow: var(--sov-liquid-shadow-float);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GLASS INTERACTIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Hover glow — selective, not everywhere ─────────────────────────────── */
+.sov-glass-interactive {
+  transition:
+    border-color var(--sov-speed-fast) var(--sov-ease-default),
+    box-shadow var(--sov-speed-normal) var(--sov-ease-default),
+    transform var(--sov-speed-fast) var(--sov-ease-default);
+  cursor: pointer;
+}
+.sov-glass-interactive:hover {
+  border-color: var(--sov-border-glow);
+  box-shadow:
+    var(--sov-liquid-shadow-lg),
+    0 0 30px var(--sov-glow);
+  transform: translateY(-2px);
+}
+.sov-glass-interactive:active {
+  transform: translateY(0);
+  transition-duration: var(--sov-speed-instant);
+}
+
+/* ── Focus ring ─────────────────────────────────────────────────────────── */
+.sov-glass-interactive:focus-visible {
+  outline: 2px solid var(--sov-accent-1);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIQUID GLASS KEYFRAMES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Subtle surface ripple — used on hero glass objects */
+@keyframes sov-liquid-breathe {
+  0%, 100% {
+    background-color: var(--sov-glass-standard);
+    box-shadow: var(--sov-liquid-shadow-md);
+  }
+  50% {
+    background-color: var(--sov-glass-thick);
+    box-shadow:
+      var(--sov-liquid-shadow-lg),
+      0 0 20px var(--sov-glow);
+  }
+}
+
+/* Glass surface shine sweep — used on hero cards */
+@keyframes sov-liquid-sheen {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Depth shift — card comes forward subtly */
+@keyframes sov-liquid-surface {
+  0%, 100% {
+    transform: translateZ(0) scale(1);
+    backdrop-filter: blur(var(--sov-blur-standard));
+  }
+  50% {
+    transform: translateZ(10px) scale(1.005);
+    backdrop-filter: blur(calc(var(--sov-blur-standard) + 4px));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   AMBIENT UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Living glass — breathes slowly */
+.sov-glass-alive {
+  animation: sov-liquid-breathe 8s ease-in-out infinite;
+}
+
+/* Sheen sweep — occasional shine across surface */
+.sov-glass-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.sov-glass-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.03) 45%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.03) 55%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  animation: sov-liquid-sheen 12s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Depth float — glass surface with gentle depth oscillation */
+.sov-glass-depth {
+  animation: sov-liquid-surface 10s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SPATIAL DEPTH LAYERS
+   For creating visual hierarchy through glass density.
+   Layer 0 = background. Layer 3 = foreground.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.sov-depth-0 {
+  /* Background — no glass, just void */
+  background: transparent;
+}
+
+.sov-depth-1 {
+  /* Far layer — subtle glass, low blur */
+  background: var(--sov-glass-thin);
+  backdrop-filter: blur(var(--sov-blur-subtle));
+  -webkit-backdrop-filter: blur(var(--sov-blur-subtle));
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.sov-depth-2 {
+  /* Mid layer — standard glass */
+  background: var(--sov-glass-standard);
+  backdrop-filter: blur(var(--sov-blur-standard));
+  -webkit-backdrop-filter: blur(var(--sov-blur-standard));
+  border: var(--sov-glass-border);
+  box-shadow: var(--sov-liquid-shadow-md);
+}
+
+.sov-depth-3 {
+  /* Near layer — thick, prominent */
+  background: var(--sov-glass-thick);
+  backdrop-filter: blur(var(--sov-blur-heavy));
+  -webkit-backdrop-filter: blur(var(--sov-blur-heavy));
+  border: var(--sov-glass-border);
+  box-shadow: var(--sov-liquid-shadow-lg);
+}
+
+.sov-depth-focus {
+  /* Focal layer — the one active surface */
+  background: var(--sov-glass-thick);
+  backdrop-filter: blur(var(--sov-blur-heavy));
+  -webkit-backdrop-filter: blur(var(--sov-blur-heavy));
+  border: var(--sov-glass-border-glow);
+  box-shadow:
+    var(--sov-liquid-shadow-float),
+    0 0 40px var(--sov-glow);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GLASS BACKGROUNDS — Spatial depth fields
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Polished black mirror with living depth */
+.sov-atmosphere {
+  background: var(--sov-bg);
+  position: relative;
+  overflow: hidden;
+}
+.sov-atmosphere::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, var(--sov-glow) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(var(--sov-accent-1-rgb, 59, 130, 246), 0.08) 0%, transparent 40%);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Animated gradient underlay — slow rotation */
+.sov-atmosphere-alive::after {
+  content: "";
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  top: -25%;
+  left: -25%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    var(--sov-glow) 10%,
+    transparent 20%,
+    transparent 100%
+  );
+  animation: sov-orbit var(--sov-orbit-drift) linear infinite;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOTION SAFETY
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .sov-glass-alive,
+  .sov-glass-sheen::after,
+  .sov-glass-depth,
+  .sov-atmosphere-alive::after {
+    animation: none !important;
+  }
+}

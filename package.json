@@ -17,7 +17,42 @@
     "lp:monitor:json": "node scripts/lp-monitor.mjs --json",
     "lp:check":     "npm run lp:check:usdc && npm run lp:check:wavax",
     "lp:check:usdc":"cd packages/unyKorn-contracts && npx hardhat run scripts/checkLP.ts --network avalanche",
-    "lp:check:wavax":"cd packages/unyKorn-contracts && npx hardhat run scripts/checkLP.ts --network avalanche"
+    "lp:check:wavax":"cd packages/unyKorn-contracts && npx hardhat run scripts/checkLP.ts --network avalanche",
+
+    "x402:facilitator":  "cd packages/fth-x402-facilitator && npm run dev",
+    "x402:gateway":      "cd packages/fth-x402-gateway && npx wrangler dev",
+    "x402:treasury":     "cd packages/fth-x402-treasury && npm run dev",
+    "x402:build":        "npm run x402:build:core && npm run x402:build:metering && npm run x402:build:facilitator && npm run x402:build:gateway && npm run x402:build:sdk && npm run x402:build:pricing && npm run x402:build:treasury",
+    "x402:build:core":        "cd packages/fth-x402-core && npm run build",
+    "x402:build:metering":    "cd packages/fth-metering && npm run build",
+    "x402:build:facilitator": "cd packages/fth-x402-facilitator && npm run build",
+    "x402:build:gateway":     "cd packages/fth-x402-gateway && npm run build",
+    "x402:build:sdk":         "cd packages/fth-x402-sdk && npm run build",
+    "x402:build:pricing":     "cd packages/fth-x402-pricing && npm run build",
+    "x402:build:treasury":    "cd packages/fth-x402-treasury && npm run build",
+    "x402:db:create":   "createdb fth_x402 2>/dev/null; echo 'DB ready'",
+    "x402:db:setup":    "node scripts/x402-db-setup.mjs",
+    "x402:db:migrate":  "for f in db/migrations-x402/*.sql; do psql fth_x402 < $f; done",
+    "x402:db:seed":     "node scripts/x402-seed-namespaces.mjs",
+    "x402:smoke":       "node scripts/x402-smoke-test.mjs",
+    "x402:smoke:channels": "node scripts/x402-channel-smoke-test.mjs",
+    "x402:smoke:gateway":  "node scripts/x402-gateway-integration-test.mjs",
+    "x402:smoke:e2e":      "node scripts/x402-e2e-integration-test.mjs",
+    "x402:smoke:all":      "npm run x402:smoke && npm run x402:smoke:channels && npm run x402:smoke:e2e",
+    "x402:smoke:deploy":   "node scripts/x402-deploy-smoke-test.mjs",
+    "x402:dev":         "concurrently \"npm run x402:facilitator\" \"npm run x402:gateway\"",
+      "x402:demo:fund-agent": "bash scripts/x402-demo-fund-agent.sh",
+      "x402:load:agents": "node scripts/x402-agent-load-test.mjs",
+
+    "guardian:dev":    "cd packages/fth-guardian && npm run dev",
+    "guardian:build":  "cd packages/fth-guardian && npm run build",
+    "guardian:start":  "cd packages/fth-guardian && npm run start",
+
+    "prod:build":      "npm run x402:build && npm run guardian:build",
+    "prod:up":         "cd aws/docker && docker compose -f docker-compose.production.yml up -d --build",
+    "prod:down":       "cd aws/docker && docker compose -f docker-compose.production.yml down",
+    "prod:logs":       "cd aws/docker && docker compose -f docker-compose.production.yml logs -f",
+    "prod:deploy":     "node scripts/deploy-production.mjs"
   },
   "engines": {
     "node": ">=18.0.0"

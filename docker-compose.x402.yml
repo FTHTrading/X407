@@ -1,0 +1,78 @@
+# ===========================================================================
+# FTH x402 Stack — Docker Compose (local development)
+# ===========================================================================
+# Usage:  docker compose -f docker-compose.x402.yml up -d
+# Tear:   docker compose -f docker-compose.x402.yml down
+
+version: "3.9"
+
+services:
+  # --- PostgreSQL (use existing unykorn-postgres or spin up dedicated) ---
+  x402-db:
+    image: postgres:16-alpine
+    container_name: fth-x402-postgres
+    environment:
+      POSTGRES_USER: unykorn
+      POSTGRES_PASSWORD: unykorn_dev
+      POSTGRES_DB: fth_x402
+    ports:
+      - "5442:5432"  # Use 5442 to avoid conflict with existing pg containers
+    volumes:
+      - x402_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U unykorn -d fth_x402"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # --- DB Migrations (runs once then exits) ---
+  x402-migrate:
+    image: node:20-alpine
+    container_name: fth-x402-migrate
+    working_dir: /app
+    volumes:
+      - .:/app:ro
+    environment:
+      DATABASE_URL: postgresql://unykorn:unykorn_dev@x402-db:5432/fth_x402
+      PGHOST: x402-db
+      PGPORT: "5432"
+      PGUSER: unykorn
+      PGPASSWORD: unykorn_dev
+      PGDATABASE: fth_x402
+    depends_on:
+      x402-db:
+        condition: service_healthy
+    command: >
+      sh -c "node scripts/x402-db-setup.mjs && node scripts/x402-seed-namespaces.mjs"
+    restart: "no"
+
+  # --- Facilitator ---
+  x402-facilitator:
+    build:
+      context: .
+      dockerfile: packages/fth-x402-facilitator/Dockerfile
+    container_name: fth-x402-facilitator
+    ports:
+      - "3100:3100"
+    environment:
+      NODE_ENV: production
+      PORT: "3100"
+      HOST: "0.0.0.0"
+      DATABASE_URL: postgresql://unykorn:unykorn_dev@x402-db:5432/fth_x402
+      PGHOST: x402-db
+      PGPORT: "5432"
+      PGUSER: unykorn
+      PGPASSWORD: unykorn_dev
+      PGDATABASE: fth_x402
+      FTH_SIGNING_KEY: ${FTH_SIGNING_KEY:-YaUCZ6eiYv7ILVeeNgwM6haGGyZDof9KZVfxqROCTmw8jeKvtPDNUhz25zPLR1TBYioVHdCSbdGDan5tCwp0kA==}
+      L1_RPC_URL: ${L1_RPC_URL:-https://rpc.l1.unykorn.org}
+      L1_CHAIN_ID: "7331"
+    depends_on:
+      x402-db:
+        condition: service_healthy
+      x402-migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  x402_pgdata:

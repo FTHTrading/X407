@@ -7,7 +7,7 @@
 admins:
   avalanche_operator: "0x95989eB2AD1bF8036d23B53db4d587455a322022"  # NEW — replaces compromised wallet
   avalanche_operator_old: "0x8aced25DC8530FDaf0f86D53a0A1E02AAfA7Ac7A"  # ⚠ COMPROMISED 2026-03-03 — sweeper bot active
-  polygon_admin:      "0x8aced25DC8530FDaf0f86D53a0A1E02AAfA7Ac7A"  # TODO: rotate this too
+  polygon_admin:      "0x95989eB2AD1bF8036d23B53db4d587455a322022"  # Rotated 2026-03 — matches avalanche_operator
   solana_admin:       "GFHJQ7JgcRGYToPf2KXdGWDABRVnqzMU7ePDu4b3BqZg"
 
 # ── Primary operator hot wallet ───────────────────────────────────────────────

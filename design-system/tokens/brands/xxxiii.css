@@ -1,0 +1,26 @@
+/*
+ * SOVEREIGN Design System — xxxiii Brand Skin
+ * Sovereign intelligence OS
+ * Palette: cold white, electric blue, gold
+ *
+ * Usage: @import "sovereign.css"; @import "brands/xxxiii.css";
+ */
+
+[data-brand="xxxiii"],
+.brand-xxxiii {
+  --sov-accent-1:      #60a5fa;         /* electric blue */
+  --sov-accent-2:      #fbbf24;         /* gold */
+  --sov-accent-3:      #f0f0f5;         /* cold white */
+
+  --sov-glow:          rgba(96, 165, 250, 0.25);
+  --sov-border-glow:   rgba(96, 165, 250, 0.3);
+
+  --sov-gradient:      linear-gradient(135deg, #60a5fa 0%, #fbbf24 100%);
+  --sov-gradient-h:    linear-gradient(90deg, #60a5fa 0%, #fbbf24 100%);
+}
+
+/*
+ * Hero object: Intelligence mesh — node constellation
+ * Tone: Sovereign, intelligent, commanding
+ * Module emphasis: Intelligence, Agentic, Execution
+ */

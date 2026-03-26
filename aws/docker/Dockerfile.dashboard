@@ -1,0 +1,74 @@
+# ─────────────────────────────────────────────────────────────
+# UnyKorn Dashboard / Wallet UI — Docker Build
+# Vite + React → nginx static serve
+# ─────────────────────────────────────────────────────────────
+
+# ── Stage 1: Build ────────────────────────────────────────
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json ./
+
+# Install dependencies
+RUN npm ci --ignore-scripts
+
+# Copy source
+COPY . .
+
+# Build-time env vars
+ARG VITE_WALLETCONNECT_PROJECT_ID=""
+ARG VITE_RPC_URL="http://localhost:3001"
+
+ENV VITE_WALLETCONNECT_PROJECT_ID=$VITE_WALLETCONNECT_PROJECT_ID
+ENV VITE_RPC_URL=$VITE_RPC_URL
+
+# Build
+RUN npm run build
+
+# ── Stage 2: Serve ────────────────────────────────────────
+FROM nginx:alpine
+
+# Custom nginx config for SPA routing
+RUN cat > /etc/nginx/conf.d/default.conf <<'EOF'
+server {
+    listen 3000;
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # SPA routing: serve index.html for all non-file routes
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Cache static assets
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Health check
+    location /health {
+        access_log off;
+        return 200 '{"status":"ok"}';
+        add_header Content-Type application/json;
+    }
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+}
+EOF
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+HEALTHCHECK --interval=15s --timeout=5s --retries=3 \
+    CMD curl -sf http://localhost:3000/health || exit 1
+
+EXPOSE 3000
+
+CMD ["nginx", "-g", "daemon off;"]
