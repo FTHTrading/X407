@@ -19,6 +19,7 @@ import { build402Response } from "./x402";
 import { extractProof, ProofParseError } from "./proof";
 import { emitApiRequest } from "./metering";
 import { interpolateBraces } from "../../fth-x402-core/src/helpers";
+import { createServiceHeaders } from "./service-auth";
 
 export default {
   async fetch(
@@ -122,10 +123,15 @@ export default {
 
     let verification: VerifyResponse;
     try {
+      const verifyBodyStr = JSON.stringify(verifyBody);
+      const authHeaders = env.FTH_SERVICE_SECRET
+        ? await createServiceHeaders(env.FTH_SERVICE_SECRET, "POST", "/verify", verifyBodyStr)
+        : { "Content-Type": "application/json" };
+
       const res = await fetch(`${env.FACILITATOR_URL}/verify`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(verifyBody),
+        headers: authHeaders,
+        body: verifyBodyStr,
       });
 
       if (!res.ok) {

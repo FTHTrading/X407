@@ -42,6 +42,8 @@ export interface Env {
   ENVIRONMENT: string;
   UNYKORN_TREASURY_ADDRESS?: string;
   ASSETS?: R2Bucket;
+  /** Shared signing key for HMAC service-to-service auth. */
+  FTH_SERVICE_SECRET?: string;
   /** OpenMeter endpoint (optional — metering disabled if unset). */
   OPENMETER_ENDPOINT?: string;
   /** OpenMeter API key (optional). */

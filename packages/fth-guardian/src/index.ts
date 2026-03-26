@@ -33,6 +33,8 @@ import { daemonRoutes } from "./routes/daemons.js";
 import { metricsRoutes } from "./routes/metrics.js";
 import { commandRoutes } from "./routes/commands.js";
 
+import { registerAuthMiddleware } from "./middleware/auth.js";
+
 import { EventBus } from "./core/event-bus.js";
 import { StateStore } from "./core/state-store.js";
 import { AlertManager } from "./core/alert-manager.js";
@@ -66,6 +68,9 @@ async function main() {
     origin: process.env.CORS_ORIGIN ?? "*",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   });
+
+  // Auth middleware — must come before routes
+  registerAuthMiddleware(app);
 
   // ---------------------------------------------------------------------------
   // Core infrastructure

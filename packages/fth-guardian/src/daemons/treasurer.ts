@@ -14,6 +14,7 @@ import type { EventBus } from "../core/event-bus.js";
 import type { StateStore } from "../core/state-store.js";
 import type { AlertManager } from "../core/alert-manager.js";
 import type { AuditLog } from "../core/audit-log.js";
+import { sfetch } from "../core/service-fetch.js";
 
 interface WalletBalance {
   address: string;
@@ -135,7 +136,7 @@ export class TreasurerDaemon {
   private async checkBalances(): Promise<void> {
     try {
       // Get all known wallet addresses from the Treasury service
-      const resp = await fetch(`${TREASURY_URL}/treasury/agents`, {
+      const resp = await sfetch(`${TREASURY_URL}/treasury/agents`, {
         signal: AbortSignal.timeout(5000),
       });
 
@@ -252,7 +253,7 @@ export class TreasurerDaemon {
 
   private async checkTreasuryService(): Promise<void> {
     try {
-      const resp = await fetch(`${TREASURY_URL}/health`, { signal: AbortSignal.timeout(5000) });
+      const resp = await sfetch(`${TREASURY_URL}/health`, { signal: AbortSignal.timeout(5000) });
       if (!resp.ok) {
         await this.alerts.fire("treasurer", "critical", "Treasury service unhealthy", `Status: ${resp.status}`);
         this.bus.emit("service.down", "treasurer", { service: "treasury" });
@@ -265,7 +266,7 @@ export class TreasurerDaemon {
 
   async fundWallet(address: string, amount: string, currency: string): Promise<boolean> {
     try {
-      const resp = await fetch(`${TREASURY_URL}/treasury/fund`, {
+      const resp = await sfetch(`${TREASURY_URL}/treasury/fund`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ address, amount, currency }),

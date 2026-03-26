@@ -23,6 +23,9 @@ import l1Routes from "./routes/l1";
 import webhookRoutes from "./routes/webhooks";
 import operatorRoutes from "./routes/operator";
 
+// Auth
+import { registerAuthMiddleware } from "./middleware/auth";
+
 // Services
 import { startBatcher, stopBatcher } from "./services/receipts";
 import { expireInvoices } from "./services/invoices";
@@ -61,6 +64,9 @@ async function main() {
     origin: process.env.CORS_ORIGIN ?? "*",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   });
+
+  // Auth middleware — must come before routes
+  registerAuthMiddleware(app);
 
   app.get("/", async (_req, reply) => {
     return reply.send({

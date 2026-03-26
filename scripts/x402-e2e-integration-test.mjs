@@ -26,12 +26,18 @@ const { encodeBase64, decodeUTF8 } = pkg;
 const BASE = process.env.FACILITATOR_URL || "http://localhost:3100";
 const PROTOCOL_VERSION = "fth-x402/2.0";
 
+// Auth: use admin token or HMAC service auth when available
+const ADMIN_TOKEN = process.env.ADMIN_API_TOKEN || "";
+const authHeader = ADMIN_TOKEN
+  ? { Authorization: `Bearer ${ADMIN_TOKEN}` }
+  : {};
+
 // --- Helpers ---------------------------------------------------------------
 
 async function post(path, body, headers = {}) {
   const res = await fetch(`${BASE}${path}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...headers },
+    headers: { "Content-Type": "application/json", ...authHeader, ...headers },
     body: JSON.stringify(body),
   });
   const data = await res.json();
@@ -39,7 +45,9 @@ async function post(path, body, headers = {}) {
 }
 
 async function get(path) {
-  const res = await fetch(`${BASE}${path}`);
+  const res = await fetch(`${BASE}${path}`, {
+    headers: { ...authHeader },
+  });
   const data = await res.json();
   return { status: res.status, data };
 }

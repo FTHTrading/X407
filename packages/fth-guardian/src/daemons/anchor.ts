@@ -14,6 +14,7 @@ import type { EventBus } from "../core/event-bus.js";
 import type { StateStore } from "../core/state-store.js";
 import type { AlertManager } from "../core/alert-manager.js";
 import type { AuditLog } from "../core/audit-log.js";
+import { sfetch } from "../core/service-fetch.js";
 
 interface AnchorBatch {
   id: string;
@@ -75,7 +76,7 @@ export class AnchorDaemon {
   private async anchorPending(): Promise<void> {
     try {
       // Ask the facilitator for pending receipts that need anchoring
-      const resp = await fetch(`${FACILITATOR_URL}/l1/pending-anchors`, {
+      const resp = await sfetch(`${FACILITATOR_URL}/l1/pending-anchors`, {
         signal: AbortSignal.timeout(5000),
       });
 
@@ -125,7 +126,7 @@ export class AnchorDaemon {
         this.totalAnchored += batch.receipt_count;
 
         // Notify facilitator that anchoring was submitted
-        await fetch(`${FACILITATOR_URL}/l1/confirm-anchor`, {
+        await sfetch(`${FACILITATOR_URL}/l1/confirm-anchor`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

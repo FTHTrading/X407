@@ -27,10 +27,17 @@ function getSigningKey(): Uint8Array {
     if (!b64) {
       throw new Error("FTH_SIGNING_KEY not set — receipt signing unavailable");
     }
-    const seed = decodeBase64(b64);
-    // FTH_SIGNING_KEY is a 32-byte seed; derive full 64-byte Ed25519 secret key
-    const keyPair = nacl.sign.keyPair.fromSeed(seed);
-    signingKey = keyPair.secretKey;
+    const raw = decodeBase64(b64);
+    if (raw.length === 64) {
+      // Full 64-byte Ed25519 secret key — use directly
+      signingKey = raw;
+    } else if (raw.length === 32) {
+      // 32-byte seed — derive full key pair
+      const keyPair = nacl.sign.keyPair.fromSeed(raw);
+      signingKey = keyPair.secretKey;
+    } else {
+      throw new Error(`FTH_SIGNING_KEY: expected 32-byte seed or 64-byte key, got ${raw.length} bytes`);
+    }
   }
   return signingKey;
 }

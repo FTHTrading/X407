@@ -54,3 +54,18 @@ export {
   interpolatePattern,
   interpolateBraces,
 } from "./helpers";
+
+// Auth
+export {
+  AUTH_HEADERS,
+  SERVICE_NAMES,
+  MAX_REQUEST_AGE_MS,
+  createServiceSignature,
+  verifyServiceSignature,
+  createServiceFetch,
+  getBearerToken,
+  isValidAdminToken,
+  isAuthorizedRequest,
+} from "./auth";
+
+export type { ServiceName, AuthLevel, ServiceFetchOptions } from "./auth";

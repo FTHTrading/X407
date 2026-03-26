@@ -4,6 +4,7 @@ import cors from "@fastify/cors";
 import healthRoutes from "./routes/health";
 import treasuryRoutes from "./routes/treasury";
 import { startTreasuryWorker, stopTreasuryWorker } from "./services/treasury";
+import { registerAuthMiddleware } from "./middleware/auth";
 
 const PORT = Number(process.env.TREASURY_PORT ?? 3200);
 const HOST = process.env.TREASURY_HOST ?? "0.0.0.0";
@@ -24,6 +25,9 @@ async function main() {
     origin: process.env.CORS_ORIGIN ?? "*",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   });
+
+  // Auth middleware — must come before routes
+  registerAuthMiddleware(app);
 
   app.get("/", async () => ({
     service: "fth-x402-treasury",

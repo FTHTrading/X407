@@ -12,6 +12,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "../fth-x402-core/src/**/*", "../fth-metering/src/**/*"],
+  "include": ["src/**/*", "../fth-x402-core/src/types.ts", "../fth-x402-core/src/helpers.ts", "../fth-metering/src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

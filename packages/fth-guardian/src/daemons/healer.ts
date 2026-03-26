@@ -16,6 +16,7 @@ import type { EventBus } from "../core/event-bus.js";
 import type { StateStore } from "../core/state-store.js";
 import type { AlertManager } from "../core/alert-manager.js";
 import type { AuditLog } from "../core/audit-log.js";
+import { sfetch } from "../core/service-fetch.js";
 
 interface RepairAction {
   id: string;
@@ -206,7 +207,7 @@ export class HealerDaemon {
     const command = `docker restart unykorn-l1-${nodeId} 2>&1 || systemctl restart unykorn-l1-${nodeId} 2>&1`;
 
     // We make the AWS API call via the local CLI — in production this would use @aws-sdk/client-ssm
-    const resp = await fetch("http://localhost:3300/api/commands/ssm", {
+    const resp = await sfetch("http://localhost:3300/api/commands/ssm", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ instance_id: instanceId, command }),
@@ -238,7 +239,7 @@ export class HealerDaemon {
 
     // For local Docker deployment
     const dockerCmd = `docker restart fth-x402-${service}`;
-    const resp = await fetch("http://localhost:3300/api/commands/exec", {
+    const resp = await sfetch("http://localhost:3300/api/commands/exec", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ command: dockerCmd }),

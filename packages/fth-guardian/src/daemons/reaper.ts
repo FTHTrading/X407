@@ -15,6 +15,7 @@ import type { EventBus } from "../core/event-bus.js";
 import type { StateStore } from "../core/state-store.js";
 import type { AlertManager } from "../core/alert-manager.js";
 import type { AuditLog } from "../core/audit-log.js";
+import { sfetch } from "../core/service-fetch.js";
 
 interface RevenueStream {
   name: string;
@@ -263,7 +264,7 @@ export class ReaperDaemon {
   private async collectFacilitatorFees(): Promise<void> {
     try {
       // Query the facilitator for accumulated fees
-      const resp = await fetch(`${FACILITATOR_URL}/operator/metrics`, {
+      const resp = await sfetch(`${FACILITATOR_URL}/operator/metrics`, {
         signal: AbortSignal.timeout(5000),
       });
 
@@ -292,7 +293,7 @@ export class ReaperDaemon {
   private async collectPaymentFees(): Promise<void> {
     try {
       // Query x402 payment processing fees
-      const resp = await fetch(`${FACILITATOR_URL}/credits/stats`, {
+      const resp = await sfetch(`${FACILITATOR_URL}/credits/stats`, {
         signal: AbortSignal.timeout(5000),
       });
 
