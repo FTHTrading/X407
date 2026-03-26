@@ -76,6 +76,57 @@ resource "aws_route53_record" "demo" {
   }
 }
 
+# ─── x402 service subdomains → ALB ───────────────────────
+# These resolve to the same ALB; host-based listener rules
+# route to the correct target group.
+resource "aws_route53_record" "x402" {
+  zone_id = local.zone_id
+  name    = "x402.${var.domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = var.alb_dns_name
+    zone_id                = var.alb_zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "facilitator" {
+  zone_id = local.zone_id
+  name    = "facilitator.${var.domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = var.alb_dns_name
+    zone_id                = var.alb_zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "treasury" {
+  zone_id = local.zone_id
+  name    = "treasury.${var.domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = var.alb_dns_name
+    zone_id                = var.alb_zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "guardian" {
+  zone_id = local.zone_id
+  name    = "guardian.${var.domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = var.alb_dns_name
+    zone_id                = var.alb_zone_id
+    evaluate_target_health = true
+  }
+}
+
 # ─── Outputs ───────────────────────────────────────────────
 output "zone_id" {
   value = local.zone_id

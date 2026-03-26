@@ -13,7 +13,9 @@ variable "sg_nlb_rpc_id"      { type = string }
 variable "node_instance_ids"  { type = map(string) }
 variable "rpc_node_id"        { type = string }
 variable "dashboard_node_id"  { type = string }
+variable "x402_node_id"       { type = string }
 variable "certificate_arn"    { type = string }
+variable "domain_name"        { type = string }
 
 # ─── ALB (Web / Dashboard) ────────────────────────────────
 resource "aws_lb" "web" {
@@ -133,6 +135,109 @@ resource "aws_lb_target_group_attachment" "api" {
   target_group_arn = aws_lb_target_group.api.arn
   target_id        = var.rpc_node_id
   port             = 3001
+}
+
+# ALB Listener Rule: /api/* → API target group
+resource "aws_lb_listener_rule" "api" {
+  count        = var.certificate_arn != "" ? 1 : 0
+  listener_arn = aws_lb_listener.https[0].arn
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.api.arn
+  }
+
+  condition {
+    path_pattern { values = ["/api/*"] }
+  }
+}
+
+# ─── x402 Payment Protocol — Target Groups ───────────────
+# These target delta which runs the x402 services stack
+
+locals {
+  x402_services = {
+    facilitator = { port = 3100, health_path = "/health", priority = 200 }
+    treasury    = { port = 3200, health_path = "/health", priority = 210 }
+    guardian    = { port = 3300, health_path = "/health", priority = 220 }
+    fincore     = { port = 4400, health_path = "/health", priority = 230 }
+  }
+}
+
+resource "aws_lb_target_group" "x402" {
+  for_each = local.x402_services
+
+  name     = "${var.project_name}-x402-${each.key}"
+  port     = each.value.port
+  protocol = "HTTP"
+  vpc_id   = var.vpc_id
+
+  health_check {
+    path                = each.value.health_path
+    port                = "traffic-port"
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+    timeout             = 5
+    interval            = 15
+    matcher             = "200"
+  }
+
+  tags = { Name = "${var.project_name}-x402-tg-${each.key}" }
+}
+
+resource "aws_lb_target_group_attachment" "x402" {
+  for_each = local.x402_services
+
+  target_group_arn = aws_lb_target_group.x402[each.key].arn
+  target_id        = var.x402_node_id
+  port             = each.value.port
+}
+
+# ─── x402 ALB Listener Rules (host-based routing) ────────
+# facilitator.l1.unykorn.org → facilitator:3100
+# treasury.l1.unykorn.org    → treasury:3200
+# guardian.l1.unykorn.org    → guardian:3300
+# x402.l1.unykorn.org        → facilitator:3100 (primary)
+
+locals {
+  x402_host_rules = {
+    facilitator = { key = "facilitator", host = "facilitator.${var.domain_name}", priority = 200 }
+    treasury    = { key = "treasury",    host = "treasury.${var.domain_name}",    priority = 210 }
+    guardian    = { key = "guardian",     host = "guardian.${var.domain_name}",    priority = 220 }
+  }
+}
+
+resource "aws_lb_listener_rule" "x402" {
+  for_each = var.certificate_arn != "" ? local.x402_host_rules : {}
+
+  listener_arn = aws_lb_listener.https[0].arn
+  priority     = each.value.priority
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.x402[each.key].arn
+  }
+
+  condition {
+    host_header { values = [each.value.host] }
+  }
+}
+
+# x402.l1.unykorn.org catch-all → facilitator (primary x402 service)
+resource "aws_lb_listener_rule" "x402_default" {
+  count        = var.certificate_arn != "" ? 1 : 0
+  listener_arn = aws_lb_listener.https[0].arn
+  priority     = 250
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.x402["facilitator"].arn
+  }
+
+  condition {
+    host_header { values = ["x402.${var.domain_name}"] }
+  }
 }
 
 # ─── NLB (JSON-RPC — TCP) ─────────────────────────────────

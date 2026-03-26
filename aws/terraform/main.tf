@@ -105,7 +105,9 @@ module "load_balancing" {
   node_instance_ids  = module.compute.node_instance_ids
   rpc_node_id        = module.compute.rpc_node_id
   dashboard_node_id  = module.compute.dashboard_node_id
+  x402_node_id       = module.compute.x402_node_id
   certificate_arn    = var.certificate_arn
+  domain_name        = var.domain_name
 }
 
 # ─── DNS ─────────────────────────────────────────────────

@@ -160,6 +160,39 @@ resource "aws_security_group" "chain_nodes" {
     cidr_blocks = var.admin_cidr
   }
 
+  # ─── x402 service ports from ALB (delta runs x402 stack) ─
+  ingress {
+    description     = "x402 Facilitator from ALB"
+    from_port       = 3100
+    to_port         = 3100
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_public.id]
+  }
+
+  ingress {
+    description     = "x402 Treasury from ALB"
+    from_port       = 3200
+    to_port         = 3200
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_public.id]
+  }
+
+  ingress {
+    description     = "x402 Guardian from ALB"
+    from_port       = 3300
+    to_port         = 3300
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_public.id]
+  }
+
+  ingress {
+    description     = "x402 Financial Core from ALB"
+    from_port       = 4400
+    to_port         = 4400
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_public.id]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -190,6 +223,39 @@ resource "aws_security_group" "services" {
     description     = "Grafana from ALB"
     from_port       = 3001
     to_port         = 3001
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_public.id]
+  }
+
+  # ─── x402 service ports from ALB ───────────────────────
+  ingress {
+    description     = "x402 Facilitator from ALB"
+    from_port       = 3100
+    to_port         = 3100
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_public.id]
+  }
+
+  ingress {
+    description     = "x402 Treasury from ALB"
+    from_port       = 3200
+    to_port         = 3200
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_public.id]
+  }
+
+  ingress {
+    description     = "x402 Guardian from ALB"
+    from_port       = 3300
+    to_port         = 3300
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_public.id]
+  }
+
+  ingress {
+    description     = "x402 Financial Core from ALB"
+    from_port       = 4400
+    to_port         = 4400
     protocol        = "tcp"
     security_groups = [aws_security_group.alb_public.id]
   }

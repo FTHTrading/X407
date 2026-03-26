@@ -231,3 +231,8 @@ output "dashboard_node_id" {
   description = "Instance ID for dashboard (alpha for now)"
   value       = aws_instance.chain_node["alpha"].id
 }
+
+output "x402_node_id" {
+  description = "Instance ID for x402 services (delta)"
+  value       = aws_instance.chain_node["delta"].id
+}
