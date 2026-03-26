@@ -54,7 +54,7 @@ resource "aws_kms_alias" "main" {
 # ─── SG: ALB Public ───────────────────────────────────────
 resource "aws_security_group" "alb_public" {
   name_prefix = "${var.project_name}-alb-public-"
-  description = "ALB public ingress — HTTPS + HTTP redirect"
+  description = "ALB public ingress -- HTTPS + HTTP redirect"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -88,7 +88,7 @@ resource "aws_security_group" "alb_public" {
 # ─── SG: NLB RPC ──────────────────────────────────────────
 resource "aws_security_group" "nlb_rpc" {
   name_prefix = "${var.project_name}-nlb-rpc-"
-  description = "NLB RPC ingress — chain JSON-RPC"
+  description = "NLB RPC ingress -- chain JSON-RPC"
   vpc_id      = var.vpc_id
 
   # Primary RPC port (alpha node — public-facing gateway)
@@ -175,7 +175,7 @@ resource "aws_security_group" "chain_nodes" {
 # ─── SG: Services (dashboard, explorer, monitoring) ───────
 resource "aws_security_group" "services" {
   name_prefix = "${var.project_name}-services-"
-  description = "Internal services — dashboard, explorer, Grafana"
+  description = "Internal services -- dashboard, explorer, Grafana"
   vpc_id      = var.vpc_id
 
   ingress {

@@ -9,6 +9,10 @@ variable "aws_region"         { type = string }
 variable "vpc_id"             { type = string }
 variable "private_subnet_ids" { type = list(string) }
 variable "node_instance_ids"  { type = map(string) }
+variable "enable_grafana" {
+  type    = bool
+  default = false
+}
 
 # ─── CloudWatch Log Groups ────────────────────────────────
 resource "aws_cloudwatch_log_group" "nodes" {
@@ -43,7 +47,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         width  = 12
         height = 6
         properties = {
-          title   = "CPU Utilization — Chain Nodes"
+          title   = "CPU Utilization - Chain Nodes"
           region  = var.aws_region
           metrics = [
             for name, id in var.node_instance_ids : [
@@ -63,12 +67,15 @@ resource "aws_cloudwatch_dashboard" "main" {
         width  = 12
         height = 6
         properties = {
-          title   = "Network In/Out — Chain Nodes"
+          title   = "Network In/Out - Chain Nodes"
           region  = var.aws_region
-          metrics = flatten([
+          metrics = concat([
             for name, id in var.node_instance_ids : [
-              ["AWS/EC2", "NetworkIn", "InstanceId", id, { label = "${name}-in" }],
-              ["AWS/EC2", "NetworkOut", "InstanceId", id, { label = "${name}-out" }]
+              "AWS/EC2", "NetworkIn", "InstanceId", id, { label = "${name}-in" }
+            ]
+          ], [
+            for name, id in var.node_instance_ids : [
+              "AWS/EC2", "NetworkOut", "InstanceId", id, { label = "${name}-out" }
             ]
           ])
           period = 300
@@ -83,7 +90,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         width  = 12
         height = 6
         properties = {
-          title     = "Disk Read/Write — Chain Nodes"
+          title     = "Disk Read/Write - Chain Nodes"
           region    = var.aws_region
           namespace = "UnyKorn/L1"
           metrics = [
@@ -104,7 +111,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         width  = 12
         height = 6
         properties = {
-          title     = "Custom — Block Height / TPS"
+          title     = "Custom - Block Height / TPS"
           region    = var.aws_region
           namespace = "UnyKorn/L1"
           metrics = [
@@ -180,11 +187,12 @@ resource "aws_prometheus_workspace" "main" {
 
 # ─── Amazon Managed Grafana ────────────────────────────────
 resource "aws_grafana_workspace" "main" {
+  count                    = var.enable_grafana ? 1 : 0
   name                     = "${var.project_name}-${var.environment}"
   account_access_type      = "CURRENT_ACCOUNT"
   authentication_providers = ["AWS_SSO"]
   permission_type          = "SERVICE_MANAGED"
-  role_arn                 = aws_iam_role.grafana.arn
+  role_arn                 = aws_iam_role.grafana[0].arn
 
   data_sources = ["PROMETHEUS", "CLOUDWATCH"]
 
@@ -192,7 +200,8 @@ resource "aws_grafana_workspace" "main" {
 }
 
 resource "aws_iam_role" "grafana" {
-  name = "${var.project_name}-${var.environment}-grafana-role"
+  count = var.enable_grafana ? 1 : 0
+  name  = "${var.project_name}-${var.environment}-grafana-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -205,8 +214,9 @@ resource "aws_iam_role" "grafana" {
 }
 
 resource "aws_iam_role_policy" "grafana" {
-  name = "${var.project_name}-${var.environment}-grafana-policy"
-  role = aws_iam_role.grafana.id
+  count = var.enable_grafana ? 1 : 0
+  name  = "${var.project_name}-${var.environment}-grafana-policy"
+  role  = aws_iam_role.grafana[0].id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -255,7 +265,7 @@ output "prometheus_workspace_id" {
 }
 
 output "grafana_endpoint" {
-  value = aws_grafana_workspace.main.endpoint
+  value = var.enable_grafana ? aws_grafana_workspace.main[0].endpoint : ""
 }
 
 output "cloudwatch_dashboard_name" {

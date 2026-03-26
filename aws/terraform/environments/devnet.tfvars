@@ -12,9 +12,9 @@ admin_cidr          = ["76.230.229.105/32"]  # Hardened: restricted to admin IP
 
 node_key_pair       = "unykorn-devnet-key"
 node_ami_id         = ""
-certificate_arn     = ""
+certificate_arn     = "arn:aws:acm:us-east-1:933629770808:certificate/d51e9d27-0298-4e88-84f3-65f8b32aed21"
 domain_name         = "l1.unykorn.org"
-hosted_zone_id      = ""
+hosted_zone_id      = "Z08184221LQW6HTHIC1D2"
 
 chain_nodes = {
   alpha = {

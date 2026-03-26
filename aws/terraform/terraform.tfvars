@@ -18,6 +18,8 @@ node_key_pair       = "unykorn-devnet-key"
 node_ami_id         = ""
 
 # ACM certificate ARN (provision via ACM or Terraform)
+# Cert requested: arn:aws:acm:us-east-1:933629770808:certificate/d51e9d27-0298-4e88-84f3-65f8b32aed21
+# Uncomment once validated:
 certificate_arn     = ""
 
 # Route 53 hosted zone — confirmed in AWS: Z08184221LQW6HTHIC1D2
