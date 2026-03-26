@@ -130,7 +130,10 @@ export default {
 
       const res = await fetch(`${env.FACILITATOR_URL}/verify`, {
         method: "POST",
-        headers: authHeaders,
+        headers: {
+          ...authHeaders,
+          "User-Agent": "Cloudflare-Worker/fth-x402-gateway",
+        },
         body: verifyBodyStr,
       });
 

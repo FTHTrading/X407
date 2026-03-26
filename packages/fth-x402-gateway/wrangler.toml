@@ -8,19 +8,21 @@ compatibility_date = "2026-03-01"
 [vars]
 FACILITATOR_URL = "http://localhost:3100"
 ENVIRONMENT = "development"
-UNYKORN_TREASURY_ADDRESS = "uny1_DEMO_TREASURY"
+UNYKORN_TREASURY_ADDRESS = "uny1_755098bacf6f6d9ef9d0f391a8e7c467e7db7190"
 
 # ---------------------------------------------------------------------------
 # Staging — deploy with: wrangler deploy --env staging
 # ---------------------------------------------------------------------------
 [env.staging]
 name = "fth-x402-gateway-staging"
-route = { pattern = "staging-api.fth.trading/api/*", zone_name = "fth.trading" }
+workers_dev = true
+# Custom domain route (enable after fth.trading is proxied through Cloudflare):
+# route = { pattern = "staging-api.fth.trading/api/*", zone_name = "fth.trading" }
 
 [env.staging.vars]
-FACILITATOR_URL = "https://facilitator-staging.fth.trading"
+FACILITATOR_URL = "https://facilitator.l1.unykorn.org"
 ENVIRONMENT = "staging"
-UNYKORN_TREASURY_ADDRESS = "uny1_DEMO_TREASURY"
+UNYKORN_TREASURY_ADDRESS = "uny1_755098bacf6f6d9ef9d0f391a8e7c467e7db7190"
 
 # Staging secrets (set via `wrangler secret put --env staging`):
 #   OPENMETER_ENDPOINT
@@ -31,14 +33,16 @@ UNYKORN_TREASURY_ADDRESS = "uny1_DEMO_TREASURY"
 # ---------------------------------------------------------------------------
 [env.production]
 name = "fth-x402-gateway"
-routes = [
-  { pattern = "api.fth.trading/api/*", zone_name = "fth.trading" },
-]
+workers_dev = true
+# Custom domain routes (enable after fth.trading is proxied through Cloudflare):
+# routes = [
+#   { pattern = "api.fth.trading/api/*", zone_name = "fth.trading" },
+# ]
 
 [env.production.vars]
-FACILITATOR_URL = "https://facilitator.fth.trading"
+FACILITATOR_URL = "https://facilitator.l1.unykorn.org"
 ENVIRONMENT = "production"
-UNYKORN_TREASURY_ADDRESS = "uny1_DEMO_TREASURY"
+UNYKORN_TREASURY_ADDRESS = "uny1_755098bacf6f6d9ef9d0f391a8e7c467e7db7190"
 
 # Production secrets (set via `wrangler secret put --env production`):
 #   OPENMETER_ENDPOINT
@@ -46,8 +50,9 @@ UNYKORN_TREASURY_ADDRESS = "uny1_DEMO_TREASURY"
 
 # ---------------------------------------------------------------------------
 # R2 bucket for static premium assets (genesis repro packs, etc.)
+# Enable after activating R2 in Cloudflare dashboard:
+#   npx wrangler r2 bucket create fth-x402-assets
 # ---------------------------------------------------------------------------
-# Uncomment when R2 bucket is created:
 # [[r2_buckets]]
 # binding = "ASSETS"
 # bucket_name = "fth-x402-assets"

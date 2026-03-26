@@ -55,7 +55,10 @@ export async function build402Response(
 
     const res = await fetch(`${env.FACILITATOR_URL}/invoices`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "Cloudflare-Worker/fth-x402-gateway",
+      },
       body: JSON.stringify(body),
     });
 
